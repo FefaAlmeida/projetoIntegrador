@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <>
       {/* HEADER */}
-      <header className="bg-dark border-bottom">
+      <header className="bg-dark">
      <div className="container-fluid px-5 d-flex flex-wrap justify-content-between align-items-center py-3">    
         
         <a
@@ -13,12 +13,15 @@ export default function Home() {
         >
           {/* LOGO */}
         <img
-          src="/logo-semEscrita.png"
-          alt="Luminar Logo"
-          width="45"
-          height="45"
-          style={{ objectFit: "contain" }}
-        />
+        src="/logo-semEscrita.png"
+        alt="Luminar Logo"
+        width="45"
+        height="45"
+        style={{ 
+          objectFit: "contain",
+          marginRight: "14px"
+        }}
+      />
 
           {/* NOME */}
           <span className="fs-4 fw-bold text-warning">
@@ -99,7 +102,7 @@ export default function Home() {
 
   {/* CARROSSEL */}
 <div 
-  className="position-relative overflow-hidden p-3 p-md-5 text-center text-white" 
+  className="position-relative overflow-hidden pt-0 px-3 pb-3 p-md-5 text-center text-white" 
   style={{ 
     // Substitua o link abaixo pela URL da sua imagem real (ex: /images/background.jpg)
     backgroundImage: 'linear-gradient(rgba(33, 37, 41, 0.8), rgba(33, 37, 41, 0.85)), url("https://moduloenergia.com/wp-content/uploads/telha-solar-ou-painel-solar-qual-o-melhor.jpg")',
@@ -112,48 +115,89 @@ export default function Home() {
   <div className="col-md-6 p-lg-5 mx-auto my-5 position-relative" style={{ zIndex: 2 }}>
     {/* Título Principal com Destaque Amarelo */}
     <h1 className="display-3 fw-bold mb-3 text-uppercase tracking-wide">
-      Projetado para <span style={{ color: '#FFC107' }}>engenheiros</span>
+      Projetado para <span style={{ color: '#FFC107' }}>Empresas</span>
     </h1>
     
     {/* Subtítulo */}
     <h3 className="fw-light mb-5 fs-4" style={{ color: '#e9ecef' }}>
-      Crie tudo o que quiser com o Aperture.
+      Consiga tudo o que quiser com o luminar.
     </h3>
-    
-    {/* Botões de Ação */}
-    <div className="d-flex gap-3 justify-content-center align-items-center">
-      {/* Botão Principal em Amarelo */}
-      <a 
-        className="btn btn-lg px-4 fw-bold text-dark" 
-        href="#"
-        style={{ 
-          backgroundColor: '#FFC107', 
-          borderColor: '#FFC107',
-          boxShadow: '0 4px 15px rgba(255, 193, 7, 0.4)'
-        }}
-      >
-        Saber mais
-      </a>
-      
-      {/* Botão Secundário Transparente/Branco */}
-      <a 
-      className="btn btn-lg btn-outline-light px-4 fw-semibold d-flex align-items-center gap-2" 
-      href="#"
-    >
-      Comprar
-      <svg 
-        className="bi" 
-        aria-hidden="true" 
-        width="16" 
-        height="16" 
-        fill="currentColor"
-      >
-        <use xlinkHref="#chevron-right" />
-      </svg>
-    </a>
-    </div>
   </div>
 </div>
+
+{/* HERO */}
+<section className="py-5 bg-light">
+  <div className="container">
+    <div className="row align-items-center g-5">
+
+      {/* TEXTO */}
+      <div className="col-lg-6">
+
+        <h1
+          className="display-4 fw-bold mb-4"
+          style={{
+            color: "#1a1a1a",
+            lineHeight: "1.2",
+          }}
+        >
+          Energia solar para reduzir sua conta de luz
+        </h1>
+
+        <p
+          className="lead"
+          style={{
+            color: "#6c757d",
+            maxWidth: "540px",
+          }}
+        >
+          Projetamos e instalamos sistemas de energia solar
+          fotovoltaica para residências, comércios e
+          indústrias com alta eficiência e economia garantida.
+        </p>
+
+        <div className="d-flex flex-wrap gap-3 mt-4">
+
+          <button
+            className="btn btn-warning btn-lg fw-bold px-4"
+            style={{
+              borderRadius: "12px",
+            }}
+          >
+            Solicitar orçamento
+          </button>
+
+          <button
+            className="btn btn-outline-dark btn-lg fw-bold px-4"
+            style={{
+              borderRadius: "12px",
+            }}
+          >
+            Simular economia
+          </button>
+
+        </div>
+
+      </div>
+
+      {/* IMAGEM */}
+      <div className="col-lg-6 text-center">
+
+        <img
+          src="painelsolar.jpg"
+          className="img-fluid shadow"
+          alt="Painel solar"
+          style={{
+            borderRadius: "24px",
+            maxHeight: "500px",
+            objectFit: "cover",
+          }}
+        />
+
+      </div>
+
+    </div>
+  </div>
+</section>
 
   {/* DIFERENCIAIS */}
   <section className="py-5 bg-white">
@@ -273,7 +317,7 @@ export default function Home() {
 
   {/* SERVIÇOS */}
 <section
-  className="py-5 my-5"
+  className="py-5"
   style={{
     backgroundColor: "#FFC107",
   }}
@@ -297,7 +341,8 @@ export default function Home() {
 
     </div>
 
-    <div className="row g-4">
+  <div className="row gx-5 gy-4">
+
 
       {/* CARD */}
        <div className="col-md-3">
@@ -421,7 +466,7 @@ export default function Home() {
   className="position-relative overflow-hidden py-5"
   style={{
     background:
-      "linear-gradient(135deg, #111 0%, #1f1f1f 100%)",
+      "#221f20",
   }}
 >
   <div className="container position-relative">
