@@ -11,7 +11,6 @@ export default function Home() {
           href="/"
           className="d-flex align-items-center text-decoration-none"
         >
-          {/* LOGO */}
         <img
         src="/logo-semEscrita.png"
         alt="Luminar Logo"
@@ -100,33 +99,36 @@ export default function Home() {
   <div className="bg-light">
 
 
-  {/* CARROSSEL */}
-<div 
-  className="position-relative overflow-hidden pt-0 px-3 pb-3 p-md-5 text-center text-white" 
-  style={{ 
-    // Substitua o link abaixo pela URL da sua imagem real (ex: /images/background.jpg)
-    backgroundImage: 'linear-gradient(rgba(33, 37, 41, 0.8), rgba(33, 37, 41, 0.85)), url("https://moduloenergia.com/wp-content/uploads/telha-solar-ou-painel-solar-qual-o-melhor.jpg")',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    borderRadius: '12px'
-  }}
->
-  <div className="col-md-6 p-lg-5 mx-auto my-5 position-relative" style={{ zIndex: 2 }}>
-    {/* Título Principal com Destaque Amarelo */}
-    <h1 className="display-3 fw-bold mb-3 text-uppercase tracking-wide">
-      Projetado para <span style={{ color: '#FFC107' }}>Empresas</span>
-    </h1>
-    
-    {/* Subtítulo */}
-    <h3 className="fw-light mb-5 fs-4" style={{ color: '#e9ecef' }}>
-      Consiga tudo o que quiser com o luminar.
-    </h3>
-  </div>
-</div>
+        {/* INICIAL */}
+      <div 
+        className="position-relative overflow-hidden pt-0 px-3 pb-3 p-md-5 text-center text-white" 
+        style={{ 
+          backgroundImage: 'linear-gradient(rgba(33, 37, 41, 0.8), rgba(33, 37, 41, 0.85)), url("https://moduloenergia.com/wp-content/uploads/telha-solar-ou-painel-solar-qual-o-melhor.jpg")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <div className="col-md-6 p-lg-5 mx-auto my-5 position-relative" style={{ zIndex: 2 }}>
+
+          <h1 className="display-3 fw-bold mb-3 text-uppercase tracking-wide">
+            Projetado para <span style={{ color: '#FFC107' }}>Empresas</span>
+          </h1>
+
+          <h3 className="fw-light mb-5 fs-4" style={{ color: '#e9ecef' }}>
+            Consiga tudo o que quiser com o luminar.
+          </h3>
+        </div>
+      </div>
 
 {/* HERO */}
-<section className="py-5 bg-light">
+      <section
+        className="bg-light"
+        style={{
+          paddingTop: "90px",
+          paddingBottom: "130px",
+        }}
+      >
   <div className="container">
     <div className="row align-items-center g-5">
 
@@ -174,9 +176,7 @@ export default function Home() {
           >
             Simular economia
           </button>
-
         </div>
-
       </div>
 
       {/* IMAGEM */}
@@ -192,15 +192,19 @@ export default function Home() {
             objectFit: "cover",
           }}
         />
-
       </div>
-
     </div>
   </div>
 </section>
 
-  {/* DIFERENCIAIS */}
-  <section className="py-5 bg-white">
+      {/* DIFERENCIAIS */}
+      <section
+        className="bg-white"
+        style={{
+          paddingTop: "130px",
+          paddingBottom: "130px",
+        }}
+      >
     <div className="container">
 
       <div className="text-center mb-5">
@@ -227,14 +231,16 @@ export default function Home() {
         ></div>
       </div>
 
-      <div className="row g-4">
+      {/* ROW */}
+      <div className="row g-5">
 
         {/* CARD */}
         <div className="col-md-4">
           <div
-            className="card border-0 shadow-lg h-100 text-center p-4 rounded-4"
+            className="card border-0 shadow-lg h-100 text-center p-4 rounded-4 hover-card"
             style={{
               transition: "0.3s",
+              cursor: "pointer",
             }}
           >
             <div
@@ -261,8 +267,13 @@ export default function Home() {
 
         {/* CARD */}
         <div className="col-md-4">
-          <div className="card border-0 shadow-lg h-100 text-center p-4 rounded-4">
-
+          <div
+            className="card border-0 shadow-lg h-100 text-center p-4 rounded-4 hover-card"
+            style={{
+              transition: "0.3s",
+              cursor: "pointer",
+            }}
+          >
             <div
               className="mx-auto mb-4 d-flex align-items-center justify-content-center"
               style={{
@@ -287,8 +298,13 @@ export default function Home() {
 
         {/* CARD */}
         <div className="col-md-4">
-          <div className="card border-0 shadow-lg h-100 text-center p-4 rounded-4">
-
+          <div
+            className="card border-0 shadow-lg h-100 text-center p-4 rounded-4 hover-card"
+            style={{
+              transition: "0.3s",
+              cursor: "pointer",
+            }}
+          >
             <div
               className="mx-auto mb-4 d-flex align-items-center justify-content-center"
               style={{
@@ -312,369 +328,349 @@ export default function Home() {
         </div>
 
       </div>
-    </div>
-  </section>
 
-  {/* SERVIÇOS */}
+        <style jsx>{`
+        .hover-card:hover {
+          transform: scale(1.05);
+        }
+      `}</style>
+          </div>
+        </section>
+
+
+     {/* SERVIÇOS */}
 <section
-  className="py-5"
   style={{
-    backgroundColor: "#FFC107",
+    backgroundColor: "#212529",
+    paddingTop: "30px",
+    paddingBottom: "30px",
   }}
 >
-  <div className="container">
+  <div className="container px-4 py-5" id="custom-cards">
 
     <div className="text-center mb-5">
-
       <h2
-        className="fw-bold text-dark"
+        className="fw-bold"
         style={{
-          fontSize: "3rem",
+          fontSize: "2.7rem",
+          color: "#FFC107",
+          fontFamily: "'Poppins', sans-serif",
+          letterSpacing: "1px",
         }}
       >
-        Serviços
+        Confira nossos Serviços
       </h2>
-
-      <p className="text-dark">
-        Soluções completas em energia solar.
-      </p>
-
     </div>
 
-  <div className="row gx-5 gy-4">
+    <div className="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
 
+ {/* CARD 1 */}
+<div className="col">
+  <div
+    className="card-hover card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg border-0 position-relative"
+    style={{
+      backgroundImage:
+        'url("https://descarbonizesolucoes.com.br/blog/wp-content/uploads/2024/12/engenharia-instalacao-paineis-solares-campo-aberto.webp")',
+      minHeight: "360px",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+    }}
+  >
 
-      {/* CARD */}
-       <div className="col-md-3">
-          <div className="card border-0 shadow-lg h-100 rounded-4 overflow-hidden">
+    {/* PELÍCULA PRETA */}
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        backgroundColor: "rgba(0,0,0,0.45)",
+      }}
+    ></div>
 
-            <img
-              src="https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04"
-              className="card-img-top"
-              alt=""
-              style={{
-                height: "220px",
-                objectFit: "cover",
-              }}
-            />
-
-            <div className="card-body text-center">
-
-              <a
-                href="/instalacao"
-                className="text-decoration-none text-dark"
-              >
-                <h5 className="fw-bold">
-                  Instalação de painéis solares
-                </h5>
-              </a>
-
-            </div>
-          </div>
-        </div>
-
-        <div className="col-md-3">
-          <div className="card border-0 shadow-lg h-100 rounded-4 overflow-hidden">
-
-            <img
-              src="https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04"
-              className="card-img-top"
-              alt=""
-              style={{
-                height: "220px",
-                objectFit: "cover",
-              }}
-            />
-
-            <div className="card-body text-center">
-
-              <a
-                href="/monitoramento"
-                className="text-decoration-none text-dark"
-              >
-                <h5 className="fw-bold">
-                  Monitoramento energético
-                </h5>
-              </a>
-
-            </div>
-          </div>
-        </div>
-
-        <div className="col-md-3">
-          <div className="card border-0 shadow-lg h-100 rounded-4 overflow-hidden">
-
-            <img
-              src="https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04"
-              className="card-img-top"
-              alt=""
-              style={{
-                height: "220px",
-                objectFit: "cover",
-              }}
-            />
-
-            <div className="card-body text-center">
-
-              <a
-                href="/manutencao"
-                className="text-decoration-none text-dark"
-              >
-                <h5 className="fw-bold">
-                  Manutenção
-                </h5>
-              </a>
-
-            </div>
-          </div>
-        </div>
-
-        <div className="col-md-3">
-          <div className="card border-0 shadow-lg h-100 rounded-4 overflow-hidden">
-
-            <img
-              src="https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04"
-              className="card-img-top"
-              alt=""
-              style={{
-                height: "220px",
-                objectFit: "cover",
-              }}
-            />
-
-            <div className="card-body text-center">
-
-              <a
-                href="/empresarial"
-                className="text-decoration-none text-dark"
-              >
-                <h5 className="fw-bold">
-                  Investimento empresarial
-                </h5>
-              </a>
-
-            </div>
-          </div>
-        </div>
+    {/* TEXTO */}
+    <div className="d-flex flex-column h-100 p-4 text-white text-shadow-1 text-center justify-content-center position-relative">
+      <h3 className="fw-bold">
+        Instalação de painéis solares
+      </h3>
     </div>
   </div>
-</section>
-
-
-  {/* ORÇAMENTO CRIATIVO */}
-<section
-  className="position-relative overflow-hidden py-5"
-  style={{
-    background:
-      "#221f20",
-  }}
->
-  <div className="container position-relative">
-
-    <div className="row align-items-center g-5">
-
-      <div className="col-lg-7">
-
-        <span className="badge bg-warning text-dark px-4 py-2 mb-4 fs-6">
-          Simule sua economia
-        </span>
-
-        <h2
-          className="fw-bold text-white mb-4"
-          style={{
-            fontSize: "3.5rem",
-            lineHeight: "1.2",
-          }}
-        >
-          Transforme luz solar em economia real
-        </h2>
-
-        <p
-          className="text-light"
-          style={{
-            fontSize: "1.2rem",
-            maxWidth: "650px",
-            lineHeight: "1.8",
-          }}
-        >
-          Descubra quanto você pode economizar utilizando energia
-          solar. Nossa equipe cria uma solução personalizada para sua
-          residência ou empresa.
-        </p>
-
-        <div className="d-flex flex-wrap gap-3 mt-4">
-
-          <button className="btn btn-warning btn-lg fw-bold px-5 py-3 shadow">
-            Solicitar orçamento
-          </button>
-
-          <button className="btn btn-outline-light btn-lg fw-bold px-5 py-3">
-            Falar com especialista
-          </button>
-
-        </div>
-
-      </div>
-
-      <div className="col-lg-5 text-center">
-
-        <div
-          className="bg-warning rounded-circle mx-auto d-flex align-items-center justify-content-center shadow-lg"
-          style={{
-            width: "320px",
-            height: "320px",
-          }}
-        >
-          <div>
-
-            <h1
-              className="fw-bold text-dark"
-              style={{
-                fontSize: "4rem",
-              }}
-            >
-              95%
-            </h1>
-
-            <p className="fw-bold text-dark fs-5">
-              de economia
-            </p>
-
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-  </div>
-</section>
-
-  {/* FAQ */}
-  <section className="py-5 bg-light">
-    <div className="container">
-
-      <h2 className="text-center fw-bold mb-5">
-        Perguntas Frequentes
-      </h2>
-
-      <div
-        className="accordion accordion-flush shadow rounded-4 overflow-hidden"
-        id="accordionFlushExample"
-      >
-
-        <div className="accordion-item">
-          <h2 className="accordion-header">
-            <button
-              className="accordion-button collapsed fw-bold"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseOne"
-            >
-              Como funciona a energia solar?
-            </button>
-          </h2>
-
-          <div
-            id="flush-collapseOne"
-            className="accordion-collapse collapse"
-            data-bs-parent="#accordionFlushExample"
-          >
-            <div className="accordion-body">
-              A energia solar converte a luz do sol em energia elétrica.
-            </div>
-          </div>
-        </div>
-
-        <div className="accordion-item">
-          <h2 className="accordion-header">
-            <button
-              className="accordion-button collapsed fw-bold"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseTwo"
-            >
-              Quanto posso economizar?
-            </button>
-          </h2>
-
-          <div
-            id="flush-collapseTwo"
-            className="accordion-collapse collapse"
-            data-bs-parent="#accordionFlushExample"
-          >
-            <div className="accordion-body">
-              Você pode economizar até 95% na conta de energia.
-            </div>
-          </div>
-        </div>
-
-        <div className="accordion-item">
-          <h2 className="accordion-header">
-            <button
-              className="accordion-button collapsed fw-bold"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#flush-collapseThree"
-            >
-              Vocês fazem manutenção?
-            </button>
-          </h2>
-
-          <div
-            id="flush-collapseThree"
-            className="accordion-collapse collapse"
-            data-bs-parent="#accordionFlushExample"
-          >
-            <div className="accordion-body">
-              Sim, realizamos manutenção preventiva e corretiva.
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  {/* FOOTER */}
-  <footer className="bg-dark text-light py-4">
-    <div className="container d-flex flex-wrap justify-content-between align-items-center">
-
-      <p className="mb-0 text-secondary">
-        © 2025 Luminar
-      </p>
-
-      <ul className="nav">
-
-        <li className="nav-item">
-          <a href="#" className="nav-link text-white">
-            Início
-          </a>
-        </li>
-
-        <li className="nav-item">
-          <a href="#" className="nav-link text-white">
-            Serviços
-          </a>
-        </li>
-
-        <li className="nav-item">
-          <a href="#" className="nav-link text-white">
-            Orçamento
-          </a>
-        </li>
-
-        <li className="nav-item">
-          <a href="#" className="nav-link text-warning fw-bold">
-            Login
-          </a>
-        </li>
-
-      </ul>
-    </div>
-  </footer>
-
 </div>
+
+{/* CARD 2 */}
+<div className="col">
+  <div
+    className="card-hover card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg border-0 position-relative"
+    style={{
+      backgroundImage:
+        'url("https://mayaenergy.com.br/wp-content/uploads/2023/09/woman-monitors-energy-production-from-solar-power-plant-with-digital-tablet-scaled.jpg")',
+      minHeight: "360px",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+    }}
+  >
+
+    {/* PELÍCULA PRETA */}
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        backgroundColor: "rgba(0,0,0,0.45)",
+      }}
+    ></div>
+
+    {/* TEXTO */}
+    <div className="d-flex flex-column h-100 p-4 text-white text-shadow-1 text-center justify-content-center position-relative">
+      <h3 className="fw-bold">
+        Monitoramento energético
+      </h3>
+    </div>
+  </div>
+</div>
+
+{/* CARD 3 */}
+<div className="col">
+  <div
+    className="card-hover card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg border-0 position-relative"
+    style={{
+      backgroundImage:
+        'url("https://institutosolar.com/wp-content/uploads/2019/05/Manuten%C3%A7%C3%A3o-do-painel-solar.jpg")',
+      minHeight: "360px",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+    }}
+  >
+
+    {/* PELÍCULA PRETA */}
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        backgroundColor: "rgba(0,0,0,0.45)",
+      }}
+    ></div>
+
+    {/* TEXTO */}
+    <div className="d-flex flex-column h-100 p-4 text-white text-shadow-1 text-center justify-content-center position-relative">
+      <h3 className="fw-bold">
+        Manutenção
+      </h3>
+    </div>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+  <style jsx>{`
+    .card-hover {
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+
+    .card-hover:hover {
+      transform: scale(1.03);
+    }
+  `}</style>
+</section>
+
+
+        {/* ORÇAMENTO */}
+        <section
+          style={{
+            backgroundColor: "#febd17",
+            paddingTop: "130px",
+            paddingBottom: "130px",
+          }}
+        >
+          <div className="container">
+
+            <div
+              className="mx-auto text-center position-relative overflow-hidden"
+              style={{
+                backgroundColor: "#221f20",
+                borderRadius: "35px",
+                padding: "90px 40px",
+              }}
+            >
+
+              {/* TEXTO */}
+              <div
+                className="mx-auto"
+                style={{
+                  maxWidth: "900px",
+                }}
+              >
+
+                <h2
+                  className="fw-bold mb-4"
+                  style={{
+                    fontSize: "4rem",
+                    lineHeight: "1.2",
+                    color: "#febd17",
+                  }}
+                >
+                  Energia inteligente para sua empresa economizar mais e gastar menos
+                </h2>
+
+                {/* BOTÃO */}
+                <a
+                  href="#"
+                  className="btn fw-bold px-5 py-3"
+                  style={{
+                    backgroundColor: "#febd17",
+                    color: "#221f20",
+                    borderRadius: "18px",
+                    fontSize: "1.1rem",
+                    transition: "0.3s",
+                  }}
+                >
+                  Solicitar orçamento
+                </a>
+
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section
+          className="bg-light"
+          style={{
+            paddingTop: "130px",
+            paddingBottom: "130px",
+          }}
+        >
+            <div className="container">
+
+              <h2 className="text-center fw-bold mb-5">
+                Perguntas Frequentes
+              <div
+              className="mx-auto mt-3"
+              style={{
+                width: "90px",
+                height: "5px",
+                backgroundColor: "#FFC107",
+                borderRadius: "10px",
+              }}
+            ></div>
+              </h2>
+
+              <div
+                className="accordion accordion-flush shadow rounded-4 overflow-hidden"
+                id="accordionFlushExample"
+              >
+
+                <div className="accordion-item">
+                  <h2 className="accordion-header">
+                    <button
+                      className="accordion-button collapsed fw-bold"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#flush-collapseOne"
+                    >
+                      Como funciona a energia solar?
+                    </button>
+                  </h2>
+
+                  <div
+                    id="flush-collapseOne"
+                    className="accordion-collapse collapse"
+                    data-bs-parent="#accordionFlushExample"
+                  >
+                    <div className="accordion-body">
+                      A energia solar converte a luz do sol em energia elétrica.
+                    </div>
+                  </div>
+                </div>
+
+                <div className="accordion-item">
+                  <h2 className="accordion-header">
+                    <button
+                      className="accordion-button collapsed fw-bold"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#flush-collapseTwo"
+                    >
+                      Quanto posso economizar?
+                    </button>
+                  </h2>
+
+                  <div
+                    id="flush-collapseTwo"
+                    className="accordion-collapse collapse"
+                    data-bs-parent="#accordionFlushExample"
+                  >
+                    <div className="accordion-body">
+                      Você pode economizar até 95% na conta de energia.
+                    </div>
+                  </div>
+                </div>
+
+                <div className="accordion-item">
+                  <h2 className="accordion-header">
+                    <button
+                      className="accordion-button collapsed fw-bold"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#flush-collapseThree"
+                    >
+                      Vocês fazem manutenção?
+                    </button>
+                  </h2>
+
+                  <div
+                    id="flush-collapseThree"
+                    className="accordion-collapse collapse"
+                    data-bs-parent="#accordionFlushExample"
+                  >
+                    <div className="accordion-body">
+                      Sim, realizamos manutenção preventiva e corretiva.
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </section>
+
+          {/* FOOTER */}
+          <footer className="bg-dark text-light py-4">
+            <div className="container d-flex flex-wrap justify-content-between align-items-center">
+
+              <p className="mb-0 text-secondary">
+                © 2025 Luminar
+              </p>
+
+              <ul className="nav">
+
+                <li className="nav-item">
+                  <a href="#" className="nav-link text-white">
+                    Início
+                  </a>
+                </li>
+
+                <li className="nav-item">
+                  <a href="#" className="nav-link text-white">
+                    Serviços
+                  </a>
+                </li>
+
+                <li className="nav-item">
+                  <a href="#" className="nav-link text-white">
+                    Orçamento
+                  </a>
+                </li>
+
+                <li className="nav-item">
+                  <a href="#" className="nav-link text-warning fw-bold">
+                    Login
+                  </a>
+                </li>
+
+              </ul>
+            </div>
+          </footer>
+
+        </div>
 </>
   )}
-
-
+  

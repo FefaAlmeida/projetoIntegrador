@@ -4,7 +4,7 @@ import Header from "../../components/Header";
 export default function LoginPage() {
 return (
   <>
-    <Header />
+    <Header/>
 
     <div
       className="container-fluid min-vh-100 d-flex align-items-center position-relative overflow-hidden p-0"
@@ -27,17 +27,17 @@ return (
         >
           <path
             d="M0 0H500C400 120 250 50 150 180C70 260 0 220 0 300V0Z"
-            fill="#4a148c"
+            fill="#FFC107"
             opacity="0.2"
           />
           <path
             d="M0 0H450C350 90 220 30 120 140C50 210 0 180 0 250V0Z"
-            fill="#7c4dff"
+            fill="#FFC107"
             opacity="0.4"
           />
           <path
             d="M0 0H400C300 70 200 10 100 110C40 170 0 140 0 200V0Z"
-            fill="#1a0633"
+            fill="#FFC107"
           />
         </svg>
       </div>
@@ -59,17 +59,17 @@ return (
         >
           <path
             d="M0 0H500C400 120 250 50 150 180C70 260 0 220 0 300V0Z"
-            fill="#4a148c"
+            fill="#212529"
             opacity="0.2"
           />
           <path
             d="M0 0H450C350 90 220 30 120 140C50 210 0 180 0 250V0Z"
-            fill="#7c4dff"
+            fill="#212529"
             opacity="0.4"
           />
           <path
             d="M0 0H400C300 70 200 10 100 110C40 170 0 140 0 200V0Z"
-            fill="#1a0633"
+            fill="#212529"
           />
         </svg>
       </div>
@@ -91,73 +91,25 @@ return (
 
         {/* BLOB */}
         <div
-            className="mx-auto mx-lg-0 mb-4 d-flex align-items-center justify-content-center position-relative"
-            style={{
+        className="mx-auto mx-lg-0 mb-4 d-flex align-items-center justify-content-center position-relative"
+        style={{
             width: "100%",
             maxWidth: "520px",
             height: "340px",
-            background:
-                "linear-gradient(135deg, #4a148c 0%, #1a0633 100%)",
             borderRadius: "43% 57% 41% 59% / 57% 45% 55% 43%",
             boxShadow: "0 18px 40px rgba(26,6,51,0.22)",
-            }}
+            overflow: "hidden",
+        }}
         >
-            {/* ELEMENTOS INTERNOS */}
-            <svg
-            width="100%"
-            height="100%"
-            className="position-absolute top-0 start-0"
-            >
-            <circle cx="80" cy="80" r="1.5" fill="#fff" opacity="0.6" />
-            <circle cx="120" cy="60" r="2" fill="#fff" opacity="0.8" />
-            <circle cx="280" cy="70" r="1" fill="#fff" opacity="0.5" />
-            <circle cx="320" cy="110" r="2" fill="#fff" opacity="0.7" />
-
-            <line
-                x1="150"
-                y1="50"
-                x2="135"
-                y2="65"
-                stroke="#fff"
-                strokeWidth="1.5"
-                opacity="0.4"
-                strokeLinecap="round"
-            />
-
-            <line
-                x1="220"
-                y1="70"
-                x2="200"
-                y2="90"
-                stroke="#fff"
-                strokeWidth="1.5"
-                opacity="0.6"
-                strokeLinecap="round"
-            />
-
-            {/* LUA */}
-            <circle cx="240" cy="110" r="28" fill="#febd17" />
-
-            <path
-                d="M100 130C120 110 150 110 170 125C190 115 220 115 240 130"
-                stroke="#7c4dff"
-                strokeWidth="4"
-                strokeLinecap="round"
-                opacity="0.3"
-                fill="none"
-            />
-
-            <path
-                d="M0 280Q150 180 300 240T450 280Z"
-                fill="#4a148c"
-                opacity="0.5"
-            />
-
-            <path
-                d="M0 280Q200 220 450 250Z"
-                fill="#1a0633"
-            />
-            </svg>
+        <img
+            src="/logo-semEscrita.png"
+            alt="Imagem"
+            style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            }}
+        />
         </div>
 
         {/* TEXTO */}
@@ -220,9 +172,9 @@ return (
                     fontWeight: "700",
                   }}
                 >
-                  Login
+                  Entrar
                 </strong>{" "}
-                your account
+                na sua conta
               </h2>
 
               <form>
@@ -230,7 +182,7 @@ return (
                 {/* USERNAME */}
                 <div className="mb-4">
                   <label className="form-label small fw-semibold text-secondary mb-2">
-                    Username
+                    Usuário
                   </label>
 
                   <input
@@ -248,7 +200,7 @@ return (
                 {/* PASSWORD */}
                 <div className="mb-3">
                   <label className="form-label small fw-semibold text-secondary mb-2">
-                    Password
+                    Senha
                   </label>
 
                   <input
@@ -273,7 +225,7 @@ return (
                       fontSize: "0.9rem",
                     }}
                   >
-                    Forgot password?
+                    Esqueceu a senha?
                   </a>
                 </div>
 
@@ -288,7 +240,7 @@ return (
                       transition: "0.3s",
                     }}
                   >
-                    Don’t have an account? Create one
+                    Não tem uma conta? Crie uma!
                   </a>
                 </div>
 
@@ -305,7 +257,7 @@ return (
                     fontSize: "1rem",
                   }}
                 >
-                  Login
+                    Entrar
                 </button>
 
               </form>
