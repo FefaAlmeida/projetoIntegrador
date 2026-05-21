@@ -6,16 +6,14 @@ import Footer from "../components/Footer";
 export default function Home() {
   return (
     <>
-  
   <Header/>
 
   <div className="bg-light">
-
-
         {/* INICIAL */}
       <div 
         className="position-relative overflow-hidden pt-0 px-3 pb-3 p-md-5 text-center text-white" 
         style={{ 
+          marginTop: "-1px",
           backgroundImage: 'linear-gradient(rgba(33, 37, 41, 0.8), rgba(33, 37, 41, 0.85)), url("https://moduloenergia.com/wp-content/uploads/telha-solar-ou-painel-solar-qual-o-melhor.jpg")',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
@@ -314,7 +312,7 @@ export default function Home() {
     className="card-hover card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg border-0 position-relative"
     style={{
       backgroundImage:
-        'url("https://mayaenergy.com.br/wp-content/uploads/2023/09/woman-monitors-energy-production-from-solar-power-plant-with-digital-tablet-scaled.jpg")',
+        'url("https://cdn.prod.website-files.com/6800d450c97b7af1e8cc4be2/681b4df93cee4c65220a1fa8_Design%20sem%20nome%20-%202025-05-07T091107.350.png")',
       minHeight: "360px",
       backgroundSize: "cover",
       backgroundPosition: "center",

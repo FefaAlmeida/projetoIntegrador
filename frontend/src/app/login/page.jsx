@@ -12,6 +12,7 @@ return (
       style={{
         backgroundColor: "#ffffff",
         fontFamily: "'Poppins', sans-serif",
+        marginTop: "-1px",
       }}
     >
 
@@ -217,54 +218,54 @@ return (
             />
             </div>
 
-                {/* ESQUECEU SENHA */}
-                <div className="text-center mb-2">
-                <a
-                    href="#forgot"
-                    className="text-decoration-none small"
-                    style={{
-                    color: "#f5bd31",
-                    fontSize: "0.9rem",
-                    fontWeight: "700",
-                    }}
-                >
-                    Esqueceu a senha?
-                </a>
-                </div>
+ {/* BOTÃO LOGIN */}
+<button
+  type="submit"
+  className="btn w-100 py-3 rounded-pill fw-bold shadow-sm mb-3"
+  style={{
+    backgroundColor: "#febd17",
+    color: "#221f20",
+    border: "none",
+    letterSpacing: "0.5px",
+    transition: "0.3s",
+    cursor: "pointer",
+    fontSize: "1rem",
+    fontWeight: "700",
+  }}
+>
+  Entrar
+</button>
 
-                {/* BOTÃO / FRASE */}
-                <div className="text-center mb-3">
-                <a
-                    href="/register"
-                    className="text-decoration-none small"
-                    style={{
-                    color: "#f5bd31",
-                    fontSize: "0.95rem",
-                    transition: "0.3s",
-                    fontWeight: "700",
-                    }}
-                >
-                    Não tem uma conta? Crie uma!
-                </a>
-                </div>
+{/* ESQUECEU SENHA */}
+<div className="text-center mb-2">
+  <a
+    href="#forgot"
+    className="text-decoration-none small"
+    style={{
+      color: "#f5bd31",
+      fontSize: "0.9rem",
+      fontWeight: "700",
+    }}
+  >
+    Esqueceu a senha?
+  </a>
+</div>
 
-                {/* BOTÃO LOGIN */}
-                <button
-                type="submit"
-                className="btn w-100 py-3 rounded-pill fw-bold shadow-sm"
-                style={{
-                    backgroundColor: "#febd17",
-                    color: "#221f20",
-                    border: "none",
-                    letterSpacing: "0.5px",
-                    transition: "0.3s",
-                    cursor: "pointer",
-                    fontSize: "1rem",
-                    fontWeight: "700",
-                }}
-                >
-                Entrar
-                </button>
+{/* BOTÃO / FRASE */}
+<div className="text-center">
+  <a
+    href="/register"
+    className="text-decoration-none small"
+    style={{
+      color: "#f5bd31",
+      fontSize: "0.95rem",
+      transition: "0.3s",
+      fontWeight: "700",
+    }}
+  >
+    Não tem uma conta? Crie uma!
+  </a>
+</div>
               </form>
             </div>
           </div>
