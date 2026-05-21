@@ -1,5 +1,6 @@
 import React from 'react';
 import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 
 export default function LoginPage() {
 return (
@@ -59,17 +60,17 @@ return (
         >
           <path
             d="M0 0H500C400 120 250 50 150 180C70 260 0 220 0 300V0Z"
-            fill="#212529"
+            fill="#221f20"
             opacity="0.2"
           />
           <path
             d="M0 0H450C350 90 220 30 120 140C50 210 0 180 0 250V0Z"
-            fill="#212529"
+            fill="#221f20"
             opacity="0.4"
           />
           <path
             d="M0 0H400C300 70 200 10 100 110C40 170 0 140 0 200V0Z"
-            fill="#212529"
+            fill="#221f20"
           />
         </svg>
       </div>
@@ -97,17 +98,18 @@ return (
             maxWidth: "520px",
             height: "340px",
             borderRadius: "43% 57% 41% 59% / 57% 45% 55% 43%",
-            boxShadow: "0 18px 40px rgba(26,6,51,0.22)",
+            boxShadow: "0 18px 40px #756f72",
             overflow: "hidden",
+            background: "#fff",
         }}
         >
         <img
-            src="/logo-semEscrita.png"
+            src="/painelsolar.jpg"
             alt="Imagem"
             style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
+            width: "120%",
+            height: "120%",
+            objectFit: "contain",
             }}
         />
         </div>
@@ -117,7 +119,7 @@ return (
             className="text-start"
             style={{
             maxWidth: "620px",
-            marginTop: "5px",
+            marginTop: "20px",
             paddingLeft: "8px",
             }}
         >
@@ -127,7 +129,7 @@ return (
                 lineHeight: "1",
                 fontWeight: "900",
                 marginBottom: "18px",
-                color: "#111",
+                color: "#221f20",
             }}
             >
             Energia{" "}
@@ -139,7 +141,7 @@ return (
             <p
             style={{
                 fontSize: "2rem",
-                color: "#444",
+                color: "#221f20",
                 lineHeight: "1.15",
                 margin: 0,
             }}
@@ -156,15 +158,15 @@ return (
               style={{
                 width: "100%",
                 maxWidth: "470px",
-                boxShadow: "0 25px 50px rgba(0,0,0,0.08)",
-                border: "2px solid rgba(26,6,51,0.12)",
+                boxShadow: "0 25px 50px #756f72",
+                border: "1px solid #221f20",
               }}
             >
 
               {/* TÍTULO */}
               <h2
                 className="fs-3 fw-normal mb-5"
-                style={{ color: "#6c757d" }}
+                style={{ color: "#221f20" }}
               >
                 <strong
                   style={{
@@ -179,95 +181,98 @@ return (
 
               <form>
 
-                {/* USERNAME */}
-                <div className="mb-4">
-                  <label className="form-label small fw-semibold text-secondary mb-2">
-                    Usuário
-                  </label>
+            {/* USERNAME */}
+            <div className="mb-4">
+            <label className="form-label small fw-bold text-secondary mb-2">
+                Usuário
+            </label>
 
-                  <input
-                    type="text"
-                    className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
-                    style={{
-                      borderColor: "#dee2e6",
-                      borderBottomWidth: "2px",
-                      fontSize: "1.05rem",
-                      paddingBottom: "12px",
-                    }}
-                  />
-                </div>
+            <input
+                type="text"
+                className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
+                style={{
+                borderColor: "#221f20",
+                borderBottomWidth: "2px",
+                fontSize: "1.05rem",
+                paddingBottom: "12px",
+                }}
+            />
+            </div>
 
-                {/* PASSWORD */}
-                <div className="mb-3">
-                  <label className="form-label small fw-semibold text-secondary mb-2">
-                    Senha
-                  </label>
+            {/* PASSWORD */}
+            <div className="mb-3">
+            <label className="form-label small fw-bold text-secondary mb-2">
+                Senha
+            </label>
 
-                  <input
-                    type="password"
-                    className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
-                    style={{
-                      borderColor: "#dee2e6",
-                      borderBottomWidth: "2px",
-                      fontSize: "1.05rem",
-                      paddingBottom: "12px",
-                    }}
-                  />
-                </div>
+            <input
+                type="password"
+                className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
+                style={{
+                borderColor: "#221f20",
+                borderBottomWidth: "2px",
+                fontSize: "1.05rem",
+                paddingBottom: "12px",
+                }}
+            />
+            </div>
 
                 {/* ESQUECEU SENHA */}
-                <div className="text-center mb-4">
-                  <a
+                <div className="text-center mb-2">
+                <a
                     href="#forgot"
                     className="text-decoration-none small"
                     style={{
-                      color: "#8d8d8d",
-                      fontSize: "0.9rem",
+                    color: "#f5bd31",
+                    fontSize: "0.9rem",
+                    fontWeight: "700",
                     }}
-                  >
+                >
                     Esqueceu a senha?
-                  </a>
+                </a>
                 </div>
 
                 {/* BOTÃO / FRASE */}
-                <div className="text-center mb-4">
-                  <a
+                <div className="text-center mb-3">
+                <a
                     href="/register"
-                    className="text-decoration-none fw-medium"
+                    className="text-decoration-none small"
                     style={{
-                      color: "#4a148c",
-                      fontSize: "0.95rem",
-                      transition: "0.3s",
+                    color: "#f5bd31",
+                    fontSize: "0.95rem",
+                    transition: "0.3s",
+                    fontWeight: "700",
                     }}
-                  >
+                >
                     Não tem uma conta? Crie uma!
-                  </a>
+                </a>
                 </div>
 
                 {/* BOTÃO LOGIN */}
                 <button
-                  type="submit"
-                  className="btn w-100 py-3 rounded-pill text-white fw-medium shadow-sm"
-                  style={{
-                    backgroundColor: "#1a0633",
+                type="submit"
+                className="btn w-100 py-3 rounded-pill fw-bold shadow-sm"
+                style={{
+                    backgroundColor: "#febd17",
+                    color: "#221f20",
                     border: "none",
                     letterSpacing: "0.5px",
                     transition: "0.3s",
                     cursor: "pointer",
                     fontSize: "1rem",
-                  }}
+                    fontWeight: "700",
+                }}
                 >
-                    Entrar
+                Entrar
                 </button>
-
               </form>
             </div>
           </div>
-
         </div>
       </div>
-
     </div>
+
+    <Footer/>
   </>
   );
 }
