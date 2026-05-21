@@ -8,6 +8,10 @@ CREATE TABLE IF NOT EXISTS empresa_clientes (
     id_empresa INT PRIMARY KEY AUTO_INCREMENT,
     nome_empresa VARCHAR(150) NOT NULL,
     cnpj VARCHAR(18) NOT NULL UNIQUE,
-    telefone_principal VARCHAR(20),
-    email_principal VARCHAR(150)
-);
+    telefone_principal VARCHAR(20) NOT NULL UNIQUE,
+    email_principal VARCHAR(150) NOT NULL UNIQUE,
+        status_empresa ENUM(
+        'ATIVA',
+        'INATIVA'
+    ) NOT NULL DEFAULT 'ATIVA'
+); 

@@ -17,5 +17,5 @@ CREATE TABLE IF NOT EXISTS enderecos (
 
     CONSTRAINT fk_endereco_empresa
         FOREIGN KEY (id_empresa)
-        REFERENCES empresa_cliente(id_empresa)
+        REFERENCES empresa_clientes(id_empresa)
 );
