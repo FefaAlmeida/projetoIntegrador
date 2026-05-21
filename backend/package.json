@@ -19,7 +19,7 @@
     "upload",
     "produtos"
   ],
-  "author": "Professor - Curso Técnico em Desenvolvimento de Sistemas",
+  "author": "Fernanda, Giovana, Manuelly, Marcelo e Natalia - Curso Técnico em Desenvolvimento de Sistemas",
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",
