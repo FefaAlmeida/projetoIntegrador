@@ -3,6 +3,7 @@ export default function Footer() {
     <>
       <footer
         style={{
+          marginTop: "auto",
           background: "linear-gradient(90deg,#221f20,#221f20)",
           padding: "35px 0",
         }}
