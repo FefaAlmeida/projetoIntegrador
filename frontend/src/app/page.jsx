@@ -1,100 +1,13 @@
 "use client";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+
 
 export default function Home() {
   return (
     <>
-      {/* HEADER */}
-      <header className="bg-dark">
-     <div className="container-fluid px-5 d-flex flex-wrap justify-content-between align-items-center py-3">    
-        
-        <a
-          href="/"
-          className="d-flex align-items-center text-decoration-none"
-        >
-        <img
-        src="/logo-semEscrita.png"
-        alt="Luminar Logo"
-        width="45"
-        height="45"
-        style={{ 
-          objectFit: "contain",
-          marginRight: "14px"
-        }}
-      />
-
-          {/* NOME */}
-          <span className="fs-4 fw-bold text-warning">
-            Luminar
-          </span>
-        </a>
-
-        <ul className="nav nav-pills align-items-center">
-          <li className="nav-item">
-            <a href="#" className="nav-link text-white">
-              Início
-            </a>
-          </li>
-
-          <li className="nav-item dropdown">
-            <a
-              className="nav-link dropdown-toggle text-white"
-              href="#"
-              role="button"
-              data-bs-toggle="dropdown"
-            >
-              Serviços
-            </a>
-
-            <ul className="dropdown-menu dropdown-menu-dark">
-              <li>
-                <a className="dropdown-item" href="#">
-                  Instalação de painéis solares
-                </a>
-              </li>
-
-              <li>
-                <a className="dropdown-item" href="#">
-                  Monitoramento energético
-                </a>
-              </li>
-
-              <li>
-                <a className="dropdown-item" href="#">
-                  Manutenção
-                </a>
-              </li>
-
-              <li>
-                <a className="dropdown-item" href="#">
-                  Investimento energético empresarial
-                </a>
-              </li>
-            </ul>
-          </li>
-
-          <li className="nav-item">
-            <a href="#" className="nav-link text-white">
-              Orçamento
-            </a>
-          </li>
-
-          <li className="nav-item">
-            <a href="#" className="nav-link text-white">
-              FAQ
-            </a>
-          </li>
-
-          <li className="nav-item ms-2">
-            <a
-              href="#"
-              className="btn btn-warning fw-bold"
-            >
-              Login/Cadastro
-            </a>
-          </li>
-        </ul>
-      </div>
-    </header>
+  
+  <Header/>
 
   <div className="bg-light">
 
@@ -627,50 +540,10 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-
               </div>
             </div>
           </section>
-
-          {/* FOOTER */}
-          <footer className="bg-dark text-light py-4">
-            <div className="container d-flex flex-wrap justify-content-between align-items-center">
-
-              <p className="mb-0 text-secondary">
-                © 2025 Luminar
-              </p>
-
-              <ul className="nav">
-
-                <li className="nav-item">
-                  <a href="#" className="nav-link text-white">
-                    Início
-                  </a>
-                </li>
-
-                <li className="nav-item">
-                  <a href="#" className="nav-link text-white">
-                    Serviços
-                  </a>
-                </li>
-
-                <li className="nav-item">
-                  <a href="#" className="nav-link text-white">
-                    Orçamento
-                  </a>
-                </li>
-
-                <li className="nav-item">
-                  <a href="#" className="nav-link text-warning fw-bold">
-                    Login
-                  </a>
-                </li>
-
-              </ul>
-            </div>
-          </footer>
-
         </div>
+      <Footer/>
 </>
   )}
-  
