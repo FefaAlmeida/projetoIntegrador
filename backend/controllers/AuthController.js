@@ -345,8 +345,8 @@ class AuthController {
             const dadosUsuario = {
                 nome: nome.trim(),
                 email: email.trim().toLowerCase(),
+                tipo: tipo,
                 senha: senha,
-                tipo: tipo || 'comum'
             };
 
             // Criar usuário
