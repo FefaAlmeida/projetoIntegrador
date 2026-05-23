@@ -2,66 +2,94 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function RegisterPage() {
-  // 1. MEMÓRIA DA TELA (States)
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const tipo = "CLIENTE";
   const [senha, setSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
-  const [erro, setErro] = useState('');
   const [carregando, setCarregando] = useState(false);
-  
+
   const router = useRouter();
 
-  // 2. FUNÇÃO DE REGISTRO
+  const validarLocal = () => {
+    const nomeTrim = nome.trim();
+    const emailTrim = email.trim();
+
+    if (!nomeTrim) {
+      toast.error('Informe seu nome completo');
+      return false;
+    }
+    if (nomeTrim.length < 2) {
+      toast.error('O nome deve ter pelo menos 2 caracteres');
+      return false;
+    }
+    if (nomeTrim.length > 255) {
+      toast.error('O nome deve ter no máximo 255 caracteres');
+      return false;
+    }
+    if (!emailTrim) {
+      toast.error('Informe seu e-mail');
+      return false;
+    }
+    if (!EMAIL_REGEX.test(emailTrim)) {
+      toast.error('Formato de e-mail inválido');
+      return false;
+    }
+    if (!senha) {
+      toast.error('Crie uma senha');
+      return false;
+    }
+    if (senha.length < 6) {
+      toast.error('A senha deve ter pelo menos 6 caracteres');
+      return false;
+    }
+    if (senha !== confirmarSenha) {
+      toast.error('As senhas não coincidem');
+      return false;
+    }
+    return true;
+  };
+
   const handleRegister = async (e) => {
     e.preventDefault();
-    setErro('');
-    
-    // Validação básica de senhas no Front
-    if (senha !== confirmarSenha) {
-      setErro('As senhas não coincidem!');
-      return;
-    }
+    if (!validarLocal()) return;
 
     setCarregando(true);
+    const loadingId = toast.loading('Criando sua conta...');
 
     try {
       const resposta = await fetch('http://localhost:3001/api/auth/registrar', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ nome, email, tipo, senha }), 
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nome: nome.trim(),
+          email: email.trim().toLowerCase(),
+          tipo,
+          senha,
+        }),
       });
 
-      // Lendo o Content-Type de forma segura
-      const contentType = resposta.headers.get("content-type");
-      let resultado = {};
-      
-      if (contentType && contentType.includes("application/json")) {
-        resultado = await resposta.json();
-      }
+      const contentType = resposta.headers.get('content-type') || '';
+      const resultado = contentType.includes('application/json') ? await resposta.json() : {};
 
       if (!resposta.ok) {
-        // Se o backend retornou um erro estruturado, exibe a "mensagem", senão usa o fallback
-        throw new Error(resultado.mensagem || 'Erro interno no servidor (500). Verifique o console do Backend.');
+        throw new Error(resultado.mensagem || 'Erro ao criar conta. Tente novamente.');
       }
 
-      // SE DEU CERTO:
-      alert('Conta criada com sucesso!');
-      router.push('/login'); 
-
+      toast.success('Conta criada com sucesso! Faça login para continuar.', { id: loadingId });
+      router.push('/login');
     } catch (err) {
-      if (err.message.includes("Failed to fetch")) {
-        setErro("Não foi possível conectar ao servidor. O backend está ligado?");
-      } else {
-        setErro(err.message);
-      }
+      const msg = err.message.includes('Failed to fetch')
+        ? 'Não foi possível conectar ao servidor. O backend está ligado?'
+        : err.message;
+      toast.error(msg, { id: loadingId });
     } finally {
       setCarregando(false);
     }
@@ -163,13 +191,7 @@ export default function RegisterPage() {
                   <strong style={{ color: "#221f20", fontWeight: "700" }}>Criar conta</strong>
                 </h2>
 
-                <form onSubmit={handleRegister}>
-                  {erro && (
-                    <div className="alert alert-danger py-2 small text-center" role="alert">
-                      {erro}
-                    </div>
-                  )}
-
+                <form onSubmit={handleRegister} noValidate>
                   {/* CAMPO NOME */}
                   <div className="mb-4">
                     <label className="form-label small fw-bold text-secondary mb-2">Nome Completo</label>

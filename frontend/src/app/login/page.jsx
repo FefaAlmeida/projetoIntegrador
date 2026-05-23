@@ -1,54 +1,73 @@
 'use client'; // Avisa o Next.js que essa tela roda no navegador e tem interações
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation'; // Ferramenta para mudar de página via código
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function LoginPage() {
-  // 1. MEMÓRIA DA TELA (States)
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
-  const [erro, setErro] = useState('');
   const [carregando, setCarregando] = useState(false);
-  
-  const router = useRouter(); // Inicializa o navegador do Next.js
 
-  // 2. FUNÇÃO ASÍNCRONA DE ENVIO (Gatilho do Formulário)
+  const router = useRouter();
+
+  const validarLocal = () => {
+    const emailTrim = email.trim();
+    if (!emailTrim) {
+      toast.error('Informe seu e-mail');
+      return false;
+    }
+    if (!EMAIL_REGEX.test(emailTrim)) {
+      toast.error('Formato de e-mail inválido');
+      return false;
+    }
+    if (!senha) {
+      toast.error('Informe sua senha');
+      return false;
+    }
+    if (senha.length < 6) {
+      toast.error('A senha deve ter pelo menos 6 caracteres');
+      return false;
+    }
+    return true;
+  };
+
   const handleLogin = async (e) => {
-    e.preventDefault(); // Impede o navegador de recarregar a página inteira
-    setErro('');        // Limpa erros de tentativas anteriores
-    setCarregando(true); // Ativa o estado visual de carregamento (trava o botão)
+    e.preventDefault();
+    if (!validarLocal()) return;
+
+    setCarregando(true);
+    const loadingId = toast.loading('Verificando credenciais...');
 
     try {
-      // Faz o disparo via POST enviando os dados em segundo plano para o Node
       const resposta = await fetch('http://localhost:3001/api/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, senha }), // Converte as variáveis em JSON (texto)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim(), senha }),
       });
 
-      const resultado = await resposta.json();
+      const contentType = resposta.headers.get('content-type') || '';
+      const resultado = contentType.includes('application/json') ? await resposta.json() : {};
 
-      // Se o backend responder com algum erro (Ex: 401 - Senha incorreta)
       if (!resposta.ok) {
         throw new Error(resultado.mensagem || 'Falha na autenticação');
       }
 
-      // SE DEU CERTO: Salva o Token JWT e os dados básicos no navegador
       localStorage.setItem('@luminar:token', resultado.dados.token);
       localStorage.setItem('@luminar:user', JSON.stringify(resultado.dados.usuario));
 
-      // Redireciona o usuário para a página do painel logado
-      router.push('/dashboard'); 
-
+      toast.success(`Bem-vindo(a), ${resultado.dados.usuario.nome || 'usuário'}!`, { id: loadingId });
+      router.push('/dashboard');
     } catch (err) {
-      // Captura o erro gerado no bloco 'try' e joga no state para exibir na tela
-      setErro(err.message);
+      const msg = err.message.includes('Failed to fetch')
+        ? 'Não foi possível conectar ao servidor. O backend está ligado?'
+        : err.message;
+      toast.error(msg, { id: loadingId });
     } finally {
-      // Roda sempre (no sucesso ou no erro) para destravar o botão de entrar
       setCarregando(false);
     }
   };
@@ -225,14 +244,7 @@ export default function LoginPage() {
                 </h2>
 
                 {/* FORMULÁRIO CONECTADO À FUNÇÃO HANDLELOGIN */}
-                <form onSubmit={handleLogin}>
-
-                  {/* CAIXA DE ALERTA DE ERRO (Só aparece se o State 'erro' tiver texto) */}
-                  {erro && (
-                    <div className="alert alert-danger py-2 small text-center animate__animated animate__fadeIn" role="alert">
-                      {erro}
-                    </div>
-                  )}
+                <form onSubmit={handleLogin} noValidate>
 
                   {/* CAMPO DE E-MAIL */}
                   <div className="mb-4">
@@ -311,7 +323,7 @@ export default function LoginPage() {
 
                   <div className="text-center">
                     <a
-                      href="/register"
+                      href="/cadastro"
                       className="text-decoration-none small"
                       style={{
                         color: "#f5bd31",

@@ -1,124 +1,141 @@
-import { create, read, update, deleteRecord, comparePassword, hashPassword, getConnection } from '../config/database.js';
+import { hashPassword, comparePassword, getConnection } from '../config/database.js';
 
 // Model para operações com usuários
+// OBS: a tabela usa id_usuario/tipo_usuario, mas o restante do código espera id/tipo
+// — fazemos o aliasing via SELECT ... AS ... pra manter a interface consistente.
 class UsuarioModel {
     // Listar todos os usuários (com paginação)
     static async listarTodos(pagina = 1, limite = 10) {
+        const offset = (pagina - 1) * limite;
+        const connection = await getConnection();
         try {
-            const offset = (pagina - 1) * limite;
-            
-            // Buscar usuários com paginação (usando prepared statements para segurança)
-            const connection = await getConnection();
-            try {
-                const sql = 'SELECT * FROM usuarios ORDER BY id DESC LIMIT ? OFFSET ?';
-                const [usuarios] = await connection.query(sql, [limite, offset]);
-                
-                // Contar total de registros
-                const [totalResult] = await connection.execute('SELECT COUNT(*) as total FROM usuarios');
-                const total = totalResult[0].total;
-                
-                return {
-                    usuarios,
-                    total,
-                    pagina,
-                    limite,
-                    totalPaginas: Math.ceil(total / limite)
-                };
-            } finally {
-                connection.release();
-            }
-        } catch (error) {
-            console.error('Erro ao listar usuários:', error);
-            throw error;
-        }
-    }
+            const sql = `
+                SELECT id_usuario AS id, nome, email, senha, tipo_usuario AS tipo, status_usuario AS status, id_empresa
+                FROM usuarios
+                ORDER BY id_usuario DESC
+                LIMIT ? OFFSET ?
+            `;
+            const [usuarios] = await connection.query(sql, [limite, offset]);
 
-    // Buscar usuário por ID
-    static async buscarPorId(id) {
-        try {
-            const rows = await read('usuarios', `id = ${id}`);
-            return rows[0] || null;
-        } catch (error) {
-            console.error('Erro ao buscar usuário por ID:', error);
-            throw error;
-        }
-    }
+            const [totalResult] = await connection.execute('SELECT COUNT(*) as total FROM usuarios');
+            const total = totalResult[0].total;
 
-    // Buscar usuário por email
-    static async buscarPorEmail(email) {
-        try {
-            const rows = await read('usuarios', `email = '${email}'`);
-            return rows[0] || null;
-        } catch (error) {
-            console.error('Erro ao buscar usuário por email:', error);
-            throw error;
-        }
-    }
-
-    // Criar novo usuário
-    static async criar(dadosUsuario) {
-        try {
-            // Hash da senha antes de salvar
-            const senhaHash = await hashPassword(dadosUsuario.senha);
-            const dadosComHash = {
-                ...dadosUsuario,
-                senha: senhaHash
+            return {
+                usuarios,
+                total,
+                pagina,
+                limite,
+                totalPaginas: Math.ceil(total / limite)
             };
-            
-            return await create('usuarios', dadosComHash);
-        } catch (error) {
-            console.error('Erro ao criar usuário:', error);
-            throw error;
+        } finally {
+            connection.release();
         }
     }
 
-    // Atualizar usuário
+    static async buscarPorId(id) {
+        const connection = await getConnection();
+        try {
+            const sql = `
+                SELECT id_usuario AS id, nome, email, senha, tipo_usuario AS tipo, status_usuario AS status, id_empresa
+                FROM usuarios
+                WHERE id_usuario = ?
+                LIMIT 1
+            `;
+            const [rows] = await connection.execute(sql, [id]);
+            return rows[0] || null;
+        } finally {
+            connection.release();
+        }
+    }
+
+    static async buscarPorEmail(email) {
+        const connection = await getConnection();
+        try {
+            const sql = `
+                SELECT id_usuario AS id, nome, email, senha, tipo_usuario AS tipo, status_usuario AS status, id_empresa
+                FROM usuarios
+                WHERE email = ?
+                LIMIT 1
+            `;
+            const [rows] = await connection.execute(sql, [email]);
+            return rows[0] || null;
+        } finally {
+            connection.release();
+        }
+    }
+
+    static async criar(dadosUsuario) {
+        const senhaHash = await hashPassword(dadosUsuario.senha);
+        const connection = await getConnection();
+        try {
+            const sql = `
+                INSERT INTO usuarios (nome, email, senha, tipo_usuario)
+                VALUES (?, ?, ?, ?)
+            `;
+            const [result] = await connection.execute(sql, [
+                dadosUsuario.nome,
+                dadosUsuario.email,
+                senhaHash,
+                dadosUsuario.tipo
+            ]);
+            return result.insertId;
+        } finally {
+            connection.release();
+        }
+    }
+
     static async atualizar(id, dadosUsuario) {
+        const campos = [];
+        const valores = [];
+
+        if (dadosUsuario.nome !== undefined) {
+            campos.push('nome = ?');
+            valores.push(dadosUsuario.nome);
+        }
+        if (dadosUsuario.email !== undefined) {
+            campos.push('email = ?');
+            valores.push(dadosUsuario.email);
+        }
+        if (dadosUsuario.senha !== undefined) {
+            campos.push('senha = ?');
+            valores.push(await hashPassword(dadosUsuario.senha));
+        }
+        if (dadosUsuario.tipo !== undefined) {
+            campos.push('tipo_usuario = ?');
+            valores.push(dadosUsuario.tipo);
+        }
+
+        if (campos.length === 0) return 0;
+
+        const connection = await getConnection();
         try {
-            // Se a senha foi fornecida, fazer hash
-            if (dadosUsuario.senha) {
-                dadosUsuario.senha = await hashPassword(dadosUsuario.senha);
-            }
-            
-            return await update('usuarios', dadosUsuario, `id = ${id}`);
-        } catch (error) {
-            console.error('Erro ao atualizar usuário:', error);
-            throw error;
+            const sql = `UPDATE usuarios SET ${campos.join(', ')} WHERE id_usuario = ?`;
+            const [result] = await connection.execute(sql, [...valores, id]);
+            return result.affectedRows;
+        } finally {
+            connection.release();
         }
     }
 
-    // Excluir usuário
     static async excluir(id) {
+        const connection = await getConnection();
         try {
-            return await deleteRecord('usuarios', `id = ${id}`);
-        } catch (error) {
-            console.error('Erro ao excluir usuário:', error);
-            throw error;
+            const [result] = await connection.execute('DELETE FROM usuarios WHERE id_usuario = ?', [id]);
+            return result.affectedRows;
+        } finally {
+            connection.release();
         }
     }
 
-    // Verificar credenciais de login
     static async verificarCredenciais(email, senha) {
-        try {
-            const usuario = await this.buscarPorEmail(email);
-            
-            if (!usuario) {
-                return null;
-            }
+        const usuario = await this.buscarPorEmail(email);
+        if (!usuario) return null;
 
-            const senhaValida = await comparePassword(senha, usuario.senha);
-            
-            if (!senhaValida) {
-                return null;
-            }
+        const senhaValida = await comparePassword(senha, usuario.senha);
+        if (!senhaValida) return null;
 
-            // Retornar usuário sem a senha
-            const { senha: _, ...usuarioSemSenha } = usuario;
-            return usuarioSemSenha;
-        } catch (error) {
-            console.error('Erro ao verificar credenciais:', error);
-            throw error;
-        }
+        const { senha: _, ...usuarioSemSenha } = usuario;
+        return usuarioSemSenha;
     }
 }
 

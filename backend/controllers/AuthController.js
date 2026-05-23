@@ -156,12 +156,23 @@ class AuthController {
                 });
             }
 
+            // Normalizar tipo (ENUM aceita só CLIENTE ou ADMIN)
+            const tiposPermitidos = ['CLIENTE', 'ADMIN'];
+            const tipoNormalizado = (tipo || 'CLIENTE').toString().toUpperCase();
+            if (!tiposPermitidos.includes(tipoNormalizado)) {
+                return res.status(400).json({
+                    sucesso: false,
+                    erro: 'Tipo inválido',
+                    mensagem: `Tipo deve ser um de: ${tiposPermitidos.join(', ')}`
+                });
+            }
+
             // Preparar dados do usuário
             const dadosUsuario = {
                 nome: nome.trim(),
                 email: email.trim().toLowerCase(),
                 senha: senha,
-                tipo: tipo || 'comum'
+                tipo: tipoNormalizado
             };
 
             // Criar usuário
