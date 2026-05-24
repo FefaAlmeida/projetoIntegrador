@@ -1,8 +1,11 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import BootstrapClient from "./bootstrap-client";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import "./globals.css";
+
 import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
@@ -24,6 +27,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
+        <Header/>
         <BootstrapClient />
         <Toaster
           position="top-right"
@@ -48,6 +52,7 @@ export default function RootLayout({ children }) {
           }}
         />
         {children}
+        <Footer/>
       </body>
     </html>
   );

@@ -3,8 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
+
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -75,8 +74,7 @@ export default function LoginPage() {
   // 3. ESTRUTURA VISUAL DA SUA TELA
   return (
     <>
-      <Header/>
-
+  
       <div
         className="container-fluid min-vh-100 d-flex align-items-center position-relative overflow-hidden p-0"
         style={{
@@ -341,8 +339,6 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
-
-      <Footer/>
     </>
   );
 }

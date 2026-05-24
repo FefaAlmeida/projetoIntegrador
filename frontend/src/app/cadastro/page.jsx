@@ -3,8 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
+
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -97,7 +96,6 @@ export default function RegisterPage() {
 
   return (
     <>
-      <Header/>
 
       <div
         className="container-fluid min-vh-100 d-flex align-items-center position-relative overflow-hidden p-0"
@@ -275,8 +273,6 @@ export default function RegisterPage() {
           </div>
         </div>
       </div>
-
-      <Footer/>
     </>
   );
 }
