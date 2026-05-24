@@ -71,9 +71,9 @@ export default function PreferenciasPage() {
       const ct = resposta.headers.get('content-type') || '';
       const resultado = ct.includes('application/json') ? await resposta.json() : {};
 
-      if (!resposta.ok) throw new Error(resultado.mensagem || 'Falha ao atualizar perfil');
+      if (!resposta.ok) throw new Error(resultado.message || 'Falha ao atualizar perfil');
 
-      const atualizado = { ...usuario, ...resultado.dados };
+      const atualizado = { ...usuario, ...resultado.data };
       localStorage.setItem('@luminar:user', JSON.stringify(atualizado));
       window.dispatchEvent(new Event('auth-changed'));
       setUsuario(atualizado);
@@ -113,7 +113,7 @@ export default function PreferenciasPage() {
       const ct = resposta.headers.get('content-type') || '';
       const resultado = ct.includes('application/json') ? await resposta.json() : {};
 
-      if (!resposta.ok) throw new Error(resultado.mensagem || 'Falha ao trocar senha');
+      if (!resposta.ok) throw new Error(resultado.message || 'Falha ao trocar senha');
 
       setSenhaAtual('');
       setNovaSenha('');

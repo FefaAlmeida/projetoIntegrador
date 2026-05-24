@@ -53,14 +53,14 @@ export default function LoginPage() {
       const resultado = contentType.includes('application/json') ? await resposta.json() : {};
 
       if (!resposta.ok) {
-        throw new Error(resultado.mensagem || 'Falha na autenticação');
+        throw new Error(resultado.message || 'Falha na autenticação');
       }
 
-      localStorage.setItem('@luminar:token', resultado.dados.token);
-      localStorage.setItem('@luminar:user', JSON.stringify(resultado.dados.usuario));
+      localStorage.setItem('@luminar:token', resultado.data.token);
+      localStorage.setItem('@luminar:user', JSON.stringify(resultado.data.usuario));
       window.dispatchEvent(new Event('auth-changed'));
 
-      toast.success(`Bem-vindo(a), ${resultado.dados.usuario.nome || 'usuário'}!`, { id: loadingId });
+      toast.success(`Bem-vindo(a), ${resultado.data.usuario.nome || 'usuário'}!`, { id: loadingId });
       router.push('/');
     } catch (err) {
       const msg = err.message.includes('Failed to fetch')

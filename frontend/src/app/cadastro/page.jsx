@@ -79,7 +79,7 @@ export default function RegisterPage() {
       const resultado = contentType.includes('application/json') ? await resposta.json() : {};
 
       if (!resposta.ok) {
-        throw new Error(resultado.mensagem || 'Erro ao criar conta. Tente novamente.');
+        throw new Error(resultado.message || 'Erro ao criar conta. Tente novamente.');
       }
 
       toast.success('Conta criada com sucesso! Faça login para continuar.', { id: loadingId });

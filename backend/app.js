@@ -5,97 +5,77 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// Importar rotas
-import produtoRotas from './routes/produtoRotas.js';
-import authRotas from './routes/authRotas.js';
-import criptografiaRotas from './routes/criptografiaRotas.js';
-import usuarioRotas from './routes/usuarioRotas.js';
+import authRoutes from './routes/auth.routes.js';
+import userRoutes from './routes/user.routes.js';
+import productRoutes from './routes/product.routes.js';
 
-// Importar middlewares
-import { logMiddleware } from './middlewares/logMiddleware.js';
-import { errorMiddleware } from './middlewares/errorMiddleware.js';
+import { simpleLogMiddleware } from './middlewares/log.middleware.js';
+import { errorMiddleware } from './middlewares/error.middleware.js';
 
-// Carregar variáveis do arquivo .env
 dotenv.config();
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Configurações do servidor
 const PORT = process.env.PORT || 3000;
 
-// Middlewares globais
-app.use(helmet()); // Segurança HTTP
-
-// Configuração CORS global
-app.use(cors({
-    origin: '*', // Permitir todas as origens. Ajuste conforme necessário. Ex.: 'http://meufrontend.com'
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Métodos permitidos
-    allowedHeaders: ['Content-Type', 'Authorization'], // Cabeçalhos permitidos
-    preflightContinue: false, // Não passar para o próximo middleware
-    optionsSuccessStatus: 200 // Responder com 200 para requisições OPTIONS
-}));
-
+app.use(helmet());
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-//  Servir arquivos estáticos
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-// Middleware para log de requisições (salva no banco de dados)
-app.use(logMiddleware);
+app.use(simpleLogMiddleware);
 
 // Rotas da API
-app.use('/api/auth', authRotas);
-app.use('/api/produtos', produtoRotas);
-app.use('/api/criptografia', criptografiaRotas);
-app.use('/api/usuarios', usuarioRotas);
+app.use('/api/auth', authRoutes);
+app.use('/api/usuarios', userRoutes);
+app.use('/api/produtos', productRoutes);
 
-// Rota raiz
+// Documentação rápida na raiz
 app.get('/', (req, res) => {
-    res.json({
-        sucesso: true,
-        mensagem: 'API de Produtos - Sistema de Gestão',
-        versao: '1.0.0',
-        rotas: {
-            autenticacao: '/api/auth',
-            produtos: '/api/produtos',
-            criptografia: '/api/criptografia'
-        },
-        documentacao: {
-            login: 'POST /api/auth/login',
-            registrar: 'POST /api/auth/registrar',
-            perfil: 'GET /api/auth/perfil',
-            listarProdutos: 'GET /api/produtos',
-            buscarProduto: 'GET /api/produtos/:id',
-            criarProduto: 'POST /api/produtos',
-            atualizarProduto: 'PUT /api/produtos/:id',
-            excluirProduto: 'DELETE /api/produtos/:id',
-            infoCriptografia: 'GET /api/criptografia/info',
-            cadastrarUsuario: 'POST /api/criptografia/cadastrar-usuario'
-        }
-    });
+  res.json({
+    success: true,
+    message: 'API Luminar',
+    version: '1.0.0',
+    routes: {
+      auth: {
+        login: 'POST /api/auth/login',
+        register: 'POST /api/auth/registrar',
+        getProfile: 'GET /api/auth/perfil',
+        updateProfile: 'PUT /api/auth/perfil',
+      },
+      users: {
+        list: 'GET /api/usuarios (admin)',
+        create: 'POST /api/usuarios (admin)',
+        update: 'PUT /api/usuarios/:id (admin)',
+        remove: 'DELETE /api/usuarios/:id (admin)',
+      },
+      products: {
+        list: 'GET /api/produtos',
+        findById: 'GET /api/produtos/:id',
+        create: 'POST /api/produtos',
+        update: 'PUT /api/produtos/:id',
+        remove: 'DELETE /api/produtos/:id',
+      },
+    },
+  });
 });
 
-// Middleware para tratar rotas não encontradas
+// 404 para rotas não tratadas
 app.use('*', (req, res) => {
-    res.status(404).json({
-        sucesso: false,
-        erro: 'Rota não encontrada',
-        mensagem: `A rota ${req.method} ${req.originalUrl} não foi encontrada`
-    });
+  res.status(404).json({
+    success: false,
+    message: `${req.method} ${req.originalUrl} não existe`,
+  });
 });
 
-// Middleware global de tratamento de erros (deve ser o último)
+// Tratamento global de erro (último middleware)
 app.use(errorMiddleware);
 
-// Iniciar servidor
 app.listen(PORT, () => {
-    console.log(`Acesse: http://localhost:${PORT}`);
-    console.log(`API de Produtos - Sistema de Gestão`);
-    console.log(`Ambiente: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`API Luminar rodando em http://localhost:${PORT}`);
+  console.log(`Ambiente: ${process.env.NODE_ENV || 'development'}`);
 });
 
 export default app;
-

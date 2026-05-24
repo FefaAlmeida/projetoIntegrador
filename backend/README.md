@@ -1,500 +1,215 @@
-# API de Produtos - Sistema de Gestão
+# Backend Luminar
 
-Uma API RESTful completa para gestão de produtos desenvolvida com Node.js, Express e MySQL.
+API REST em Node.js + Express + MySQL.
 
-## Características
+---
 
-- Arquitetura MVC completa
-- Autenticação JWT com middleware
-- Upload de imagens com validação
-- Validações manuais robustas
-- Migrations com padrão timestamp
-- Configuração .env para ambiente
-- Tratamento de erros centralizado
-- Documentação completa das rotas
+## Como rodar
 
-## Instalação e Configuração
-
-### 1. Pré-requisitos
-- Node.js (versão 14 ou superior)
-- MySQL (versão 5.7 ou superior)
-- npm ou yarn
-
-### 2. Instalação das Dependências
 ```bash
 npm install
+cp env.example .env      # editar com suas credenciais MySQL
+npm run dev              # sobe em http://localhost:3001
 ```
 
-### 3. Configuração do Banco de Dados
+---
 
-#### 3.1. Configurar arquivo .env
-Copie o arquivo `env.example` para `.env` e configure suas credenciais:
+## Estrutura de pastas
 
-```bash
-cp env.example .env
+```
+backend/
+├── app.js                 ← entrada: configura Express e sobe o servidor
+├── config/                ← configurações (banco, JWT)
+│   ├── database.js          pool MySQL
+│   └── jwt.js               secret/expiresIn
+├── routes/                ← URL → controller
+│   ├── auth.routes.js       /api/auth/*
+│   ├── user.routes.js       /api/usuarios/*
+│   └── product.routes.js    /api/produtos/*
+├── controllers/           ← lê req, devolve res. SEM regra de negócio.
+│   ├── auth.controller.js
+│   ├── user.controller.js
+│   └── product.controller.js
+├── services/              ← TODA regra de negócio mora aqui
+│   ├── auth.service.js
+│   ├── user.service.js
+│   └── product.service.js
+├── models/                ← acesso ao banco (SQL com prepared statements)
+│   ├── user.model.js
+│   └── product.model.js
+├── middlewares/           ← código que roda ANTES/DEPOIS do controller
+│   ├── auth.middleware.js   valida JWT + checa se é admin
+│   ├── error.middleware.js  formata todo erro em JSON consistente
+│   ├── log.middleware.js    console.log de cada request
+│   └── upload.middleware.js multer pra upload de imagens
+└── utils/                 ← helpers reutilizáveis
+    ├── apiError.js          classe de erro customizada
+    ├── asyncHandler.js      wrap pra capturar erro async
+    ├── password.js          bcrypt hash/compare
+    ├── response.js          ok / created / paginated
+    └── validator.js         required / email / length / oneOf / id / pagination
 ```
 
-Edite o arquivo `.env` com suas configurações do MySQL:
-```env
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=sua_senha_aqui
-DB_NAME=produtos_api
-PORT=3000
-NODE_ENV=development
-JWT_SECRET=320c2a4afff5ab80f94f1264f3e643a15d6d391affa6cde663a458c515f76e2d6e171700fa0c8916bdc1a0ee376627ac8b239faed6b5b7e533b1565ba789d60c
-JWT_EXPIRES_IN=1h
-UPLOAD_PATH=./uploads
-MAX_FILE_SIZE=5242880
-ALLOWED_FILE_TYPES=image/jpeg,image/png,image/gif
+---
+
+## A regra é uma só: cada camada SÓ fala com a de baixo
+
+```
+Request → routes → controller → service → model → DB
+                       ↓
+                   utils, middlewares
 ```
 
-### 4. Executar Migrations
+- **Nunca** o model fala com o controller.
+- **Nunca** o service toca em `req` ou `res`.
+- **Nunca** o controller faz SQL ou hash de senha.
 
-Execute os arquivos SQL na ordem correta no MySQL:
+---
 
-1. **20251028_001_create_database.sql** - Cria o banco de dados
-2. **20251028_002_create_table_usuarios.sql** - Cria tabela de usuários
-3. **20251028_003_create_table_produtos.sql** - Cria tabela de produtos
-4. **20251028_004_insert_dados_iniciais.sql** - Insere dados iniciais
-5. **20251028_005_create_table_logs.sql** - Cria tabela de logs
+## Exemplo: o que acontece em `POST /api/auth/login`
 
+1. `routes/auth.routes.js` → mapeia `POST /login` pra `authController.login`.
+2. `controllers/auth.controller.js#login` → pega `req.body`, chama `authService.login(body)`, devolve `ok(res, data)`.
+3. `services/auth.service.js#login` → valida campos, busca usuário, compara senha (bcrypt), gera JWT.
+4. `models/user.model.js#findByEmail` → executa `SELECT ... FROM usuarios WHERE email = ?`.
+5. Volta tudo até o controller, que responde:
+   ```json
+   {
+     "success": true,
+     "message": "Login realizado com sucesso",
+     "data": {
+       "token": "...",
+       "usuario": { "id": 1, "nome": "X", "email": "x@y.com", "tipo": "CLIENTE" }
+     }
+   }
+   ```
 
-### 5. Iniciar o Servidor
+Se algo der errado, o service lança `throw ApiError.unauthorized('Email ou senha incorretos')` e o `error.middleware.js` transforma em:
 
-```bash
-npm start
+```json
+{ "success": false, "message": "Email ou senha incorretos" }
 ```
 
-O servidor estará rodando em `http://localhost:3000`
+com status `401`.
 
-## Credenciais de Teste
+---
 
-Após executar as migrations, você terá os seguintes usuários:
+## Como adicionar uma rota nova (cheat sheet)
 
-- **Admin**: `admin@produtos.com` / `123456`
-- **Usuário comum**: `joao@email.com` / `123456`
-- **Usuária comum**: `maria@email.com` / `123456`
+Exemplo: `GET /api/produtos/categoria/:nome`
 
-## Testes da API
+**1. Model** — adicione em `models/product.model.js`:
 
-### Teste 1: Login (Autenticação)
-
-/* Este teste realiza o login do usuário administrador para obter o token JWT necessário para acessar as rotas protegidas da API */
-// Login do usuário admin para obter token JWT
-```bash
-curl -X POST http://localhost:3000/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "admin@produtos.com",
-    "senha": "123456"
-  }'
-```
-/*
-Resultado esperado:
-{
-  "sucesso": true,
-  "mensagem": "Login realizado com sucesso",
-  "dados": {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "usuario": {
-      "id": 1,
-      "nome": "Administrador",
-      "email": "admin@produtos.com",
-      "tipo": "admin"
-    }
+```js
+export const findByCategory = async (categoria) => {
+  const conn = await getConnection();
+  try {
+    const [rows] = await conn.execute('SELECT * FROM produtos WHERE categoria = ?', [categoria]);
+    return rows;
+  } finally {
+    conn.release();
   }
-}
-*/
-
------
-
-### Teste 2: Listar Todos os Produtos (GET)
-
-/* Este teste lista todos os produtos cadastrados no sistema, não requer autenticação */
-// Listar todos os produtos
-```bash
-curl -X GET http://localhost:3000/api/produtos
+};
 ```
 
-/* Listar produtos com paginacao (pagina 1, 5 itens por pagina) */
-```bash
-curl -X GET "http://localhost:3000/api/produtos?pagina=1&limite=5"
-```
-/*
-Resultado esperado (com paginacao):
-{
-  "sucesso": true,
-  "dados": [
-    {
-      "id": 1,
-      "nome": "Smartphone Galaxy",
-      "descricao": "Celular Samsung Galaxy com 128GB",
-      "preco": 1299.99,
-      "categoria": "Eletronicos",
-      "imagem": "smartphone.jpg"
-    },
-    {
-      "id": 2,
-      "nome": "Notebook Dell",
-      "descricao": "Notebook Dell Inspiron 15 polegadas",
-      "preco": 2499.99,
-      "categoria": "Eletronicos",
-      "imagem": "notebook.jpg"
-    }
-  ],
-  "paginacao": {
-    "pagina": 1,
-    "limite": 5,
-    "total": 16,
-    "totalPaginas": 4
-  }
-}
-*/
+**2. Service** — adicione em `services/product.service.js`:
 
------
-
-### Teste 3: Buscar Produto por ID (GET)
-
-/* Este teste busca um produto específico pelo seu ID, não requer autenticação */
-// Buscar produto por ID
-```bash
-curl -X GET http://localhost:3000/api/produtos/1
-```
-/*
-Resultado esperado:
-{
-  "sucesso": true,
-  "dados": {
-    "id": 1,
-    "nome": "Smartphone Galaxy",
-    "descricao": "Celular Samsung Galaxy com 128GB",
-    "preco": 1299.99,
-    "categoria": "Eletrônicos",
-    "imagem": "smartphone.jpg"
-  }
-}
-*/
-
------
-
-### Teste 4: Criar Novo Produto (POST)
-
-/* Este teste cria um novo produto no sistema, requer autenticação com token JWT */
-// Criar novo produto (requer token JWT)
-```bash
-curl -X POST http://localhost:3000/api/produtos \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer SEU_TOKEN_AQUI" \
-  -d '{
-    "nome": "Mouse Gamer",
-    "descricao": "Mouse gamer com 5 botoes programaveis",
-    "preco": 89.90,
-    "categoria": "Perifericos"
-  }'
-```
-/*
-Resultado esperado:
-{
-  "sucesso": true,
-  "mensagem": "Produto criado com sucesso",
-  "dados": {
-    "id": 5,
-    "nome": "Mouse Gamer",
-    "descricao": "Mouse gamer com 5 botoes programaveis",
-    "preco": 89.90,
-    "categoria": "Perifericos",
-    "imagem": null
-  }
-}
-*/
-
------
-
-### Teste 5: Atualizar Produto (PUT)
-
-/* Este teste atualiza um produto existente, requer autenticação com token JWT */
-// Atualizar produto existente (requer token JWT)
-```bash
-curl -X PUT http://localhost:3000/api/produtos/1 \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer SEU_TOKEN_AQUI" \
-  -d '{
-    "nome": "Smartphone Galaxy Pro",
-    "preco": 1399.99
-  }'
-```
-/*
-Resultado esperado:
-{
-  "sucesso": true,
-  "mensagem": "Produto atualizado com sucesso",
-  "dados": {
-    "linhasAfetadas": 1
-  }
-}
-*/
-
------
-
-### Teste 6: Excluir Produto (DELETE)
-
-/* Este teste exclui um produto do sistema, requer autenticação com token JWT */
-// Excluir produto (requer token JWT)
-```bash
-curl -X DELETE http://localhost:3000/api/produtos/5 \
-  -H "Authorization: Bearer SEU_TOKEN_AQUI"
-```
-/*
-Resultado esperado:
-{
-  "sucesso": true,
-  "mensagem": "Produto excluído com sucesso",
-  "dados": {
-    "linhasAfetadas": 1
-  }
-}
-*/
-
------
-
-### Teste 7: Upload de Imagem (POST)
-
-/* Este teste faz upload de uma imagem para um produto, requer autenticação com token JWT */
-// Upload de imagem para produto (requer token JWT)
-```bash
-curl -X POST http://localhost:3000/api/produtos/upload \
-  -H "Authorization: Bearer SEU_TOKEN_AQUI" \
-  -F "imagem=@caminho/para/sua/imagem.jpg" \
-  -F "produto_id=1"
-```
-/*
-Resultado esperado:
-{
-  "sucesso": true,
-  "mensagem": "Imagem enviada com sucesso",
-  "dados": {
-    "nomeArquivo": "imagem-1234567890.jpg",
-    "caminho": "/uploads/imagem-1234567890.jpg"
-  }
-}
-*/
-
------
-
-### Teste 8: Listar Usuários (GET)
-
-/* Este teste lista todos os usuários cadastrados, requer autenticação com token JWT de admin */
-// Listar usuários (requer token JWT de admin)
-```bash
-curl -X GET http://localhost:3000/api/usuarios \
-  -H "Authorization: Bearer SEU_TOKEN_AQUI"
-```
-/*
-Resultado esperado (com paginacao):
-{
-  "sucesso": true,
-  "dados": [
-    {
-      "id": 1,
-      "nome": "Administrador",
-      "email": "admin@produtos.com",
-      "tipo": "admin"
-    },
-    {
-      "id": 2,
-      "nome": "João Silva",
-      "email": "joao@email.com",
-      "tipo": "comum"
-    }
-  ],
-  "paginacao": {
-    "pagina": 1,
-    "limite": 10,
-    "total": 3,
-    "totalPaginas": 1
-  }
-}
-*/
-
-/* Listar usuarios com paginacao (pagina 1, 2 itens por pagina) */
-```bash
-curl -X GET "http://localhost:3000/api/usuarios?pagina=1&limite=2" \
-  -H "Authorization: Bearer SEU_TOKEN_AQUI"
+```js
+export const findByCategory = async (categoria) => {
+  validator.required({ categoria });
+  return productModel.findByCategory(categoria);
+};
 ```
 
------
+**3. Controller** — adicione em `controllers/product.controller.js`:
 
-### Teste 9: Criar Novo Usuário (POST)
-
-/* Este teste cria um novo usuário no sistema, requer autenticação com token JWT de admin */
-// Criar novo usuário (requer token JWT de admin)
-```bash
-curl -X POST http://localhost:3000/api/usuarios \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer SEU_TOKEN_AQUI" \
-  -d '{
-    "nome": "Pedro Santos",
-    "email": "pedro@email.com",
-    "senha": "123456",
-    "tipo": "comum"
-  }'
+```js
+export const findByCategory = asyncHandler(async (req, res) => {
+  const data = await productService.findByCategory(req.params.nome);
+  ok(res, data);
+});
 ```
-/*
-Resultado esperado:
-{
-  "sucesso": true,
-  "mensagem": "Usuário criado com sucesso",
-  "dados": {
-    "id": 4,
-    "nome": "Pedro Santos",
-    "email": "pedro@email.com",
-    "tipo": "comum"
-  }
-}
-*/
 
------
+**4. Rota** — adicione em `routes/product.routes.js`:
 
-### Teste 10: Teste de Validação (POST com dados inválidos)
-
-/* Este teste demonstra como a API valida dados inválidos e retorna erros apropriados */
-// Teste de validação com dados inválidos
-```bash
-curl -X POST http://localhost:3000/api/produtos \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer SEU_TOKEN_AQUI" \
-  -d '{
-    "nome": "",
-    "preco": -100
-  }'
+```js
+router.get('/categoria/:nome', productController.findByCategory);
 ```
-/*
-Resultado esperado:
-{
-  "sucesso": false,
-  "erro": "Dados inválidos",
-  "detalhes": [
-    {
-      "campo": "nome",
-      "mensagem": "Nome é obrigatório"
-    },
-    {
-      "campo": "preco",
-      "mensagem": "Preço deve ser um número positivo"
-    }
-  ]
-}
-*/
 
------
+Pronto. 4 arquivos, 4 trechos pequenos, cada um faz UMA coisa.
 
-### Teste 11: Acesso Negado (Token Inválido)
+---
 
-/* Este teste demonstra como a API responde quando um token JWT inválido é fornecido */
-// Teste de acesso negado com token inválido
-```bash
-curl -X GET http://localhost:3000/api/usuarios \
-  -H "Authorization: Bearer token_invalido"
+## Erros — como lançar e como o frontend recebe
+
+No service:
+
+```js
+throw ApiError.validation('Mensagem'); // 400
+throw ApiError.unauthorized(); // 401
+throw ApiError.forbidden(); // 403
+throw ApiError.notFound('Produto'); // 404
+throw ApiError.conflict('Email já cadastrado'); // 409
+throw new ApiError('Outro erro', 500);
 ```
-/*
-Resultado esperado:
-{
-  "sucesso": false,
-  "erro": "Token inválido",
-  "mensagem": "Token de acesso inválido ou expirado"
-}
-*/
 
------
+O `errorMiddleware` transforma em:
 
-### Teste 12: Preflight Request (OPTIONS)
-
-/* Este teste demonstra como fazer uma requisição OPTIONS para verificar permissões CORS antes de fazer requisições reais */
-// Verificar permissoes CORS antes de criar produto
-```bash
-curl -X OPTIONS http://localhost:3000/api/produtos \
-  -H "Origin: http://localhost:3000" \
-  -H "Access-Control-Request-Method: POST" \
-  -H "Access-Control-Request-Headers: Content-Type, Authorization"
+```json
+{ "success": false, "message": "Mensagem" }
 ```
-/*
-Resultado esperado:
-Status: 200 OK
-Headers:
-  Access-Control-Allow-Origin: *
-  Access-Control-Allow-Methods: GET, POST, OPTIONS
-  Access-Control-Allow-Headers: Content-Type, Authorization
-*/
 
------
+com o status correto. O frontend só precisa olhar `response.ok` e `body.message`.
 
-## Rotas da API
+---
 
-### Autenticação
-- `POST /api/auth/login` - Fazer login
-- `POST /api/auth/registrar` - Registrar novo usuário
-- `GET /api/auth/perfil` - Obter perfil do usuário logado
+## Validações disponíveis (`utils/validator.js`)
 
-### Produtos
-- `GET /api/produtos` - Listar todos os produtos (suporta paginação: ?pagina=1&limite=10)
-- `GET /api/produtos/:id` - Buscar produto por ID
-- `POST /api/produtos` - Criar novo produto (requer autenticação)
-- `PUT /api/produtos/:id` - Atualizar produto (requer autenticação)
-- `DELETE /api/produtos/:id` - Excluir produto (requer autenticação)
-- `POST /api/produtos/upload` - Upload de imagem (requer autenticação)
+| Função                                    | Pra que serve                                          |
+| ----------------------------------------- | ------------------------------------------------------ |
+| `validator.required({ nome, email })`     | Garante que todos os campos não estão vazios           |
+| `validator.email(x)`                      | Formato de email válido                                |
+| `validator.length(x, min, max, 'campo')`  | Tamanho da string                                      |
+| `validator.oneOf(x, ['A', 'B'], 'campo')` | Valor entre opções (retorna em UPPERCASE)              |
+| `validator.id(x, 'usuário')`              | ID inteiro positivo (retorna o número parseado)        |
+| `validator.positiveNumber(x, 'preco')`    | Número > 0                                             |
+| `validator.pagination(req.query)`         | Lê `?page=&limit=` e devolve `{ page, limit, offset }` |
 
-### Usuários (Apenas Admin)
-- `GET /api/usuarios` - Listar usuários (requer autenticação admin, suporta paginação: ?pagina=1&limite=10)
-- `POST /api/usuarios` - Criar usuário (requer autenticação admin)
-- `PUT /api/usuarios/:id` - Atualizar usuário (requer autenticação admin)
-- `DELETE /api/usuarios/:id` - Excluir usuário (requer autenticação admin)
+---
 
-### Criptografia (Educacional)
-- `GET /api/criptografia/info` - Informações sobre criptografia de senhas
-- `POST /api/criptografia/cadastrar-usuario` - Cadastrar usuário com demonstração de criptografia
+## Respostas padrão (`utils/response.js`)
 
-### CORS (OPTIONS)
-- `OPTIONS /api/*` - Requisições preflight para verificar permissões CORS
+| Função                                  | Status | Forma do JSON                                  |
+| --------------------------------------- | ------ | ---------------------------------------------- |
+| `ok(res, data, msg)`                    | 200    | `{ success: true, message, data }`             |
+| `created(res, data, msg)`               | 201    | `{ success: true, message, data }`             |
+| `paginated(res, data, pagination, msg)` | 200    | `{ success: true, message, data, pagination }` |
 
-## Códigos de Status HTTP
+---
 
-- `200` - Sucesso
-- `201` - Criado com sucesso
-- `400` - Dados inválidos
-- `401` - Não autenticado
-- `403` - Acesso negado
-- `404` - Recurso não encontrado
-- `500` - Erro interno do servidor
+## Padrões de código
 
-## Estrutura do Projeto
+- **Identificadores em inglês** (`userService`, `findByEmail`, `createUser`).
+- **Comentários e mensagens da API em português** (frontend exibe direto pro usuário).
+- **Domain fields no JSON em PT** (`nome`, `email`, `tipo`) — combinam com as colunas do banco.
+- **Funções exportadas** (não classes): `export const x = ...`.
+- Aspas simples, 2 espaços, ponto-e-vírgula sempre.
+- Roda `npx prettier --write .` antes de commitar.
 
-```
-api-produtos/
-├── config/
-│   ├── database.js
-│   └── jwt.js
-├── controllers/
-│   ├── AuthController.js
-│   ├── ProdutoController.js
-│   └── CriptografiaController.js
-├── middlewares/
-│   ├── authMiddleware.js
-│   └── uploadMiddleware.js
-├── models/
-│   ├── ProdutoModel.js
-│   └── UsuarioModel.js
-├── routes/
-│   ├── authRotas.js
-│   ├── produtoRotas.js
-│   └── criptografiaRotas.js
-├── migrations/
-│   ├── 20250115_001_create_database.sql
-│   ├── 20250115_002_create_table_usuarios.sql
-│   ├── 20250115_003_create_table_produtos.sql
-│   └── 20250115_004_insert_dados_iniciais.sql
-├── uploads/
-├── app.js
-├── package.json
-└── README.md
-```
+---
+
+## Convenções de arquivo
+
+- Pasta plural (`controllers/`, `services/`...).
+- Arquivo singular com sufixo: `auth.controller.js`, `user.service.js`, `product.model.js`.
+- Imports relativos: `../services/auth.service.js`.
+
+---
+
+## Por que essa arquitetura?
+
+- **Controller fininho** = fácil de ler. Você vê a rota numa olhada.
+- **Service grosso** = toda lógica num só lugar. Pra mudar regra, só mexe aqui.
+- **Model = SQL** = se a coluna do banco mudar, só mexe num arquivo.
+- **Utils reutilizáveis** = você não copia/cola validação ou tratamento de erro. Faz uma vez, usa em todo lugar.
+- **asyncHandler + ApiError** = você nunca escreve `try/catch` no controller. Erro vai automaticamente pro `errorMiddleware`.
