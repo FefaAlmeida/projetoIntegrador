@@ -77,7 +77,9 @@ class AuthController {
             res.status(500).json({
                 sucesso: false,
                 erro: 'Erro interno do servidor',
-                mensagem: 'Não foi possível processar o login'
+                mensagem: process.env.NODE_ENV === 'development'
+                    ? `Falha no login: ${error.code || error.name || ''} ${error.sqlMessage || error.message}`.trim()
+                    : 'Não foi possível processar o login'
             });
         }
     }
@@ -193,7 +195,9 @@ class AuthController {
             res.status(500).json({
                 sucesso: false,
                 erro: 'Erro interno do servidor',
-                mensagem: 'Não foi possível registrar o usuário'
+                mensagem: process.env.NODE_ENV === 'development'
+                    ? `Falha ao registrar: ${error.code || error.name || ''} ${error.sqlMessage || error.message}`.trim()
+                    : 'Não foi possível registrar o usuário'
             });
         }
     }
