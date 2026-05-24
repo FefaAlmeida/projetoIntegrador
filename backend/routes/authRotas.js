@@ -10,6 +10,7 @@ router.post('/registrar', AuthController.registrar);
 
 // Rotas protegidas (precisam de autenticação)
 router.get('/perfil', authMiddleware, AuthController.obterPerfil);
+router.put('/perfil', authMiddleware, AuthController.atualizarPerfil);
 
 // Rotas OPTIONS para CORS (preflight requests)
 router.options('/login', (req, res) => {
@@ -28,7 +29,7 @@ router.options('/registrar', (req, res) => {
 
 router.options('/perfil', (req, res) => {
     res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.header('Access-Control-Allow-Methods', 'GET, PUT, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.sendStatus(200);
 });

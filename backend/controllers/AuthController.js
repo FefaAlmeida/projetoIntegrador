@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import UsuarioModel from '../models/UsuarioModel.js';
 import { JWT_CONFIG } from '../config/jwt.js';
+import { comparePassword } from '../config/database.js';
 
 // Controller para operações de autenticação
 class AuthController {
@@ -228,6 +229,125 @@ class AuthController {
                 sucesso: false,
                 erro: 'Erro interno do servidor',
                 mensagem: 'Não foi possível obter o perfil'
+            });
+        }
+    }
+
+    // PUT /auth/perfil - Atualizar perfil do usuário logado
+    static async atualizarPerfil(req, res) {
+        try {
+            const id = req.usuario.id;
+            const { nome, email, senhaAtual, novaSenha } = req.body;
+
+            const usuarioAtual = await UsuarioModel.buscarPorId(id);
+            if (!usuarioAtual) {
+                return res.status(404).json({
+                    sucesso: false,
+                    erro: 'Usuário não encontrado',
+                    mensagem: 'Sessão inválida. Faça login novamente.'
+                });
+            }
+
+            const dadosAtualizacao = {};
+
+            if (nome !== undefined) {
+                const nomeTrim = nome.trim();
+                if (nomeTrim.length < 2) {
+                    return res.status(400).json({
+                        sucesso: false,
+                        erro: 'Nome muito curto',
+                        mensagem: 'O nome deve ter pelo menos 2 caracteres'
+                    });
+                }
+                if (nomeTrim.length > 255) {
+                    return res.status(400).json({
+                        sucesso: false,
+                        erro: 'Nome muito longo',
+                        mensagem: 'O nome deve ter no máximo 255 caracteres'
+                    });
+                }
+                dadosAtualizacao.nome = nomeTrim;
+            }
+
+            if (email !== undefined) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    return res.status(400).json({
+                        sucesso: false,
+                        erro: 'Email inválido',
+                        mensagem: 'Formato de email inválido'
+                    });
+                }
+
+                const emailNormalizado = email.trim().toLowerCase();
+                if (emailNormalizado !== usuarioAtual.email) {
+                    const existente = await UsuarioModel.buscarPorEmail(emailNormalizado);
+                    if (existente && existente.id !== id) {
+                        return res.status(409).json({
+                            sucesso: false,
+                            erro: 'Email já cadastrado',
+                            mensagem: 'Este email já está sendo usado por outro usuário'
+                        });
+                    }
+                }
+                dadosAtualizacao.email = emailNormalizado;
+            }
+
+            if (novaSenha) {
+                if (!senhaAtual) {
+                    return res.status(400).json({
+                        sucesso: false,
+                        erro: 'Senha atual obrigatória',
+                        mensagem: 'Informe sua senha atual para trocar a senha'
+                    });
+                }
+                if (novaSenha.length < 6) {
+                    return res.status(400).json({
+                        sucesso: false,
+                        erro: 'Senha muito curta',
+                        mensagem: 'A nova senha deve ter pelo menos 6 caracteres'
+                    });
+                }
+                const senhaValida = await comparePassword(senhaAtual, usuarioAtual.senha);
+                if (!senhaValida) {
+                    return res.status(401).json({
+                        sucesso: false,
+                        erro: 'Senha incorreta',
+                        mensagem: 'A senha atual está incorreta'
+                    });
+                }
+                dadosAtualizacao.senha = novaSenha;
+            }
+
+            if (Object.keys(dadosAtualizacao).length === 0) {
+                return res.status(400).json({
+                    sucesso: false,
+                    erro: 'Nada a atualizar',
+                    mensagem: 'Nenhuma alteração foi enviada'
+                });
+            }
+
+            await UsuarioModel.atualizar(id, dadosAtualizacao);
+            const atualizado = await UsuarioModel.buscarPorId(id);
+
+            res.status(200).json({
+                sucesso: true,
+                mensagem: 'Perfil atualizado com sucesso',
+                dados: {
+                    id: atualizado.id,
+                    nome: atualizado.nome,
+                    email: atualizado.email,
+                    tipo: atualizado.tipo
+                }
+            });
+        } catch (error) {
+            console.error('Erro ao atualizar perfil:', error);
+            res.status(500).json({
+                sucesso: false,
+                erro: 'Erro interno do servidor',
+                mensagem: process.env.NODE_ENV === 'development'
+                    ? `Falha ao atualizar perfil: ${error.code || error.name || ''} ${error.sqlMessage || error.message}`.trim()
+                    : 'Não foi possível atualizar o perfil'
             });
         }
     }

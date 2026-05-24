@@ -58,9 +58,10 @@ export default function LoginPage() {
 
       localStorage.setItem('@luminar:token', resultado.dados.token);
       localStorage.setItem('@luminar:user', JSON.stringify(resultado.dados.usuario));
+      window.dispatchEvent(new Event('auth-changed'));
 
       toast.success(`Bem-vindo(a), ${resultado.dados.usuario.nome || 'usuário'}!`, { id: loadingId });
-      router.push('/dashboard');
+      router.push('/');
     } catch (err) {
       const msg = err.message.includes('Failed to fetch')
         ? 'Não foi possível conectar ao servidor. O backend está ligado?'
