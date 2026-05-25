@@ -1,0 +1,25 @@
+.list {
+ gap: 4px;
+ margin: 0;
+}
+
+.link {
+ color: var(--color-dark);
+ border-color: #e0e0e0;
+ background-color: #ffffff;
+ min-width: 40px;
+ text-align: center;
+}
+
+.link:hover {
+ color: var(--color-yellow);
+ border-color: var(--color-yellow);
+ background-color: rgba(254, 189, 23, 0.08);
+}
+
+.linkActive,
+.linkActive:hover {
+ background-color: var(--color-yellow);
+ color: var(--color-dark);
+ border-color: var(--color-yellow);
+}

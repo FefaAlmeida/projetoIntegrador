@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import path from 'path';
@@ -28,17 +29,20 @@ const PORT = process.env.PORT || 3000;
 // Middlewares globais
 app.use(helmet()); // Segurança HTTP
 
-// Configuração CORS global
+// Configuração CORS global — origem específica e credentials habilitados (cookie httpOnly)
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || 'http://localhost:3000';
 app.use(cors({
-    origin: '*', // Permitir todas as origens. Ajuste conforme necessário. Ex.: 'http://meufrontend.com'
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Métodos permitidos
-    allowedHeaders: ['Content-Type', 'Authorization'], // Cabeçalhos permitidos
-    preflightContinue: false, // Não passar para o próximo middleware
-    optionsSuccessStatus: 200 // Responder com 200 para requisições OPTIONS
+    origin: FRONTEND_ORIGIN,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    preflightContinue: false,
+    optionsSuccessStatus: 200
 }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 //  Servir arquivos estáticos
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

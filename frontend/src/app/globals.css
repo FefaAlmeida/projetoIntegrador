@@ -49,11 +49,33 @@ a {
 }
 
 :root {
-  --dark: #221f20;
-  --primary: #febd17;
-  --light: #ffffff;
-  --gray: #555555;
-  --soft: #f8f9fa;
+  /* Design tokens — fonte única da marca Luminar */
+  --color-yellow: #febd17;
+  --color-yellow-soft: #f5bd31;
+  --color-dark: #221f20;
+  --color-dark-2: #2c2829;
+  --color-light: #ffffff;
+  --color-gray: #555555;
+  --color-soft: #f8f9fa;
+  --color-muted: #756f72;
+
+  --font-base: "Poppins", system-ui, sans-serif;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+
+  --shadow-card: 0 12px 30px rgba(34, 31, 32, 0.08);
+  --shadow-glow: 0 10px 25px -5px rgba(254, 189, 23, 0.4);
+  --shadow-glow-dark: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+
+  /* Aliases legados (mantidos para não quebrar classes utilitárias abaixo) */
+  --dark: var(--color-dark);
+  --primary: var(--color-yellow);
+  --light: var(--color-light);
+  --gray: var(--color-gray);
+  --soft: var(--color-soft);
 }
 
 /* BACKGROUNDS */

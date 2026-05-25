@@ -9,6 +9,8 @@ router.post('/login', AuthController.login);
 router.post('/registrar', AuthController.registrar);
 
 // Rotas protegidas (precisam de autenticação)
+router.post('/refresh', authMiddleware, AuthController.refresh);
+router.post('/logout', authMiddleware, AuthController.logout);
 router.get('/perfil', authMiddleware, AuthController.obterPerfil);
 router.put('/perfil', authMiddleware, AuthController.atualizarPerfil);
 
@@ -30,6 +32,20 @@ router.options('/registrar', (req, res) => {
 router.options('/perfil', (req, res) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET, PUT, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.sendStatus(200);
+});
+
+router.options('/refresh', (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.sendStatus(200);
+});
+
+router.options('/logout', (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.sendStatus(200);
 });

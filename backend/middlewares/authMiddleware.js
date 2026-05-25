@@ -1,32 +1,31 @@
 import jwt from 'jsonwebtoken';
 import { JWT_CONFIG } from '../config/jwt.js';
+import { AUTH_COOKIE } from '../utils/authCookie.js';
 
-// Middleware de autenticação JWT
+// Middleware de autenticação JWT — lê token do cookie httpOnly OU do header Authorization
 const authMiddleware = (req, res, next) => {
     try {
-        // Verificar se o header Authorization existe
-        const authHeader = req.headers.authorization;
-        
-        if (!authHeader) {
-            return res.status(401).json({ 
+        // 1) cookie httpOnly (padrão novo do frontend)
+        let token = req.cookies?.[AUTH_COOKIE];
+
+        // 2) fallback: header Authorization (clientes legados / Postman)
+        if (!token) {
+            const authHeader = req.headers.authorization;
+            if (authHeader && authHeader.startsWith('Bearer ')) {
+                token = authHeader.slice(7);
+            }
+        }
+
+        if (!token) {
+            return res.status(401).json({
                 erro: 'Token de acesso não fornecido',
                 mensagem: 'É necessário fornecer um token de autenticação'
             });
         }
 
-        // Extrair o token do header (formato: "Bearer TOKEN")
-        const token = authHeader.split(' ')[1];
-        
-        if (!token) {
-            return res.status(401).json({ 
-                erro: 'Token de acesso inválido',
-                mensagem: 'Formato do token incorreto'
-            });
-        }
-
         // Verificar e decodificar o token
         const decoded = jwt.verify(token, JWT_CONFIG.secret);
-        
+
         // Adicionar informações do usuário ao request
         req.usuario = {
             id: decoded.id,

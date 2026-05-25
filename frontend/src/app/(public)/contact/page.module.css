@@ -1,0 +1,91 @@
+/* Estilos da página de contato */
+
+.shell {
+ background-color: #ececec;
+ overflow-x: hidden;
+}
+
+.main {
+ padding-top: 80px;
+ padding-bottom: 80px;
+}
+
+.card {
+ max-width: 1350px;
+ border-radius: 28px;
+ background-color: var(--color-dark);
+}
+
+.left {
+ background: linear-gradient(135deg, var(--color-dark), #2d2a2b);
+ padding: 60px;
+}
+
+.title {
+ font-size: 4rem;
+ line-height: 1;
+}
+
+.titleAccent {
+ color: var(--color-yellow);
+}
+
+.subtitle {
+ color: #d4d4d4;
+ line-height: 1.8;
+ font-size: 1rem;
+}
+
+.field {
+ background: var(--color-dark);
+ color: #ffffff;
+ -webkit-text-fill-color: #ffffff;
+ border-radius: 14px;
+ height: 58px;
+}
+
+.textarea {
+ background: var(--color-dark);
+ color: #ffffff;
+ -webkit-text-fill-color: #ffffff;
+ border-radius: 14px;
+ resize: none;
+}
+
+.submit {
+ background-color: var(--color-yellow);
+ color: var(--color-dark);
+ border-radius: 14px;
+ font-size: 1.05rem;
+}
+
+.right {
+ background-image: linear-gradient(
+   rgba(255, 253, 250, 0.66),
+   rgba(34, 31, 32, 0)
+  ),
+  url("https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=1600&auto=format&fit=crop");
+ background-size: cover;
+ background-position: center;
+ min-height: 850px;
+ padding: 50px;
+}
+
+.logoWrap {
+ margin-top: -20px;
+}
+
+.logoImg {
+ max-width: 381px;
+ object-fit: contain;
+}
+
+.featureIcon {
+ width: 85px;
+ height: 85px;
+ border-radius: 50%;
+ border: 2px solid var(--color-yellow);
+ color: var(--color-yellow);
+ font-size: 34px;
+ background-color: rgba(34, 31, 32, 0.75);
+}

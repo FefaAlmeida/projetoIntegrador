@@ -1,0 +1,13 @@
+/* Estilos da página admin/users */
+
+.shell {
+ font-family: var(--font-base);
+}
+
+.title {
+ color: var(--color-dark);
+}
+
+.iconAccent {
+ color: var(--color-yellow);
+}

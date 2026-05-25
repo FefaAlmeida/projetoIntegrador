@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import UsuarioModel from '../models/UsuarioModel.js';
 import { JWT_CONFIG } from '../config/jwt.js';
 import { comparePassword } from '../config/database.js';
+import { setAuthCookie, clearAuthCookie } from '../utils/authCookie.js';
 
 // Controller para operações de autenticação
 class AuthController {
@@ -49,22 +50,23 @@ class AuthController {
                 });
             }
 
-            // Gerar token JWT
+            // Gerar token JWT e setar cookie httpOnly (token não vai mais no body)
             const token = jwt.sign(
-                { 
-                    id: usuario.id, 
+                {
+                    id: usuario.id,
                     email: usuario.email,
-                    tipo: usuario.tipo 
+                    tipo: usuario.tipo
                 },
                 JWT_CONFIG.secret,
                 { expiresIn: JWT_CONFIG.expiresIn }
             );
 
+            setAuthCookie(res, token);
+
             res.status(200).json({
                 sucesso: true,
                 mensagem: 'Login realizado com sucesso',
                 dados: {
-                    token,
                     usuario: {
                         id: usuario.id,
                         nome: usuario.nome,
@@ -199,6 +201,48 @@ class AuthController {
                 mensagem: process.env.NODE_ENV === 'development'
                     ? `Falha ao registrar: ${error.code || error.name || ''} ${error.sqlMessage || error.message}`.trim()
                     : 'Não foi possível registrar o usuário'
+            });
+        }
+    }
+
+    // POST /auth/refresh - Renovar o token JWT (regrava cookie httpOnly)
+    static async refresh(req, res) {
+        try {
+            const { id, email, tipo } = req.usuario;
+
+            const token = jwt.sign(
+                { id, email, tipo },
+                JWT_CONFIG.secret,
+                { expiresIn: JWT_CONFIG.expiresIn }
+            );
+
+            setAuthCookie(res, token);
+
+            res.status(200).json({
+                sucesso: true,
+                mensagem: 'Sessão renovada'
+            });
+        } catch (error) {
+            console.error('Erro ao renovar sessão:', error);
+            res.status(500).json({
+                sucesso: false,
+                erro: 'Erro interno do servidor',
+                mensagem: 'Não foi possível renovar a sessão'
+            });
+        }
+    }
+
+    // POST /auth/logout - Limpa o cookie httpOnly
+    static async logout(req, res) {
+        try {
+            clearAuthCookie(res);
+            res.status(200).json({ sucesso: true, mensagem: 'Sessão encerrada' });
+        } catch (error) {
+            console.error('Erro no logout:', error);
+            res.status(500).json({
+                sucesso: false,
+                erro: 'Erro interno do servidor',
+                mensagem: 'Não foi possível encerrar a sessão'
             });
         }
     }

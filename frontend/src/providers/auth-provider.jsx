@@ -1,141 +1,174 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import toast from "react-hot-toast";
-import { AuthContext } from "@/contexts/auth-context";
-import * as authService from "@/services/auth-service";
+import {
+ createContext,
+ useCallback,
+ useEffect,
+ useMemo,
+ useState,
+} from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { apiFetch } from "@/utils/api";
+import { ROUTES } from "@/constants/web-routes";
+import { postLoginRouteFor } from "@/utils/post-login-route";
+import { USER_TYPE } from "@/constants/enums";
 
-const USER_KEY = "@luminar:user";
-const TOKEN_KEY = "@luminar:token";
+export const AuthContext = createContext(null);
 
-function readStoredAuth() {
-  if (typeof window === "undefined") return { user: null, token: null };
-  try {
-    const rawUser = localStorage.getItem(USER_KEY);
-    const rawToken = localStorage.getItem(TOKEN_KEY);
-    if (!rawUser || !rawToken) return { user: null, token: null };
-    return { user: JSON.parse(rawUser), token: rawToken };
-  } catch {
-    return { user: null, token: null };
-  }
-}
-
-function persistAuth(user, token) {
-  localStorage.setItem(USER_KEY, JSON.stringify(user));
-  localStorage.setItem(TOKEN_KEY, token);
-  window.dispatchEvent(new Event("auth-changed"));
-}
-
-function clearAuth() {
-  localStorage.removeItem(USER_KEY);
-  localStorage.removeItem(TOKEN_KEY);
-  window.dispatchEvent(new Event("auth-changed"));
-}
+const REFRESH_INTERVAL_MS = 55 * 60 * 1000;
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-  const [loading, setLoading] = useState(true);
+ const router = useRouter();
+ const [user, setUser] = useState(null);
+ const [loading, setLoading] = useState(true);
 
-  const logout = useCallback((silent = false) => {
-    clearAuth();
-    setUser(null);
-    setToken(null);
-    if (!silent) toast.success("Sessão encerrada");
-  }, []);
+ const fetchProfile = useCallback(async () => {
+  const { ok, data } = await apiFetch("/auth/perfil", { method: "GET" });
+  if (!ok) {
+   setUser(null);
+   return null;
+  }
+  const fresh = data?.dados || null;
+  setUser(fresh);
+  return fresh;
+ }, []);
 
-  const refresh = useCallback(async () => {
-    const stored = readStoredAuth();
-    if (!stored.token) {
-      setUser(null);
-      setToken(null);
-      return null;
-    }
-    setToken(stored.token);
-    const { ok, data, status } = await authService.getProfile();
-    if (!ok) {
-      if (status === 401) {
-        clearAuth();
-        setUser(null);
-        setToken(null);
-      }
-      return null;
-    }
-    const fresh = data?.dados || stored.user;
-    setUser(fresh);
-    if (fresh) {
-      localStorage.setItem(USER_KEY, JSON.stringify(fresh));
-    }
-    return fresh;
-  }, []);
+ useEffect(() => {
+  fetchProfile().finally(() => setLoading(false));
+ }, [fetchProfile]);
 
-  useEffect(() => {
-    const stored = readStoredAuth();
-    setUser(stored.user);
-    setToken(stored.token);
-    if (stored.token) {
-      refresh().finally(() => setLoading(false));
-    } else {
-      setLoading(false);
-    }
-  }, [refresh]);
+ useEffect(() => {
+  const onExpired = () => {
+   setUser(null);
+   toast.error("Sua sessão expirou. Entre novamente.");
+  };
+  window.addEventListener("auth-expired", onExpired);
+  return () => window.removeEventListener("auth-expired", onExpired);
+ }, []);
 
-  useEffect(() => {
-    const onExpired = () => {
-      clearAuth();
-      setUser(null);
-      setToken(null);
-      toast.error("Sua sessão expirou. Entre novamente.");
-    };
-    const onChanged = () => {
-      const stored = readStoredAuth();
-      setUser(stored.user);
-      setToken(stored.token);
-    };
-    window.addEventListener("auth-expired", onExpired);
-    window.addEventListener("storage", onChanged);
-    return () => {
-      window.removeEventListener("auth-expired", onExpired);
-      window.removeEventListener("storage", onChanged);
-    };
-  }, []);
+ useEffect(() => {
+  if (!user) return undefined;
+  const id = setInterval(async () => {
+   const { ok, status } = await apiFetch("/auth/refresh", { method: "POST" });
+   if (!ok && status === 401) setUser(null);
+  }, REFRESH_INTERVAL_MS);
+  return () => clearInterval(id);
+ }, [user]);
 
-  const login = useCallback(async ({ email, senha }) => {
-    const { ok, data, error } = await authService.login({ email, senha });
-    if (!ok) {
-      return { ok: false, error: error || "Falha na autenticação" };
-    }
-    const { token: newToken, usuario } = data?.dados || {};
-    if (!newToken || !usuario) {
-      return { ok: false, error: "Resposta inválida do servidor" };
-    }
-    persistAuth(usuario, newToken);
+ const login = useCallback(
+  async ({ email, senha, redirectTo } = {}) => {
+   const promise = apiFetch("/auth/login", {
+    method: "POST",
+    body: { email: email.trim(), senha },
+   }).then((r) => {
+    if (!r.ok) throw new Error(r.error || "Falha na autenticação");
+    const usuario = r.data?.dados?.usuario;
+    if (!usuario) throw new Error("Resposta inválida do servidor");
+    return usuario;
+   });
+
+   toast.promise(promise, {
+    loading: "Verificando credenciais...",
+    success: (usuario) => `Bem-vindo(a), ${usuario.nome || "usuário"}!`,
+    error: (err) => err.message,
+   });
+
+   try {
+    const usuario = await promise;
     setUser(usuario);
-    setToken(newToken);
+    router.push(redirectTo || postLoginRouteFor(usuario));
     return { ok: true, user: usuario };
-  }, []);
+   } catch (err) {
+    return { ok: false, error: err.message };
+   }
+  },
+  [router],
+ );
 
-  const updateUser = useCallback((next) => {
-    setUser(next);
-    if (next) localStorage.setItem(USER_KEY, JSON.stringify(next));
-    window.dispatchEvent(new Event("auth-changed"));
-  }, []);
+ const register = useCallback(
+  async ({ nome, email, senha }) => {
+   const promise = apiFetch("/auth/registrar", {
+    method: "POST",
+    body: {
+     nome: nome.trim(),
+     email: email.trim().toLowerCase(),
+     senha,
+     tipo: USER_TYPE.CLIENTE,
+    },
+   }).then((r) => {
+    if (!r.ok) throw new Error(r.error || "Erro ao criar conta. Tente novamente.");
+    return r;
+   });
 
-  const value = useMemo(
-    () => ({
-      user,
-      token,
-      loading,
-      isAuthenticated: !!user,
-      isAdmin: user?.tipo === "ADMIN",
-      isCustomer: user?.tipo === "CLIENTE",
-      login,
-      logout,
-      refresh,
-      updateUser,
-    }),
-    [user, token, loading, login, logout, refresh, updateUser]
-  );
+   toast.promise(promise, {
+    loading: "Criando sua conta...",
+    success: "Conta criada com sucesso! Faça login para continuar.",
+    error: (err) => err.message,
+   });
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+   try {
+    await promise;
+    router.push(ROUTES.LOGIN.href);
+    return { ok: true };
+   } catch (err) {
+    return { ok: false, error: err.message };
+   }
+  },
+  [router],
+ );
+
+ const logout = useCallback(
+  async ({ silent = false } = {}) => {
+   await apiFetch("/auth/logout", { method: "POST" });
+   setUser(null);
+   if (!silent) toast.success("Sessão encerrada");
+   router.push(ROUTES.HOME.href);
+  },
+  [router],
+ );
+
+ const refresh = useCallback(() => fetchProfile(), [fetchProfile]);
+
+ const updateProfile = useCallback(async (payload) => {
+  const promise = apiFetch("/auth/perfil", {
+   method: "PUT",
+   body: payload,
+  }).then((r) => {
+   if (!r.ok) throw new Error(r.error || "Não foi possível atualizar o perfil");
+   return r.data?.dados || null;
+  });
+
+  toast.promise(promise, {
+   loading: "Salvando...",
+   success: "Perfil atualizado",
+   error: (err) => err.message,
+  });
+
+  try {
+   const fresh = await promise;
+   if (fresh) setUser(fresh);
+   return { ok: true, user: fresh };
+  } catch (err) {
+   return { ok: false, error: err.message };
+  }
+ }, []);
+
+ const value = useMemo(
+  () => ({
+   user,
+   loading,
+   isAuthenticated: !!user,
+   isAdmin: user?.tipo === USER_TYPE.ADMIN,
+   isCustomer: user?.tipo === USER_TYPE.CLIENTE,
+   login,
+   register,
+   logout,
+   refresh,
+   updateProfile,
+  }),
+  [user, loading, login, register, logout, refresh, updateProfile],
+ );
+
+ return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
