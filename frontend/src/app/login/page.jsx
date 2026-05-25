@@ -1,8 +1,9 @@
-'use client'; // Avisa o Next.js que essa tela roda no navegador e tem interações
+'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { useAuth } from '@/hooks/use-auth';
 
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -13,6 +14,8 @@ export default function LoginPage() {
   const [carregando, setCarregando] = useState(false);
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { login } = useAuth();
 
   const validarLocal = () => {
     const emailTrim = email.trim();
@@ -42,34 +45,19 @@ export default function LoginPage() {
     setCarregando(true);
     const loadingId = toast.loading('Verificando credenciais...');
 
-    try {
-      const resposta = await fetch('http://localhost:3001/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim(), senha }),
-      });
+    const { ok, user, error } = await login({ email: email.trim(), senha });
 
-      const contentType = resposta.headers.get('content-type') || '';
-      const resultado = contentType.includes('application/json') ? await resposta.json() : {};
-
-      if (!resposta.ok) {
-        throw new Error(resultado.mensagem || 'Falha na autenticação');
-      }
-
-      localStorage.setItem('@luminar:token', resultado.dados.token);
-      localStorage.setItem('@luminar:user', JSON.stringify(resultado.dados.usuario));
-      window.dispatchEvent(new Event('auth-changed'));
-
-      toast.success(`Bem-vindo(a), ${resultado.dados.usuario.nome || 'usuário'}!`, { id: loadingId });
-      router.push('/');
-    } catch (err) {
-      const msg = err.message.includes('Failed to fetch')
-        ? 'Não foi possível conectar ao servidor. O backend está ligado?'
-        : err.message;
-      toast.error(msg, { id: loadingId });
-    } finally {
+    if (!ok) {
+      toast.error(error || 'Falha na autenticação', { id: loadingId });
       setCarregando(false);
+      return;
     }
+
+    toast.success(`Bem-vindo(a), ${user?.nome || 'usuário'}!`, { id: loadingId });
+
+    const returnTo = searchParams.get('returnTo');
+    const destino = returnTo && returnTo.startsWith('/') ? returnTo : '/';
+    router.push(destino);
   };
 
   // 3. ESTRUTURA VISUAL DA SUA TELA

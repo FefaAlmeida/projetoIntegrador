@@ -1,8 +1,9 @@
-'use client'; // Avisa o Next.js que essa tela roda no navegador
+'use client';
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { register as registerService } from '@/services/auth-service';
 
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -63,35 +64,21 @@ export default function RegisterPage() {
     setCarregando(true);
     const loadingId = toast.loading('Criando sua conta...');
 
-    try {
-      const resposta = await fetch('http://localhost:3001/api/auth/registrar', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          nome: nome.trim(),
-          email: email.trim().toLowerCase(),
-          tipo,
-          senha,
-        }),
-      });
+    const { ok, error } = await registerService({
+      nome: nome.trim(),
+      email: email.trim().toLowerCase(),
+      tipo,
+      senha,
+    });
 
-      const contentType = resposta.headers.get('content-type') || '';
-      const resultado = contentType.includes('application/json') ? await resposta.json() : {};
-
-      if (!resposta.ok) {
-        throw new Error(resultado.mensagem || 'Erro ao criar conta. Tente novamente.');
-      }
-
-      toast.success('Conta criada com sucesso! Faça login para continuar.', { id: loadingId });
-      router.push('/login');
-    } catch (err) {
-      const msg = err.message.includes('Failed to fetch')
-        ? 'Não foi possível conectar ao servidor. O backend está ligado?'
-        : err.message;
-      toast.error(msg, { id: loadingId });
-    } finally {
+    if (!ok) {
+      toast.error(error || 'Erro ao criar conta. Tente novamente.', { id: loadingId });
       setCarregando(false);
+      return;
     }
+
+    toast.success('Conta criada com sucesso! Faça login para continuar.', { id: loadingId });
+    router.push('/login');
   };
 
   return (
