@@ -154,15 +154,15 @@ export default function Home() {
             <div className={styles.titleBar}></div>
           </div>
 
-          <div className="row g-4">
+          <div className="row g-4 text-center">
             {FEATURES.map((item) => (
               <div className="col-md-4" key={item.title}>
                 <div
                   className={`card border-0 shadow-sm h-100 p-5 rounded-4 bg-white ${styles.hoverLift}`}
                 >
                   <div
-                    className={`mb-4 d-flex align-items-center justify-content-center rounded-3 bg-warning bg-opacity-10 ${styles.featureIconBox}`}
-                  >
+                  className={`mb-4 mx-auto d-flex align-items-center justify-content-center rounded-3 bg-warning bg-opacity-10 ${styles.featureIconBox}`}
+                >
                     <i className={`bi ${item.icon} fs-1 text-warning`}></i>
                   </div>
                   <h4 className="fw-bold mb-3 text-dark">{item.title}</h4>
@@ -211,32 +211,474 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className={`bg-warning ${styles.ctaSection}`}>
-        <div className={styles.ctaCircle1}></div>
-        <div className={styles.ctaCircle2}></div>
+      <section
+        style={{
+          background: "#f2b632",
+          padding: "90px 0 70px",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        {/* brilho do fundo */}
+        <div
+          style={{
+            position: "absolute",
+            width: "600px",
+            height: "600px",
+            borderRadius: "50%",
+            background: "rgba(255,255,255,0.07)",
+            top: "-250px",
+            right: "-180px",
+            filter: "blur(20px)",
+          }}
+        />
 
-        <div className="container position-relative z-2">
+        <div className="container">
+
+          {/* CARD */}
           <div
-            className={`bg-dark rounded-5 shadow-lg d-flex flex-column flex-lg-row align-items-center justify-content-between ${styles.ctaBox}`}
+            className="row align-items-center position-relative"
+            style={{
+              background:
+                "linear-gradient(90deg, rgba(1,12,22,1) 0%, rgba(2,23,40,1) 45%, rgba(6,31,49,0.92) 70%)",
+              borderRadius: "28px",
+              overflow: "hidden",
+              minHeight: "360px",
+              boxShadow: "0 25px 50px rgba(0,0,0,0.22)",
+            }}
           >
-            <div className={`text-center text-lg-start mb-4 mb-lg-0 ${styles.ctaCopy}`}>
-              <h2 className={`fw-bolder text-white mb-3 ${styles.ctaTitle}`}>
-                Pronto para zerar sua conta de luz?
-              </h2>
-              <p className="text-light opacity-75 fs-5 m-0">
-                Fale com nossos engenheiros e receba um projeto personalizado para sua
-                empresa sem compromisso.
-              </p>
-            </div>
-            <div>
-              <a
-                href="#"
-                className={`btn btn-warning btn-lg fw-bold px-5 py-3 rounded-pill text-dark fs-5 ${styles.customBtn} ${styles.shadowGlowDark}`}
+
+            {/* imagem de fundo integrada */}
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                backgroundImage: "url('/painelsolar.jpg')",
+                backgroundSize: "cover",
+                backgroundPosition: "right center",
+                opacity: "0.95",
+              }}
+            />
+
+            {/* overlay escuro para fusão harmoniosa */}
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background:
+                  "linear-gradient(90deg, rgba(0,10,18,0.98) 0%, rgba(0,18,32,0.95) 35%, rgba(0,0,0,0.15) 100%)",
+              }}
+            />
+
+            {/* lado esquerdo */}
+            <div
+              className="col-lg-4 position-relative z-2"
+              style={{
+                padding: "55px 40px",
+              }}
+            >
+
+              <h2
+                style={{
+                  color: "#fff",
+                  fontSize: "2.8rem",
+                  fontWeight: "800",
+                  lineHeight: "1.1",
+                  marginBottom: "18px",
+                  letterSpacing: "-1px",
+                }}
               >
-                Solicitar Orçamento Agora
-              </a>
+                Simule sua economia
+              </h2>
+
+              <p
+                style={{
+                  color: "rgba(255,255,255,0.78)",
+                  fontSize: "1rem",
+                  lineHeight: "1.8",
+                  maxWidth: "300px",
+                  marginBottom: "35px",
+                }}
+              >
+                Descubra quanto você pode economizar
+                com energia solar.
+              </p>
+
+              <label
+                style={{
+                  color: "#fff",
+                  fontWeight: "700",
+                  fontSize: "0.95rem",
+                  marginBottom: "12px",
+                  display: "block",
+                }}
+              >
+                Quanto você paga na sua conta de luz?
+              </label>
+
+              <input
+                type="text"
+                placeholder="R$      350,00"
+                className="form-control"
+                style={{
+                  height: "54px",
+                  borderRadius: "14px",
+                  border: "none",
+                  maxWidth: "260px",
+                  marginBottom: "18px",
+                  paddingLeft: "18px",
+                  fontSize: "1rem",
+                  boxShadow: "0 5px 20px rgba(0,0,0,0.15)",
+                }}
+              />
+
+            {/* BOTÕES CTA */}
+            <div
+              className="d-flex align-items-center gap-3 mt-3"
+              style={{
+                position: "relative",
+                zIndex: 5,
+              }}
+            >
+
+              {/* BOTÃO SECUNDÁRIO */}
+              <button
+                style={{
+                  width: "260px",
+                  height: "54px",
+                  border: "none",
+                  borderRadius: "14px",
+                  background:
+                    "linear-gradient(90deg, #f5b400 0%, #ffc933 100%)",
+                  color: "#fff",
+                  fontWeight: "700",
+                  fontSize: "1rem",
+                  boxShadow: "0 10px 30px rgba(245,180,0,0.35)",
+                  transition: "0.3s",
+                }}
+              >
+                Simular agora →
+              </button>
+
+              {/* CTA PRINCIPAL */}
+              <button
+                style={{
+                  height: "54px",
+                  padding: "0 24px",
+                  borderRadius: "14px",
+                  border: "2px solid #ffc933",
+                  background: "#fff",
+                  color: "#111",
+                  fontWeight: "800",
+                  fontSize: "0.95rem",
+                  whiteSpace: "nowrap",
+                  boxShadow: "0 8px 25px rgba(255,201,51,0.28)",
+                  transition: "0.3s",
+                }}
+              >
+                Solicitar orçamento
+              </button>
+
             </div>
+
+            </div>
+
+            {/* card branco central */}
+            <div className="col-lg-4 position-relative z-2 d-flex justify-content-center">
+
+              <div
+                style={{
+                  background: "#fff",
+                  width: "100%",
+                  maxWidth: "360px",
+                  borderRadius: "24px",
+                  padding: "32px",
+                  boxShadow: "0 15px 40px rgba(0,0,0,0.18)",
+                }}
+              >
+
+                <p
+                  style={{
+                    color: "#555",
+                    fontSize: "0.95rem",
+                    marginBottom: "15px",
+                  }}
+                >
+                  Você pode economizar até
+                </p>
+
+                <h3
+                  style={{
+                    color: "#221f20",
+                    fontSize: "3.2rem",
+                    fontWeight: "900",
+                    marginBottom: "10px",
+                    lineHeight: "1",
+                    letterSpacing: "-2px",
+                  }}
+                >
+                  R$ 280,00
+                  <span
+                    style={{
+                      color: "#111",
+                      fontSize: "1.2rem",
+                      fontWeight: "500",
+                    }}
+                  >
+                    {" "}/mês
+                  </span>
+                </h3>
+
+                <p
+                  style={{
+                    color: "#555",
+                    fontSize: "0.95rem",
+                    marginBottom: "28px",
+                  }}
+                >
+                  Isso significa R$ 3.360,00 por ano!
+                </p>
+
+                <div
+                  style={{
+                    width: "100%",
+                    height: "1px",
+                    background: "#ececec",
+                    marginBottom: "24px",
+                  }}
+                />
+
+                <p
+                  style={{
+                    color: "#555",
+                    fontSize: "0.95rem",
+                    lineHeight: "1.7",
+                    margin: 0,
+                  }}
+                >
+                  Retorno do investimento em aproximadamente
+                  <span
+                    style={{
+                      color: "#f5b400",
+                      fontWeight: "800",
+                    }}
+                  >
+                    {" "}3 a 5 anos
+                  </span>
+                </p>
+
+              </div>
+
+            </div>
+
+            {/* espaço direito */}
+            <div className="col-lg-4"></div>
+
           </div>
+
+      {/* ESTATÍSTICAS */}
+      <div
+        className="d-flex justify-content-between align-items-center flex-nowrap mt-5"
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          gap: "40px",
+        }}
+      >
+
+        {/* ITEM 1 */}
+        <div className="d-flex align-items-center gap-2">
+
+          <div
+            style={{
+              fontSize: "3rem",
+              color: "#fff",
+              lineHeight: "1",
+            }}
+          >
+            <i className="bi bi-people"></i>
+          </div>
+
+          <div>
+            <h4
+              style={{
+                fontSize: "2.5rem",
+                fontWeight: "900",
+                color: "#000",
+                marginBottom: "2px",
+                lineHeight: "1",
+                whiteSpace: "nowrap",
+              }}
+            >
+              +500
+            </h4>
+
+            <p
+              style={{
+                color: "#111",
+                fontSize: "1rem",
+                margin: 0,
+                fontWeight: "500",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Clientes satisfeitos
+            </p>
+          </div>
+        </div>
+
+        {/* DIVISÓRIA */}
+        <div
+          style={{
+            width: "1px",
+            height: "80px",
+            backgroundColor: "rgba(255,255,255,0.6)",
+          }}
+        />
+
+        {/* ITEM 2 */}
+        <div className="d-flex align-items-center gap-2">
+
+          <div
+            style={{
+              fontSize: "3rem",
+              color: "#fff",
+              lineHeight: "1",
+            }}
+          >
+            <i className="bi bi-grid-1x2"></i>
+          </div>
+
+          <div>
+            <h4
+              style={{
+                fontSize: "2.5rem",
+                fontWeight: "900",
+                color: "#000",
+                marginBottom: "2px",
+                lineHeight: "1",
+                whiteSpace: "nowrap",
+              }}
+            >
+              +1200
+            </h4>
+
+            <p
+              style={{
+                color: "#111",
+                fontSize: "1rem",
+                margin: 0,
+                fontWeight: "500",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Sistemas instalados
+            </p>
+          </div>
+        </div>
+
+        {/* DIVISÓRIA */}
+        <div
+          style={{
+            width: "1px",
+            height: "80px",
+            backgroundColor: "rgba(255,255,255,0.6)",
+          }}
+        />
+
+        {/* ITEM 3 */}
+        <div className="d-flex align-items-center gap-2">
+
+          <div
+            style={{
+              fontSize: "3rem",
+              color: "#fff",
+              lineHeight: "1",
+            }}
+          >
+            <i className="bi bi-shield-check"></i>
+          </div>
+
+          <div>
+            <h4
+              style={{
+                fontSize: "2.5rem",
+                fontWeight: "900",
+                color: "#000",
+                marginBottom: "2px",
+                lineHeight: "1",
+                whiteSpace: "nowrap",
+              }}
+            >
+              15 anos
+            </h4>
+
+            <p
+              style={{
+                color: "#111",
+                fontSize: "1rem",
+                margin: 0,
+                fontWeight: "500",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Garantia estendida
+            </p>
+          </div>
+        </div>
+
+        {/* DIVISÓRIA */}
+        <div
+          style={{
+            width: "1px",
+            height: "80px",
+            backgroundColor: "rgba(255,255,255,0.6)",
+          }}
+        />
+
+        {/* ITEM 4 */}
+        <div className="d-flex align-items-center gap-2">
+
+          <div
+            style={{
+              fontSize: "3rem",
+              color: "#fff",
+              lineHeight: "1",
+            }}
+          >
+            <i className="bi bi-leaf"></i>
+          </div>
+
+          <div>
+            <h4
+              style={{
+                fontSize: "2.5rem",
+                fontWeight: "900",
+                color: "#000",
+                marginBottom: "2px",
+                lineHeight: "1",
+                whiteSpace: "nowrap",
+              }}
+            >
+              +2.5M
+            </h4>
+
+            <p
+              style={{
+                color: "#111",
+                fontSize: "1rem",
+                margin: 0,
+                fontWeight: "500",
+                whiteSpace: "nowrap",
+              }}
+            >
+              kg de CO₂ evitados
+            </p>
+          </div>
+        </div>
+
+      </div>
+
         </div>
       </section>
 
