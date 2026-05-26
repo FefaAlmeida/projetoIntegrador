@@ -1,0 +1,22 @@
+/* Estilos da página de orçamento — só o que Bootstrap não cobre */
+
+.shell {
+ padding: 80px 0;
+}
+
+.header {
+ max-width: 720px;
+ margin: 0 auto 40px;
+}
+
+.title {
+ font-size: 3rem;
+ line-height: 1.05;
+ font-weight: 800;
+}
+
+.card {
+ max-width: 880px;
+ margin: 0 auto;
+ padding: 48px;
+}
