@@ -2,7 +2,6 @@
 
 import AdminHeader from "@/components/shared/header/profiles/admin";
 import CustomerHeader from "@/components/shared/header/profiles/customer";
-import Footer from "@/components/shared/footer";
 import { useAuth } from "@/hooks/use-auth";
 
 export default function PreferencesLayout({ children }) {
@@ -11,7 +10,6 @@ export default function PreferencesLayout({ children }) {
   <>
    {isAdmin ? <AdminHeader /> : <CustomerHeader />}
    {children}
-   <Footer />
   </>
  );
 }

@@ -4,6 +4,7 @@ import BootstrapClient from "./bootstrap-client";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { AuthProvider } from "@/providers/auth-provider";
 import { ToastProvider } from "@/providers/toast-provider";
+import Footer from "@/components/shared/footer";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -29,6 +30,7 @@ export default function RootLayout({ children }) {
      <BootstrapClient />
      <ToastProvider />
      {children}
+     <Footer />
     </AuthProvider>
    </body>
   </html>

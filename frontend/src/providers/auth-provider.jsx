@@ -40,8 +40,10 @@ export function AuthProvider({ children }) {
 
  useEffect(() => {
   const onExpired = () => {
-   setUser(null);
-   toast.error("Sua sessão expirou. Entre novamente.");
+   setUser((prev) => {
+    if (prev) toast.error("Sua sessão expirou. Entre novamente.");
+    return null;
+   });
   };
   window.addEventListener("auth-expired", onExpired);
   return () => window.removeEventListener("auth-expired", onExpired);
