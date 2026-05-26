@@ -74,16 +74,16 @@ export default function Home() {
               >
                 PROJETADO PARA EMPRESAS
               </span>
-              <h1 className={`display-3 fw-bolder text-white mb-4 ${styles.heroTitle}`}>
+              <h1 className="display-3 fw-bolder text-white mb-4 lh-1">
                 Energia inteligente para <br />
-                <span className={styles.heroAccent}>reduzir sua conta de luz</span>
+                <span className="text-warning">reduzir sua conta de luz</span>
               </h1>
               <p className="lead text-light mb-5 px-md-5 fw-light fs-4">
                 Projetamos e instalamos sistemas de energia solar fotovoltaica com alta
                 eficiência e economia garantida. Consiga tudo o que quiser com a
                 Luminar.
               </p>
-              <div className={styles.heroCtas}>
+              <div className="d-flex flex-wrap justify-content-center gap-3">
                 <button
                   className={`btn btn-warning btn-lg fw-bold px-5 py-3 rounded-pill ${styles.customBtn} ${styles.shadowGlow}`}
                 >
@@ -105,7 +105,7 @@ export default function Home() {
         <div className="container">
           <div className="row align-items-center g-5">
             <div className="col-lg-6 pe-lg-5">
-              <h2 className={`fw-bold mb-4 text-dark ${styles.aboutTitle}`}>
+              <h2 className={`fw-bold mb-4 text-dark display-6 lh-sm ${styles.sectionTitle}`}>
                 Faça a transição para o futuro da energia
               </h2>
               <p className={`text-secondary fs-5 mb-4 ${styles.aboutText}`}>
@@ -148,7 +148,7 @@ export default function Home() {
       <section className={`bg-light ${styles.section}`}>
         <div className="container">
           <div className="text-center mb-5 pb-3">
-            <h2 className={`fw-bold text-dark ${styles.sectionTitle}`}>
+            <h2 className={`fw-bold text-dark display-6 ${styles.sectionTitle}`}>
               Nossos Diferenciais
             </h2>
             <div className={styles.titleBar}></div>
@@ -166,9 +166,7 @@ export default function Home() {
                     <i className={`bi ${item.icon} fs-1 text-warning`}></i>
                   </div>
                   <h4 className="fw-bold mb-3 text-dark">{item.title}</h4>
-                  <p className={`text-secondary m-0 ${styles.featureText}`}>
-                    {item.text}
-                  </p>
+                  <p className="text-secondary m-0 lh-base">{item.text}</p>
                 </div>
               </div>
             ))}
@@ -181,7 +179,7 @@ export default function Home() {
         <div className="container">
           <div className="d-flex justify-content-between align-items-end mb-5">
             <div>
-              <h2 className={`fw-bold text-white mb-2 ${styles.sectionTitleLeft}`}>
+              <h2 className={`fw-bold text-white mb-2 display-6 ${styles.sectionTitle}`}>
                 Nossos Serviços
               </h2>
               <div className={styles.titleBarLeft}></div>
@@ -246,7 +244,7 @@ export default function Home() {
       <section className={`bg-white ${styles.section}`}>
         <div className={`container ${styles.faqContainer}`}>
           <div className="text-center mb-5">
-            <h2 className={`fw-bold text-dark ${styles.sectionTitle}`}>
+            <h2 className={`fw-bold text-dark display-6 ${styles.sectionTitle}`}>
               Perguntas Frequentes
             </h2>
             <div className={styles.titleBar}></div>
