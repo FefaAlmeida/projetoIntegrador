@@ -18,10 +18,10 @@ const cx = (...keys) =>
   .join(" ");
 
 const SERVICES = [
- { label: "Instalação de painéis solares", href: "#" },
- { label: "Monitoramento energético", href: "#" },
- { label: "Manutenção", href: "#" },
- { label: "Investimento empresarial", href: "#" },
+ ROUTES.SERVICES.INSTALLATION,
+ ROUTES.SERVICES.MONITORING,
+ ROUTES.SERVICES.MAINTENANCE,
+ ROUTES.SERVICES.INVESTMENT,
 ];
 
 export function Brand({
