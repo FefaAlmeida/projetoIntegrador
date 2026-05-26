@@ -11,14 +11,14 @@ export const metadata = {
 export default function LoginPage() {
  return (
   <div
-   className={`container-fluid min-vh-100 d-flex align-items-center position-relative overflow-hidden p-0 bg-white ${styles.shell}`}
+   className={`container-fluid min-vh-100 d-flex align-items-center position-relative overflow-hidden p-0 ${styles.shell}`}
   >
    <div className={`position-absolute top-0 start-0 w-50 ${styles.waveTop}`}>
     <svg
      viewBox="0 0 500 300"
      fill="none"
      xmlns="http://www.w3.org/2000/svg"
-     className="w-100 h-auto"
+     className={styles.waveSvg}
     >
      <path
       d="M0 0H500C400 120 250 50 150 180C70 260 0 220 0 300V0Z"
@@ -70,20 +70,20 @@ export default function LoginPage() {
        className={`mx-auto mx-lg-0 mb-4 d-flex align-items-center justify-content-center position-relative ${styles.heroBlob}`}
       >
        <Image
-        src="/painelsolar.jpg"
+        src="/empresa-painelSolar.jpg"
         alt="Painel Solar Luminar"
         fill
-        sizes="(max-width: 992px) 90vw, 520px"
+        sizes="(max-width: 992px) 100vw, 992px"
         className={styles.heroBlobImg}
         priority
        />
       </div>
 
       <div className={`text-start ${styles.heroText}`}>
-       <h1 className={`text-dark-2 ${styles.heroTitle}`}>
-        Energia <span className="text-yellow-soft">Solar</span>
+       <h1 className={styles.heroTitle}>
+        Energia <span className={styles.heroAccent}>Solar</span>
        </h1>
-       <p className={`text-dark-2 ${styles.heroSub}`}>
+       <p className={styles.heroSub}>
         Reduza sua conta de luz com tecnologia limpa e sustentável
        </p>
       </div>
@@ -91,9 +91,10 @@ export default function LoginPage() {
 
      <div className="col-lg-5 offset-lg-1 d-flex justify-content-center justify-content-lg-end">
       <div className={`bg-white p-5 rounded-4 ${styles.formCard}`}>
-       <h2 className="fs-3 fw-normal mb-5 text-dark-2">
-        <strong className="text-dark-2 fw-bold">Entrar</strong> na sua conta
-       </h2>
+       <h2 className={`fs-3 fw-normal mb-5 ${styles.formTitle}`}>
+        <strong className={styles.formTitleStrong}>Entrar</strong>{" "}
+        <span className={styles.formTitleStrong}>na sua conta</span>
+        </h2>
 
        <Suspense fallback={null}>
         <LoginForm />
