@@ -13,7 +13,7 @@ import {
  UserMenu,
 } from "../..";
 
-const NAV = [ROUTES.HOME, ROUTES.CUSTOMER.MY_ORDERS];
+const NAV = [ROUTES.CUSTOMER.DASHBOARD, ROUTES.CUSTOMER.MY_ORDERS];
 
 export default function CustomerHeader() {
  return (
