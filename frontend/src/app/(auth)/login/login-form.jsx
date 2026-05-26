@@ -83,14 +83,18 @@ export default function LoginForm() {
     </a>
    </div>
 
-   <div className="text-center">
+    <div className="text-center">
     <a
-     href={ROUTES.REGISTER.href}
-     className={`text-decoration-none small ${styles.linkBig}`}
+        href={ROUTES.REGISTER.href}
+        className="text-decoration-none small"
     >
-     Não tem uma conta? Crie uma!
+        <span style={{ color: "#000", fontWeight: "normal" }}>
+        Não tem uma conta?{" "}
+        </span>
+
+        <span className={styles.linkBig}>Crie uma!</span>
     </a>
-   </div>
+    </div>
   </form>
  );
 }

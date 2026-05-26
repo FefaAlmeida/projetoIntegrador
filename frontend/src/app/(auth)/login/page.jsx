@@ -70,10 +70,10 @@ export default function LoginPage() {
        className={`mx-auto mx-lg-0 mb-4 d-flex align-items-center justify-content-center position-relative ${styles.heroBlob}`}
       >
        <Image
-        src="/painelsolar.jpg"
+        src="/empresa-painelSolar.jpg"
         alt="Painel Solar Luminar"
         fill
-        sizes="(max-width: 992px) 90vw, 520px"
+        sizes="(max-width: 992px) 100vw, 992px"
         className={styles.heroBlobImg}
         priority
        />
@@ -92,8 +92,9 @@ export default function LoginPage() {
      <div className="col-lg-5 offset-lg-1 d-flex justify-content-center justify-content-lg-end">
       <div className={`bg-white p-5 rounded-4 ${styles.formCard}`}>
        <h2 className={`fs-3 fw-normal mb-5 ${styles.formTitle}`}>
-        <strong className={styles.formTitleStrong}>Entrar</strong> na sua conta
-       </h2>
+        <strong className={styles.formTitleStrong}>Entrar</strong>{" "}
+        <span className={styles.formTitleStrong}>na sua conta</span>
+        </h2>
 
        <Suspense fallback={null}>
         <LoginForm />
