@@ -5,7 +5,6 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import { AuthProvider } from "@/providers/auth-provider";
 import { ToastProvider } from "@/providers/toast-provider";
 import "./globals.css";
-import "@/components/shared/header/header.css";
 
 const geistSans = Geist({
  variable: "--font-geist-sans",

@@ -1,29 +1,31 @@
 "use client";
 
 import { ROUTES } from "@/constants/web-routes";
-import HeaderShell from "./header-shell";
-import HeaderBrand from "./header-brand";
-import NavList from "./nav-list";
-import AuthCtas from "./auth-ctas";
-import ServicesDropdown, {
+import {
+ AuthCtas,
+ Brand,
+ DrawerBrand,
+ DrawerFooter,
+ HeaderShell,
+ Nav,
  ServicesDrawerAccordion,
-} from "./services-dropdown";
-import { DrawerBrand, DrawerFooter } from "./drawer-pieces";
+ ServicesDropdown,
+} from "../..";
 
 const NAV = [ROUTES.HOME, ROUTES.QUOTE, ROUTES.CONTACT];
 
 export default function PublicHeader() {
  return (
   <HeaderShell
-   logo={<HeaderBrand />}
-   nav={<NavList items={NAV} extras={<ServicesDropdown />} />}
+   logo={<Brand />}
+   nav={<Nav items={NAV} extras={<ServicesDropdown />} />}
    actions={<AuthCtas />}
    drawer={{
     ariaLabel: "Menu de navegação",
     brand: <DrawerBrand />,
     body: (
      <>
-      <NavList
+      <Nav
        items={NAV}
        variant="drawer"
        extras={<ServicesDrawerAccordion />}

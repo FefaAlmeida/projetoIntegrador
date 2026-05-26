@@ -1,7 +1,7 @@
 "use client";
 
-import AdminHeader from "@/components/shared/header/admin-header";
-import CustomerHeader from "@/components/shared/header/customer-header";
+import AdminHeader from "@/components/shared/header/profiles/admin";
+import CustomerHeader from "@/components/shared/header/profiles/customer";
 import Footer from "@/components/shared/footer";
 import { useAuth } from "@/hooks/use-auth";
 

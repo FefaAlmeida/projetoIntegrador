@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import AdminHeader from "@/components/shared/header/admin-header";
+import AdminHeader from "@/components/shared/header/profiles/admin";
 import Footer from "@/components/shared/footer";
 import { useAuth } from "@/hooks/use-auth";
 import { ROUTES } from "@/constants/web-routes";

@@ -1,52 +1,38 @@
 "use client";
 
 import { ROUTES } from "@/constants/web-routes";
-import HeaderShell from "./header-shell";
-import HeaderBrand from "./header-brand";
-import NavList from "./nav-list";
-import UserMenu from "./user-menu";
 import {
+ Brand,
  DrawerBrand,
  DrawerFooter,
  DrawerLogoutButton,
+ DrawerPreferencesLink,
  DrawerUserInfo,
-} from "./drawer-pieces";
-import { useIsActive } from "@/hooks/use-is-active";
+ HeaderShell,
+ Nav,
+ UserMenu,
+} from "../..";
 
 const NAV = [ROUTES.ADMIN.USERS, ROUTES.ADMIN.ORDERS];
-
-function DrawerPreferencesLink() {
- const isActive = useIsActive();
- return (
-  <a
-   href={ROUTES.PREFERENCES.href}
-   className={`lh-drawer__link ${
-    isActive(ROUTES.PREFERENCES.href) ? "is-active" : ""
-   }`}
-  >
-   {ROUTES.PREFERENCES.label}
-  </a>
- );
-}
 
 export default function AdminHeader() {
  return (
   <HeaderShell
    logo={
-    <HeaderBrand
+    <Brand
      href={ROUTES.ADMIN.USERS.href}
      ariaLabel="Luminar — painel admin"
      badge="Admin"
     />
    }
-   nav={<NavList items={NAV} ariaLabel="Navegação admin" />}
+   nav={<Nav items={NAV} ariaLabel="Navegação admin" />}
    actions={<UserMenu />}
    drawer={{
     ariaLabel: "Menu admin",
     brand: <DrawerBrand badge="Admin" />,
     userInfo: <DrawerUserInfo />,
     body: (
-     <NavList
+     <Nav
       items={NAV}
       variant="drawer"
       ariaLabel="Navegação admin"
