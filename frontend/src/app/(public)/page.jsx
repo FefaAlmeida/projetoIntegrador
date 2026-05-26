@@ -1,287 +1,511 @@
-import Image from "next/image";
-import styles from "./page.module.css";
-
-export const metadata = {
- title: "Luminar — Energia solar para empresas",
- description:
-  "Reduza sua conta de luz com sistemas fotovoltaicos projetados e instalados pela Luminar.",
-};
-
-const FEATURES = [
-  {
-    icon: "bi-cash-coin",
-    title: "Economia Real",
-    text:
-      "Economize até 95% na conta de energia com soluções projetadas para o seu consumo exato.",
-  },
-  {
-    icon: "bi-lightning-charge",
-    title: "Tecnologia Moderna",
-    text:
-      "Equipamentos de última geração com alta eficiência de captação e décadas de durabilidade.",
-  },
-  {
-    icon: "bi-headset",
-    title: "Suporte Especializado",
-    text:
-      "Atendimento técnico rápido, garantia estendida e suporte completo no pós-venda para você.",
-  },
-];
-
-const SERVICES = [
-  {
-    img:
-      "https://descarbonizesolucoes.com.br/blog/wp-content/uploads/2024/12/engenharia-instalacao-paineis-solares-campo-aberto.webp",
-    title: "Instalação de painéis",
-  },
-  {
-    img:
-      "https://cdn.prod.website-files.com/6800d450c97b7af1e8cc4be2/681b4df93cee4c65220a1fa8_Design%20sem%20nome%20-%202025-05-07T091107.350.png",
-    title: "Monitoramento energético",
-  },
-  {
-    img:
-      "https://institutosolar.com/wp-content/uploads/2019/05/Manuten%C3%A7%C3%A3o-do-painel-solar.jpg",
-    title: "Manutenção preventiva",
-  },
-];
-
-const FAQS = [
-  {
-    q: "Como funciona a energia solar?",
-    a: "A energia solar converte a luz do sol em energia elétrica através dos painéis fotovoltaicos. Essa energia passa por um inversor e fica pronta para ser usada nas tomadas da sua casa ou empresa.",
-  },
-  {
-    q: "Quanto posso economizar?",
-    a: "Você pode economizar até 95% na conta de energia. Os 5% restantes costumam ser a taxa mínima cobrada pela concessionária de energia da sua região para manter você conectado à rede.",
-  },
-  {
-    q: "Vocês fazem manutenção?",
-    a: "Sim! Embora os sistemas solares exijam pouquíssima manutenção, nós realizamos a limpeza especializada dos módulos e a manutenção preventiva/corretiva do seu sistema.",
-  },
-];
+"use client";
 
 export default function Home() {
-  return (
-    <main className={styles.main}>
-      {/* HERO */}
-      <section className={styles.hero}>
-        <div className={`container ${styles.heroInner}`}>
-          <div className="row justify-content-center text-center">
-            <div className="col-lg-8">
-              <span
-                className={`badge bg-warning text-dark px-3 py-2 mb-4 rounded-pill fw-bold ${styles.heroBadge}`}
-              >
-                PROJETADO PARA EMPRESAS
-              </span>
-              <h1 className="display-3 fw-bolder text-white mb-4 lh-1">
-                Energia inteligente para <br />
-                <span className="text-warning">reduzir sua conta de luz</span>
-              </h1>
-              <p className="lead text-light mb-5 px-md-5 fw-light fs-4">
-                Projetamos e instalamos sistemas de energia solar fotovoltaica com alta
-                eficiência e economia garantida. Consiga tudo o que quiser com a
-                Luminar.
-              </p>
-              <div className="d-flex flex-wrap justify-content-center gap-3">
-                <button
-                  className={`btn btn-warning btn-lg fw-bold px-5 py-3 rounded-pill ${styles.customBtn} ${styles.shadowGlow}`}
-                >
-                  Solicitar orçamento
-                </button>
-                <button
-                  className={`btn btn-outline-light btn-lg fw-bold px-5 py-3 rounded-pill ${styles.customBtnOutline}`}
-                >
-                  Simular economia
-                </button>
-              </div>
-            </div>
-          </div>
+ return (
+  <>
+   <div className="bg-light">
+    {/* INICIAL */}
+    <div
+     className="position-relative overflow-hidden pt-0 px-3 pb-3 p-md-5 text-center text-white"
+     style={{
+      marginTop: "-1px",
+      backgroundImage:
+       'linear-gradient(rgba(33, 37, 41, 0.8), rgba(33, 37, 41, 0.85)), url("https://moduloenergia.com/wp-content/uploads/telha-solar-ou-painel-solar-qual-o-melhor.jpg")',
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+     }}
+    >
+     <div
+      className="col-md-6 p-lg-5 mx-auto my-5 position-relative"
+      style={{ zIndex: 2 }}
+     >
+      <h1 className="display-3 fw-bold mb-3 text-uppercase tracking-wide">
+       Projetado para <span style={{ color: "#FFC107" }}>Empresas</span>
+      </h1>
+
+      <h3 className="fw-light mb-5 fs-4" style={{ color: "#e9ecef" }}>
+       Consiga tudo o que quiser com o luminar.
+      </h3>
+     </div>
+    </div>
+
+    {/* HERO */}
+    <section
+     className="bg-light"
+     style={{
+      paddingTop: "90px",
+      paddingBottom: "130px",
+     }}
+    >
+     <div className="container">
+      <div className="row align-items-center g-5">
+       {/* TEXTO */}
+       <div className="col-lg-6">
+        <h1
+         className="display-4 fw-bold mb-4"
+         style={{
+          color: "#1a1a1a",
+          lineHeight: "1.2",
+         }}
+        >
+         Energia solar para reduzir sua conta de luz
+        </h1>
+
+        <p
+         className="lead"
+         style={{
+          color: "#6c757d",
+          maxWidth: "540px",
+         }}
+        >
+         Projetamos e instalamos sistemas de energia solar fotovoltaica para residências,
+         comércios e indústrias com alta eficiência e economia garantida.
+        </p>
+
+        <div className="d-flex flex-wrap gap-3 mt-4">
+         <button
+          className="btn btn-warning btn-lg fw-bold px-4"
+          style={{
+           borderRadius: "12px",
+          }}
+         >
+          Solicitar orçamento
+         </button>
+
+         <button
+          className="btn btn-outline-dark btn-lg fw-bold px-4"
+          style={{
+           borderRadius: "12px",
+          }}
+         >
+          Simular economia
+         </button>
         </div>
-      </section>
+       </div>
 
-      {/* ABOUT */}
-      <section className={`bg-white ${styles.section}`}>
-        <div className="container">
-          <div className="row align-items-center g-5">
-            <div className="col-lg-6 pe-lg-5">
-              <h2 className={`fw-bold mb-4 text-dark display-6 lh-sm ${styles.sectionTitle}`}>
-                Faça a transição para o futuro da energia
-              </h2>
-              <p className={`text-secondary fs-5 mb-4 ${styles.aboutText}`}>
-                Ajudamos residências, comércios e indústrias a se libertarem das altas
-                tarifas de energia. Nossa equipe cuida de tudo: desde o projeto de
-                engenharia até a homologação na concessionária.
-              </p>
-              <ul className="list-unstyled mt-4">
-                <li className="d-flex align-items-center mb-3 text-secondary">
-                  <i className="bi bi-check-circle-fill text-warning fs-4 me-3"></i>
-                  Instalação rápida e sem dor de cabeça
-                </li>
-                <li className="d-flex align-items-center mb-3 text-secondary">
-                  <i className="bi bi-check-circle-fill text-warning fs-4 me-3"></i>
-                  Retorno do investimento em poucos anos
-                </li>
-                <li className="d-flex align-items-center text-secondary">
-                  <i className="bi bi-check-circle-fill text-warning fs-4 me-3"></i>
-                  Valorização imediata do seu imóvel
-                </li>
-              </ul>
-            </div>
-            <div className={`col-lg-6 ${styles.aboutImageWrap}`}>
-              <div className={styles.aboutImageOffset}></div>
-              <div className={styles.aboutImageBox}>
-                <Image
-                  src="/painelsolar.jpg"
-                  alt="Instalação de Painel solar"
-                  fill
-                  sizes="(max-width: 992px) 90vw, 50vw"
-                  className={styles.aboutImage}
-                />
-              </div>
-            </div>
-          </div>
+       {/* IMAGEM */}
+       <div className="col-lg-6 text-center">
+        <img
+         src="painelsolar.jpg"
+         className="img-fluid shadow"
+         alt="Painel solar"
+         style={{
+          borderRadius: "24px",
+          maxHeight: "500px",
+          objectFit: "cover",
+         }}
+        />
+       </div>
+      </div>
+     </div>
+    </section>
+
+    {/* DIFERENCIAIS */}
+    <section
+     className="bg-white"
+     style={{
+      paddingTop: "130px",
+      paddingBottom: "130px",
+     }}
+    >
+     <div className="container">
+      <div className="text-center mb-5">
+       <h2
+        className="fw-bold"
+        style={{
+         fontSize: "2.7rem",
+         color: "#212529",
+         fontFamily: "'Poppins', sans-serif",
+         letterSpacing: "1px",
+        }}
+       >
+        Nossos Diferenciais
+       </h2>
+
+       <div
+        className="mx-auto mt-3"
+        style={{
+         width: "90px",
+         height: "5px",
+         backgroundColor: "#FFC107",
+         borderRadius: "10px",
+        }}
+       ></div>
+      </div>
+
+      {/* ROW */}
+      <div className="row g-5">
+       {/* CARD */}
+       <div className="col-md-4">
+        <div
+         className="card border-0 shadow-lg h-100 text-center p-4 rounded-4 hover-card"
+         style={{
+          transition: "0.3s",
+          cursor: "pointer",
+         }}
+        >
+         <div
+          className="mx-auto mb-4 d-flex align-items-center justify-content-center"
+          style={{
+           width: "80px",
+           height: "80px",
+           borderRadius: "50%",
+           backgroundColor: "#FFC107",
+          }}
+         >
+          <i className="bi bi-cash-coin fs-2 text-dark"></i>
+         </div>
+
+         <h4 className="fw-bold mb-3">Economia Real</h4>
+
+         <p className="text-secondary">
+          Economize até 95% na conta de energia com soluções eficientes.
+         </p>
         </div>
-      </section>
+       </div>
 
-      {/* FEATURES */}
-      <section className={`bg-light ${styles.section}`}>
-        <div className="container">
-          <div className="text-center mb-5 pb-3">
-            <h2 className={`fw-bold text-dark display-6 ${styles.sectionTitle}`}>
-              Nossos Diferenciais
-            </h2>
-            <div className={styles.titleBar}></div>
-          </div>
+       {/* CARD */}
+       <div className="col-md-4">
+        <div
+         className="card border-0 shadow-lg h-100 text-center p-4 rounded-4 hover-card"
+         style={{
+          transition: "0.3s",
+          cursor: "pointer",
+         }}
+        >
+         <div
+          className="mx-auto mb-4 d-flex align-items-center justify-content-center"
+          style={{
+           width: "80px",
+           height: "80px",
+           borderRadius: "50%",
+           backgroundColor: "#FFC107",
+          }}
+         >
+          <i className="bi bi-lightning-charge fs-2 text-dark"></i>
+         </div>
 
-          <div className="row g-4">
-            {FEATURES.map((item) => (
-              <div className="col-md-4" key={item.title}>
-                <div
-                  className={`card border-0 shadow-sm h-100 p-5 rounded-4 bg-white ${styles.hoverLift}`}
-                >
-                  <div
-                    className={`mb-4 d-flex align-items-center justify-content-center rounded-3 bg-warning bg-opacity-10 ${styles.featureIconBox}`}
-                  >
-                    <i className={`bi ${item.icon} fs-1 text-warning`}></i>
-                  </div>
-                  <h4 className="fw-bold mb-3 text-dark">{item.title}</h4>
-                  <p className="text-secondary m-0 lh-base">{item.text}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+         <h4 className="fw-bold mb-3">Tecnologia Moderna</h4>
+
+         <p className="text-secondary">
+          Equipamentos modernos com alta eficiência e durabilidade.
+         </p>
         </div>
-      </section>
+       </div>
 
-      {/* SERVICES */}
-      <section className={styles.sectionDark}>
-        <div className="container">
-          <div className="d-flex justify-content-between align-items-end mb-5">
-            <div>
-              <h2 className={`fw-bold text-white mb-2 display-6 ${styles.sectionTitle}`}>
-                Nossos Serviços
-              </h2>
-              <div className={styles.titleBarLeft}></div>
-            </div>
-          </div>
+       {/* CARD */}
+       <div className="col-md-4">
+        <div
+         className="card border-0 shadow-lg h-100 text-center p-4 rounded-4 hover-card"
+         style={{
+          transition: "0.3s",
+          cursor: "pointer",
+         }}
+        >
+         <div
+          className="mx-auto mb-4 d-flex align-items-center justify-content-center"
+          style={{
+           width: "80px",
+           height: "80px",
+           borderRadius: "50%",
+           backgroundColor: "#FFC107",
+          }}
+         >
+          <i className="bi bi-headset fs-2 text-dark"></i>
+         </div>
 
-          <div className="row g-4">
-            {SERVICES.map((svc) => (
-              <div className="col-lg-4 col-md-6" key={svc.title}>
-                <div
-                  className={`card border-0 rounded-4 overflow-hidden h-100 position-relative shadow-lg ${styles.serviceCard}`}
-                >
-                  <div
-                    className={styles.serviceBg}
-                    style={{ backgroundImage: `url(${svc.img})` }}
-                  ></div>
-                  <div className={styles.serviceOverlay}></div>
-                  <div className={`card-body ${styles.serviceBody}`}>
-                    <h3 className={`fw-bold text-white ${styles.serviceTitle}`}>
-                      {svc.title}
-                    </h3>
-                    <div className={styles.serviceLine}></div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+         <h4 className="fw-bold mb-3">Suporte Especializado</h4>
+
+         <p className="text-secondary">
+          Atendimento técnico rápido e suporte completo para você.
+         </p>
         </div>
-      </section>
+       </div>
+      </div>
 
-      {/* CTA */}
-      <section className={`bg-warning ${styles.ctaSection}`}>
-        <div className={styles.ctaCircle1}></div>
-        <div className={styles.ctaCircle2}></div>
+      <style jsx>{`
+       .hover-card:hover {
+        transform: scale(1.05);
+       }
+      `}</style>
+     </div>
+    </section>
 
-        <div className="container position-relative z-2">
-          <div
-            className={`bg-dark rounded-5 shadow-lg d-flex flex-column flex-lg-row align-items-center justify-content-between ${styles.ctaBox}`}
-          >
-            <div className={`text-center text-lg-start mb-4 mb-lg-0 ${styles.ctaCopy}`}>
-              <h2 className={`fw-bolder text-white mb-3 ${styles.ctaTitle}`}>
-                Pronto para zerar sua conta de luz?
-              </h2>
-              <p className="text-light opacity-75 fs-5 m-0">
-                Fale com nossos engenheiros e receba um projeto personalizado para sua
-                empresa sem compromisso.
-              </p>
-            </div>
-            <div>
-              <a
-                href="#"
-                className={`btn btn-warning btn-lg fw-bold px-5 py-3 rounded-pill text-dark fs-5 ${styles.customBtn} ${styles.shadowGlowDark}`}
-              >
-                Solicitar Orçamento Agora
-              </a>
-            </div>
-          </div>
+    {/* SERVIÇOS */}
+    <section
+     style={{
+      backgroundColor: "#212529",
+      paddingTop: "30px",
+      paddingBottom: "30px",
+     }}
+    >
+     <div className="container px-4 py-5" id="custom-cards">
+      <div className="text-center mb-5">
+       <h2
+        className="fw-bold"
+        style={{
+         fontSize: "2.7rem",
+         color: "#FFC107",
+         fontFamily: "'Poppins', sans-serif",
+         letterSpacing: "1px",
+        }}
+       >
+        Confira nossos Serviços
+       </h2>
+      </div>
+
+      <div className="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
+       {/* CARD 1 */}
+       <div className="col">
+        <div
+         className="card-hover card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg border-0 position-relative"
+         style={{
+          backgroundImage:
+           'url("https://descarbonizesolucoes.com.br/blog/wp-content/uploads/2024/12/engenharia-instalacao-paineis-solares-campo-aberto.webp")',
+          minHeight: "360px",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+         }}
+        >
+         {/* PELÍCULA PRETA */}
+         <div
+          style={{
+           position: "absolute",
+           inset: 0,
+           backgroundColor: "rgba(0,0,0,0.45)",
+          }}
+         ></div>
+
+         {/* TEXTO */}
+         <div className="d-flex flex-column h-100 p-4 text-white text-shadow-1 text-center justify-content-center position-relative">
+          <h3 className="fw-bold">Instalação de painéis solares</h3>
+         </div>
         </div>
-      </section>
+       </div>
 
-      {/* FAQ */}
-      <section className={`bg-white ${styles.section}`}>
-        <div className={`container ${styles.faqContainer}`}>
-          <div className="text-center mb-5">
-            <h2 className={`fw-bold text-dark display-6 ${styles.sectionTitle}`}>
-              Perguntas Frequentes
-            </h2>
-            <div className={styles.titleBar}></div>
-          </div>
+       {/* CARD 2 */}
+       <div className="col">
+        <div
+         className="card-hover card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg border-0 position-relative"
+         style={{
+          backgroundImage:
+           'url("https://cdn.prod.website-files.com/6800d450c97b7af1e8cc4be2/681b4df93cee4c65220a1fa8_Design%20sem%20nome%20-%202025-05-07T091107.350.png")',
+          minHeight: "360px",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+         }}
+        >
+         {/* PELÍCULA PRETA */}
+         <div
+          style={{
+           position: "absolute",
+           inset: 0,
+           backgroundColor: "rgba(0,0,0,0.45)",
+          }}
+         ></div>
 
-          <div className="accordion" id="accordionFAQ">
-            {FAQS.map((faq, idx) => (
-              <div
-                className={`accordion-item shadow-sm ${styles.faqItem}`}
-                key={faq.q}
-              >
-                <h2 className="accordion-header">
-                  <button
-                    className={`accordion-button collapsed fw-bold p-4 ${styles.faqButton}`}
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target={`#faq-${idx}`}
-                  >
-                    {faq.q}
-                  </button>
-                </h2>
-                <div
-                  id={`faq-${idx}`}
-                  className="accordion-collapse collapse"
-                  data-bs-parent="#accordionFAQ"
-                >
-                  <div
-                    className={`accordion-body px-4 pb-4 pt-3 text-secondary ${styles.faqBody}`}
-                  >
-                    {faq.a}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+         {/* TEXTO */}
+         <div className="d-flex flex-column h-100 p-4 text-white text-shadow-1 text-center justify-content-center position-relative">
+          <h3 className="fw-bold">Monitoramento energético</h3>
+         </div>
         </div>
-      </section>
-    </main>
-  );
+       </div>
+
+       {/* CARD 3 */}
+       <div className="col">
+        <div
+         className="card-hover card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg border-0 position-relative"
+         style={{
+          backgroundImage:
+           'url("https://institutosolar.com/wp-content/uploads/2019/05/Manuten%C3%A7%C3%A3o-do-painel-solar.jpg")',
+          minHeight: "360px",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+         }}
+        >
+         {/* PELÍCULA PRETA */}
+         <div
+          style={{
+           position: "absolute",
+           inset: 0,
+           backgroundColor: "rgba(0,0,0,0.45)",
+          }}
+         ></div>
+
+         {/* TEXTO */}
+         <div className="d-flex flex-column h-100 p-4 text-white text-shadow-1 text-center justify-content-center position-relative">
+          <h3 className="fw-bold">Manutenção</h3>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+
+     <style jsx>{`
+      .card-hover {
+       transition: transform 0.3s ease;
+       cursor: pointer;
+      }
+
+      .card-hover:hover {
+       transform: scale(1.03);
+      }
+     `}</style>
+    </section>
+
+    {/* ORÇAMENTO */}
+    <section
+     style={{
+      backgroundColor: "#febd17",
+      paddingTop: "130px",
+      paddingBottom: "130px",
+     }}
+    >
+     <div className="container">
+      <div
+       className="mx-auto text-center position-relative overflow-hidden"
+       style={{
+        backgroundColor: "#221f20",
+        borderRadius: "35px",
+        padding: "90px 40px",
+       }}
+      >
+       {/* TEXTO */}
+       <div
+        className="mx-auto"
+        style={{
+         maxWidth: "900px",
+        }}
+       >
+        <h2
+         className="fw-bold mb-4"
+         style={{
+          fontSize: "4rem",
+          lineHeight: "1.2",
+          color: "#febd17",
+         }}
+        >
+         Energia inteligente para sua empresa economizar mais e gastar menos
+        </h2>
+
+        {/* BOTÃO */}
+        <a
+         href="#"
+         className="btn fw-bold px-5 py-3"
+         style={{
+          backgroundColor: "#febd17",
+          color: "#221f20",
+          borderRadius: "18px",
+          fontSize: "1.1rem",
+          transition: "0.3s",
+         }}
+        >
+         Solicitar orçamento
+        </a>
+       </div>
+      </div>
+     </div>
+    </section>
+
+    {/* FAQ */}
+    <section
+     className="bg-light"
+     style={{
+      paddingTop: "130px",
+      paddingBottom: "130px",
+     }}
+    >
+     <div className="container">
+      <h2 className="text-center fw-bold mb-5">
+       Perguntas Frequentes
+       <div
+        className="mx-auto mt-3"
+        style={{
+         width: "90px",
+         height: "5px",
+         backgroundColor: "#FFC107",
+         borderRadius: "10px",
+        }}
+       ></div>
+      </h2>
+
+      <div
+       className="accordion accordion-flush shadow rounded-4 overflow-hidden"
+       id="accordionFlushExample"
+      >
+       <div className="accordion-item">
+        <h2 className="accordion-header">
+         <button
+          className="accordion-button collapsed fw-bold"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#flush-collapseOne"
+         >
+          Como funciona a energia solar?
+         </button>
+        </h2>
+
+        <div
+         id="flush-collapseOne"
+         className="accordion-collapse collapse"
+         data-bs-parent="#accordionFlushExample"
+        >
+         <div className="accordion-body">
+          A energia solar converte a luz do sol em energia elétrica.
+         </div>
+        </div>
+       </div>
+
+       <div className="accordion-item">
+        <h2 className="accordion-header">
+         <button
+          className="accordion-button collapsed fw-bold"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#flush-collapseTwo"
+         >
+          Quanto posso economizar?
+         </button>
+        </h2>
+
+        <div
+         id="flush-collapseTwo"
+         className="accordion-collapse collapse"
+         data-bs-parent="#accordionFlushExample"
+        >
+         <div className="accordion-body">
+          Você pode economizar até 95% na conta de energia.
+         </div>
+        </div>
+       </div>
+
+       <div className="accordion-item">
+        <h2 className="accordion-header">
+         <button
+          className="accordion-button collapsed fw-bold"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#flush-collapseThree"
+         >
+          Vocês fazem manutenção?
+         </button>
+        </h2>
+
+        <div
+         id="flush-collapseThree"
+         className="accordion-collapse collapse"
+         data-bs-parent="#accordionFlushExample"
+        >
+         <div className="accordion-body">
+          Sim, realizamos manutenção preventiva e corretiva.
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </section>
+   </div>
+  </>
+ );
 }

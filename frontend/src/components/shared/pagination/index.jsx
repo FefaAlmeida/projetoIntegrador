@@ -19,11 +19,11 @@ export default function Pagination({
 
  return (
   <nav aria-label="Paginação" className="d-flex justify-content-center mt-4">
-   <ul className={`pagination ${styles.list}`}>
+   <ul className="pagination gap-1 m-0">
     <li className={`page-item ${page === 1 ? "disabled" : ""}`}>
      <button
       type="button"
-      className={`page-link ${styles.link}`}
+      className={`page-link text-dark-2 bg-white text-center ${styles.link}`}
       onClick={() => go(page - 1)}
       aria-label="Página anterior"
      >
@@ -34,13 +34,13 @@ export default function Pagination({
     {pages.map((p, idx) =>
      p === "…" ? (
       <li key={`gap-${idx}`} className="page-item disabled">
-       <span className={`page-link ${styles.link}`}>…</span>
+       <span className={`page-link text-dark-2 bg-white text-center ${styles.link}`}>…</span>
       </li>
      ) : (
       <li key={p} className={`page-item ${p === page ? "active" : ""}`}>
        <button
         type="button"
-        className={`page-link ${styles.link} ${
+        className={`page-link text-dark-2 bg-white text-center ${styles.link} ${
          p === page ? styles.linkActive : ""
         }`}
         onClick={() => go(p)}
@@ -55,7 +55,7 @@ export default function Pagination({
     <li className={`page-item ${page === totalPages ? "disabled" : ""}`}>
      <button
       type="button"
-      className={`page-link ${styles.link}`}
+      className={`page-link text-dark-2 bg-white text-center ${styles.link}`}
       onClick={() => go(page + 1)}
       aria-label="Próxima página"
      >

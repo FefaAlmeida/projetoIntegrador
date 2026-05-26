@@ -1,4 +1,4 @@
-/* Estilos da página de contato */
+/* Estilos da página de contato — só o que Bootstrap não cobre */
 
 .shell {
  background-color: #ececec;
@@ -12,12 +12,9 @@
 
 .card {
  max-width: 1350px;
- border-radius: 28px;
- background-color: var(--color-dark);
 }
 
 .left {
- background: linear-gradient(135deg, var(--color-dark), #2d2a2b);
  padding: 60px;
 }
 
@@ -26,35 +23,23 @@
  line-height: 1;
 }
 
-.titleAccent {
- color: var(--color-yellow);
-}
-
-.subtitle {
- color: #d4d4d4;
- line-height: 1.8;
- font-size: 1rem;
-}
-
-.field {
- background: var(--color-dark);
- color: #ffffff;
- -webkit-text-fill-color: #ffffff;
- border-radius: 14px;
- height: 58px;
-}
-
+.field,
 .textarea {
  background: var(--color-dark);
  color: #ffffff;
  -webkit-text-fill-color: #ffffff;
  border-radius: 14px;
+}
+
+.field {
+ height: 58px;
+}
+
+.textarea {
  resize: none;
 }
 
 .submit {
- background-color: var(--color-yellow);
- color: var(--color-dark);
  border-radius: 14px;
  font-size: 1.05rem;
 }
@@ -73,11 +58,6 @@
 
 .logoWrap {
  margin-top: -20px;
-}
-
-.logoImg {
- max-width: 381px;
- object-fit: contain;
 }
 
 .featureIcon {

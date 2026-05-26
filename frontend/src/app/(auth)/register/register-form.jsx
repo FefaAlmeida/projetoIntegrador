@@ -3,7 +3,6 @@
 import { useForm } from "react-hook-form";
 import { useAuth } from "@/hooks/use-auth";
 import { ROUTES } from "@/constants/web-routes";
-import styles from "./page.module.css";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -24,7 +23,7 @@ export default function RegisterForm() {
  };
 
  const inputClassName = (hasError) =>
-  `form-control border-0 border-bottom rounded-0 px-0 shadow-none ${styles.input} ${
+  `form-control border-0 border-bottom rounded-0 px-0 shadow-none input-underline ${
    hasError ? "is-invalid" : ""
   }`;
 
@@ -105,7 +104,7 @@ export default function RegisterForm() {
    <button
     type="submit"
     disabled={isSubmitting}
-    className={`btn w-100 py-3 rounded-pill fw-bold shadow-sm mb-4 ${styles.submit}`}
+    className="btn btn-yellow w-100 py-3 rounded-pill fw-bold shadow-sm mb-4"
    >
     {isSubmitting ? "Criando conta..." : "Cadastrar agora"}
    </button>
@@ -114,7 +113,7 @@ export default function RegisterForm() {
     <span className="small text-muted">Já tem uma conta? </span>
     <a
      href={ROUTES.LOGIN.href}
-     className={`text-decoration-none small ${styles.linkLogin}`}
+     className="text-decoration-none small text-yellow-soft fw-bold"
     >
      Faça login
     </a>

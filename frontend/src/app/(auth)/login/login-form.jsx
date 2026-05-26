@@ -4,7 +4,6 @@ import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useAuth } from "@/hooks/use-auth";
 import { ROUTES } from "@/constants/web-routes";
-import styles from "./page.module.css";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -29,6 +28,11 @@ export default function LoginForm() {
   });
  };
 
+ const inputClassName = (hasError) =>
+  `form-control border-0 border-bottom rounded-0 px-0 shadow-none input-underline ${
+   hasError ? "is-invalid" : ""
+  }`;
+
  return (
   <form onSubmit={handleSubmit(onSubmit)} noValidate>
    <div className="mb-4">
@@ -41,9 +45,7 @@ export default function LoginForm() {
       required: "Informe seu e-mail",
       pattern: { value: EMAIL_REGEX, message: "Formato de e-mail inválido" },
      })}
-     className={`form-control border-0 border-bottom rounded-0 px-0 shadow-none ${styles.input} ${
-      errors.email ? "is-invalid" : ""
-     }`}
+     className={inputClassName(errors.email)}
     />
     {errors.email && (
      <div className="invalid-feedback d-block">{errors.email.message}</div>
@@ -60,9 +62,7 @@ export default function LoginForm() {
       required: "Informe sua senha",
       minLength: { value: 6, message: "A senha deve ter pelo menos 6 caracteres" },
      })}
-     className={`form-control border-0 border-bottom rounded-0 px-0 shadow-none ${styles.input} ${
-      errors.senha ? "is-invalid" : ""
-     }`}
+     className={inputClassName(errors.senha)}
     />
     {errors.senha && (
      <div className="invalid-feedback d-block">{errors.senha.message}</div>
@@ -72,13 +72,13 @@ export default function LoginForm() {
    <button
     type="submit"
     disabled={isSubmitting}
-    className={`btn w-100 py-3 rounded-pill fw-bold shadow-sm mb-3 ${styles.submit}`}
+    className="btn btn-yellow w-100 py-3 rounded-pill fw-bold shadow-sm mb-3"
    >
     {isSubmitting ? "Verificando dados..." : "Entrar"}
    </button>
 
    <div className="text-center mb-2">
-    <a href="#forgot" className={`text-decoration-none small ${styles.link}`}>
+    <a href="#forgot" className="text-decoration-none small text-yellow-soft fw-bold">
      Esqueceu a senha?
     </a>
    </div>
@@ -86,7 +86,7 @@ export default function LoginForm() {
    <div className="text-center">
     <a
      href={ROUTES.REGISTER.href}
-     className={`text-decoration-none small ${styles.linkBig}`}
+     className="text-decoration-none small text-yellow-soft fw-bold"
     >
      Não tem uma conta? Crie uma!
     </a>

@@ -1,14 +1,8 @@
-.list {
- gap: 4px;
- margin: 0;
-}
+/* Pagination — resíduos que Bootstrap não cobre (cor/border específicos + min-width) */
 
 .link {
- color: var(--color-dark);
  border-color: #e0e0e0;
- background-color: #ffffff;
  min-width: 40px;
- text-align: center;
 }
 
 .link:hover {

@@ -10,14 +10,14 @@ export const metadata = {
 export default function RegisterPage() {
  return (
   <div
-   className={`container-fluid min-vh-100 d-flex align-items-center position-relative overflow-hidden p-0 ${styles.shell}`}
+   className={`container-fluid min-vh-100 d-flex align-items-center position-relative overflow-hidden p-0 bg-white ${styles.shell}`}
   >
    <div className={`position-absolute top-0 start-0 w-50 ${styles.waveTop}`}>
     <svg
      viewBox="0 0 500 300"
      fill="none"
      xmlns="http://www.w3.org/2000/svg"
-     className={styles.waveSvg}
+     className="w-100 h-auto"
     >
      <path
       d="M0 0H500C400 120 250 50 150 180C70 260 0 220 0 300V0Z"
@@ -79,10 +79,10 @@ export default function RegisterPage() {
       </div>
 
       <div className={`text-start ${styles.heroText}`}>
-       <h1 className={styles.heroTitle}>
-        Junte-se à <span className={styles.heroAccent}>Luminar</span>
+       <h1 className={`text-dark-2 ${styles.heroTitle}`}>
+        Junte-se à <span className="text-yellow-soft">Luminar</span>
        </h1>
-       <p className={styles.heroSub}>
+       <p className={`text-dark-2 ${styles.heroSub}`}>
         Comece sua jornada rumo à independência energética hoje mesmo.
        </p>
       </div>
@@ -90,8 +90,8 @@ export default function RegisterPage() {
 
      <div className="col-lg-5 offset-lg-1 d-flex justify-content-center justify-content-lg-end">
       <div className={`bg-white p-5 rounded-4 ${styles.formCard}`}>
-       <h2 className={`fs-3 fw-normal mb-5 ${styles.formTitle}`}>
-        <strong className={styles.formTitleStrong}>Criar conta</strong>
+       <h2 className="fs-3 fw-normal mb-5 text-dark-2">
+        <strong className="text-dark-2 fw-bold">Criar conta</strong>
        </h2>
 
        <RegisterForm />

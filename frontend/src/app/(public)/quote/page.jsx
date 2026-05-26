@@ -9,19 +9,19 @@ export const metadata = {
 
 export default function QuotePage() {
  return (
-  <div className={styles.shell}>
+  <div className={`bg-soft ${styles.shell}`}>
    <div className="container">
-    <div className={styles.header}>
-     <h1 className={styles.title}>
-      Solicite seu <span className={styles.titleAccent}>orçamento</span>
+    <div className={`text-center ${styles.header}`}>
+     <h1 className={`text-dark-2 ${styles.title}`}>
+      Solicite seu <span className="text-yellow">orçamento</span>
      </h1>
-     <p className={styles.subtitle}>
+     <p className="text-muted-custom fs-5 lh-base m-0">
       Conte um pouco sobre seu imóvel e consumo. Em até 24h nossa equipe entra em
       contato com uma proposta sob medida.
      </p>
     </div>
 
-    <div className={styles.card}>
+    <div className={`bg-white shadow-card border-soft rounded-lg-custom ${styles.card}`}>
      <QuoteForm />
     </div>
    </div>
