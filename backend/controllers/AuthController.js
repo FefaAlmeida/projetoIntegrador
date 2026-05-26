@@ -55,7 +55,7 @@ class AuthController {
                 {
                     id: usuario.id,
                     email: usuario.email,
-                    tipo: usuario.tipo
+                    tipo_usuario: usuario.tipo_usuario
                 },
                 JWT_CONFIG.secret,
                 { expiresIn: JWT_CONFIG.expiresIn }
@@ -71,7 +71,7 @@ class AuthController {
                         id: usuario.id,
                         nome: usuario.nome,
                         email: usuario.email,
-                        tipo: usuario.tipo
+                        tipo_usuario: usuario.tipo_usuario
                     }
                 }
             });
@@ -90,7 +90,7 @@ class AuthController {
     // POST /auth/registrar - Registrar novo usuário
     static async registrar(req, res) {
         try {
-            const { nome, email, senha, tipo } = req.body;
+            const { nome, email, senha, tipo_usuario } = req.body;
             
             // Validações básicas
             if (!nome || nome.trim() === '') {
@@ -163,7 +163,7 @@ class AuthController {
 
             // Normalizar tipo (ENUM aceita só CLIENTE ou ADMIN)
             const tiposPermitidos = ['CLIENTE', 'ADMIN'];
-            const tipoNormalizado = (tipo || 'CLIENTE').toString().toUpperCase();
+            const tipoNormalizado = (tipo_usuario || 'CLIENTE').toString().toUpperCase();
             if (!tiposPermitidos.includes(tipoNormalizado)) {
                 return res.status(400).json({
                     sucesso: false,
@@ -177,7 +177,7 @@ class AuthController {
                 nome: nome.trim(),
                 email: email.trim().toLowerCase(),
                 senha: senha,
-                tipo: tipoNormalizado
+                tipo_usuario: tipoNormalizado
             };
 
             // Criar usuário
@@ -190,7 +190,7 @@ class AuthController {
                     id: usuarioId,
                     nome: dadosUsuario.nome,
                     email: dadosUsuario.email,
-                    tipo: dadosUsuario.tipo
+                    tipo_usuario: dadosUsuario.tipo_usuario
                 }
             });
         } catch (error) {
@@ -208,10 +208,10 @@ class AuthController {
     // POST /auth/refresh - Renovar o token JWT (regrava cookie httpOnly)
     static async refresh(req, res) {
         try {
-            const { id, email, tipo } = req.usuario;
+            const { id, email, tipo_usuario } = req.usuario;
 
             const token = jwt.sign(
-                { id, email, tipo },
+                { id, email, tipo_usuario },
                 JWT_CONFIG.secret,
                 { expiresIn: JWT_CONFIG.expiresIn }
             );
@@ -381,7 +381,7 @@ class AuthController {
                     id: atualizado.id,
                     nome: atualizado.nome,
                     email: atualizado.email,
-                    tipo: atualizado.tipo
+                    tipo_usuario: atualizado.tipo_usuario
                 }
             });
         } catch (error) {
@@ -449,7 +449,7 @@ class AuthController {
     // POST /usuarios - Criar novo usuário (apenas admin)
     static async criarUsuario(req, res) {
         try {
-            const { nome, email, senha, tipo } = req.body;
+            const { nome, email, senha, tipo_usuario } = req.body;
             
             // Validações básicas
             if (!nome || nome.trim() === '') {
@@ -524,7 +524,7 @@ class AuthController {
             const dadosUsuario = {
                 nome: nome.trim(),
                 email: email.trim().toLowerCase(),
-                tipo: tipo,
+                tipo_usuario: tipo_usuario,
                 senha: senha,
             };
 
@@ -538,7 +538,7 @@ class AuthController {
                     id: usuarioId,
                     nome: dadosUsuario.nome,
                     email: dadosUsuario.email,
-                    tipo: dadosUsuario.tipo
+                    tipo_usuario: dadosUsuario.tipo_usuario
                 }
             });
         } catch (error) {
@@ -555,7 +555,7 @@ class AuthController {
     static async atualizarUsuario(req, res) {
         try {
             const { id } = req.params;
-            const { nome, email, senha, tipo } = req.body;
+            const { nome, email, senha, tipo_usuario } = req.body;
             
             // Validação do ID
             if (!id || isNaN(id)) {
@@ -631,8 +631,8 @@ class AuthController {
                 dadosAtualizacao.senha = senha;
             }
 
-            if (tipo !== undefined) {
-                dadosAtualizacao.tipo = tipo;
+            if (tipo_usuario !== undefined) {
+                dadosAtualizacao.tipo_usuario = tipo_usuario;
             }
 
             // Verificar se há dados para atualizar

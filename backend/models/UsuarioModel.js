@@ -1,7 +1,6 @@
 import { hashPassword, comparePassword, getConnection } from '../config/database.js';
 
 // Model para operações com usuários
-// OBS: a tabela usa id_usuario/tipo_usuario, mas o restante do código espera id/tipo
 // — fazemos o aliasing via SELECT ... AS ... pra manter a interface consistente.
 class UsuarioModel {
     // Listar todos os usuários (com paginação)
@@ -10,7 +9,7 @@ class UsuarioModel {
         const connection = await getConnection();
         try {
             const sql = `
-                SELECT id_usuario AS id, nome, email, senha, tipo_usuario AS tipo, status_usuario AS status, id_empresa
+                SELECT id_usuario AS id, nome, email, senha, tipo_usuario, status_usuario AS status, id_empresa
                 FROM usuarios
                 ORDER BY id_usuario DESC
                 LIMIT ? OFFSET ?
@@ -36,7 +35,7 @@ class UsuarioModel {
         const connection = await getConnection();
         try {
             const sql = `
-                SELECT id_usuario AS id, nome, email, senha, tipo_usuario AS tipo, status_usuario AS status, id_empresa
+                SELECT id_usuario AS id, nome, email, senha, tipo_usuario, status_usuario AS status, id_empresa
                 FROM usuarios
                 WHERE id_usuario = ?
                 LIMIT 1
@@ -52,7 +51,7 @@ class UsuarioModel {
         const connection = await getConnection();
         try {
             const sql = `
-                SELECT id_usuario AS id, nome, email, senha, tipo_usuario AS tipo, status_usuario AS status, id_empresa
+                SELECT id_usuario AS id, nome, email, senha, tipo_usuario, status_usuario AS status, id_empresa
                 FROM usuarios
                 WHERE email = ?
                 LIMIT 1
@@ -76,7 +75,7 @@ class UsuarioModel {
                 dadosUsuario.nome,
                 dadosUsuario.email,
                 senhaHash,
-                dadosUsuario.tipo
+                dadosUsuario.tipo_usuario
             ]);
             return result.insertId;
         } finally {
@@ -100,9 +99,9 @@ class UsuarioModel {
             campos.push('senha = ?');
             valores.push(await hashPassword(dadosUsuario.senha));
         }
-        if (dadosUsuario.tipo !== undefined) {
+        if (dadosUsuario.tipo_usuario !== undefined) {
             campos.push('tipo_usuario = ?');
-            valores.push(dadosUsuario.tipo);
+            valores.push(dadosUsuario.tipo_usuario);
         }
 
         if (campos.length === 0) return 0;

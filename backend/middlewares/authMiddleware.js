@@ -29,7 +29,7 @@ const authMiddleware = (req, res, next) => {
         // Adicionar informações do usuário ao request
         req.usuario = {
             id: decoded.id,
-            tipo: decoded.tipo,
+            tipo_usuario: decoded.tipo_usuario,
             email: decoded.email
         };
 
@@ -59,7 +59,7 @@ const authMiddleware = (req, res, next) => {
 
 // Middleware para verificar se o usuário é administrador
 const adminMiddleware = (req, res, next) => {
-    if (req.usuario.tipo !== 'ADMIN') {
+    if (req.usuario.tipo_usuario !== 'ADMIN') {
         return res.status(403).json({ 
             erro: 'Acesso negado',
             mensagem: 'Apenas administradores podem acessar este recurso'
