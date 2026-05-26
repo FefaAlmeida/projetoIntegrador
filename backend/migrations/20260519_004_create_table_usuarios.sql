@@ -6,6 +6,7 @@ USE luminar_api;
 
 CREATE TABLE IF NOT EXISTS usuarios (
     id_usuario INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(255) NOT NULL DEFAULT '',
     email VARCHAR(150) NOT NULL UNIQUE,
     senha VARCHAR(255) NOT NULL,
     tipo_usuario ENUM('CLIENTE', 'ADMIN') NOT NULL DEFAULT 'CLIENTE',
