@@ -70,11 +70,12 @@ export default function PreferencesContent() {
  };
 
  const inicial = (user?.nome || user?.email || "?").charAt(0).toUpperCase();
- const inputClass = `form-control border-0 border-bottom rounded-0 px-0 shadow-none ${styles.input}`;
+ const inputClass =
+  "form-control border-0 border-bottom rounded-0 px-0 shadow-none input-underline";
 
  return (
   <div className={styles.shell}>
-   <div className={styles.banner}>
+   <div className={`bg-gradient-dark ${styles.banner}`}>
     <div className="container">
      <div className="d-flex flex-column flex-md-row align-items-md-center gap-4">
       <div
@@ -83,11 +84,11 @@ export default function PreferencesContent() {
        {inicial}
       </div>
       <div>
-       <span className={`badge mb-2 ${styles.tipoBadge}`}>{user.tipo}</span>
+       <span className="badge mb-2 bg-yellow text-dark-2">{user.tipo}</span>
        <h1 className={`fw-bold text-white mb-1 ${styles.bannerTitle}`}>
-        Suas <span className={styles.bannerAccent}>preferências</span>
+        Suas <span className="text-yellow">preferências</span>
        </h1>
-       <p className={`mb-0 ${styles.bannerSub}`}>
+       <p className="mb-0 text-white text-opacity-75">
         Atualize seus dados pessoais e mantenha sua conta segura.
        </p>
       </div>
@@ -100,8 +101,8 @@ export default function PreferencesContent() {
      <div className="col-lg-7">
       <div className={`bg-white p-5 rounded-4 h-100 ${styles.card}`}>
        <div className="d-flex align-items-center gap-2 mb-4">
-        <i className={`bi bi-person-vcard-fill fs-4 ${styles.cardIcon}`}></i>
-        <h2 className={`fs-4 fw-bold m-0 ${styles.cardTitle}`}>
+        <i className="bi bi-person-vcard-fill fs-4 text-yellow"></i>
+        <h2 className="fs-4 fw-bold m-0 text-dark-2">
          Dados pessoais
         </h2>
        </div>
@@ -134,7 +135,7 @@ export default function PreferencesContent() {
         <button
          type="submit"
          disabled={salvandoDados}
-         className={`btn fw-bold px-4 py-2 rounded-pill ${styles.btnPrimary}`}
+         className="btn btn-yellow fw-bold px-4 py-2 rounded-pill"
         >
          {salvandoDados ? "Salvando..." : "Salvar alterações"}
         </button>
@@ -145,8 +146,8 @@ export default function PreferencesContent() {
      <div className="col-lg-5">
       <div className={`bg-white p-5 rounded-4 h-100 ${styles.card}`}>
        <div className="d-flex align-items-center gap-2 mb-4">
-        <i className={`bi bi-shield-lock-fill fs-4 ${styles.cardIcon}`}></i>
-        <h2 className={`fs-4 fw-bold m-0 ${styles.cardTitle}`}>Segurança</h2>
+        <i className="bi bi-shield-lock-fill fs-4 text-yellow"></i>
+        <h2 className="fs-4 fw-bold m-0 text-dark-2">Segurança</h2>
        </div>
 
        <form onSubmit={salvarSenha} noValidate>
@@ -190,7 +191,7 @@ export default function PreferencesContent() {
         <button
          type="submit"
          disabled={salvandoSenha}
-         className={`btn fw-bold px-4 py-2 rounded-pill w-100 ${styles.btnInverted}`}
+         className="btn btn-inverted fw-bold px-4 py-2 rounded-pill w-100"
         >
          {salvandoSenha ? "Alterando..." : "Alterar senha"}
         </button>
@@ -199,11 +200,9 @@ export default function PreferencesContent() {
      </div>
 
      <div className="col-12">
-      <div
-       className={`d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 p-4 rounded-4 ${styles.dangerCard}`}
-      >
+      <div className="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 p-4 rounded-4 bg-white border-dashed-danger">
        <div>
-        <h3 className={`fs-5 fw-bold mb-1 ${styles.dangerTitle}`}>
+        <h3 className="fs-5 fw-bold mb-1 text-dark-2">
          Encerrar sessão
         </h3>
         <p className="small text-secondary m-0">
@@ -214,7 +213,7 @@ export default function PreferencesContent() {
        <button
         type="button"
         onClick={() => logout()}
-        className={`btn fw-bold px-4 py-2 rounded-pill ${styles.btnDanger}`}
+        className="btn btn-outline-danger fw-bold px-4 py-2 rounded-pill"
        >
         <i className="bi bi-box-arrow-right me-2"></i>
         Sair da conta

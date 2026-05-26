@@ -2,7 +2,6 @@
 
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import styles from "./page.module.css";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const CEP_REGEX = /^\d{5}-?\d{3}$/;
@@ -44,12 +43,12 @@ export default function QuoteForm() {
  };
 
  const fieldClass = (hasError) =>
-  `form-control border-0 border-bottom rounded-0 px-0 shadow-none ${styles.input} ${
+  `form-control border-0 border-bottom rounded-0 px-0 shadow-none input-underline ${
    hasError ? "is-invalid" : ""
   }`;
 
  const selectClass = (hasError) =>
-  `form-select border-0 border-bottom rounded-0 px-0 shadow-none ${styles.select} ${
+  `form-select border-0 border-bottom rounded-0 px-0 shadow-none input-underline ${
    hasError ? "is-invalid" : ""
   }`;
 
@@ -191,7 +190,7 @@ export default function QuoteForm() {
      <button
       type="submit"
       disabled={isSubmitting}
-      className={`btn w-100 py-3 rounded-pill ${styles.submit}`}
+      className="btn btn-yellow w-100 py-3 rounded-pill"
      >
       {isSubmitting ? "Enviando…" : "Solicitar orçamento"}
      </button>

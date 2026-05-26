@@ -15,17 +15,19 @@ const FEATURES = [
 export default function ContactPage() {
  return (
   <div className={`d-flex flex-column min-vh-100 ${styles.shell}`}>
-   <main className={`flex-grow-1 py-9 px-3 ${styles.main}`}>
-    <div className={`container overflow-hidden shadow-lg p-0 ${styles.card}`}>
+   <main className={`flex-grow-1 px-3 ${styles.main}`}>
+    <div
+     className={`container overflow-hidden shadow-lg p-0 mx-auto bg-dark-custom rounded-xl ${styles.card}`}
+    >
      <div className="row g-0">
       <div
-       className={`col-lg-5 text-white d-flex flex-column justify-content-center ${styles.left}`}
+       className={`col-lg-5 text-white d-flex flex-column justify-content-center bg-gradient-dark ${styles.left}`}
       >
        <h1 className={`fw-bold mb-3 ${styles.title}`}>
-        <span className={styles.titleAccent}>Fale Conosco</span>
+        <span className="text-yellow">Fale Conosco</span>
        </h1>
 
-       <p className={`mb-5 ${styles.subtitle}`}>
+       <p className="mb-5 text-white text-opacity-75 lh-relaxed">
         Tem dúvidas, precisa de um orçamento ou quer saber mais sobre energia
         solar? Estamos prontos para te atender!
        </p>
@@ -63,7 +65,7 @@ export default function ContactPage() {
          ></textarea>
         </div>
 
-        <button className={`btn fw-bold w-100 py-3 ${styles.submit}`}>
+        <button className={`btn btn-yellow fw-bold w-100 py-3 ${styles.submit}`}>
          <i className="bi bi-send me-2"></i>
          Enviar mensagem
         </button>
@@ -79,7 +81,7 @@ export default function ContactPage() {
          alt="Luminar"
          width={381}
          height={140}
-         className={`img-fluid ${styles.logoImg}`}
+         className="img-fluid object-fit-contain"
         />
        </div>
 

@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import Pagination from "@/components/shared/pagination";
 import { formatDate } from "@/utils/format";
-import styles from "./page.module.css";
 
 const PAGE_SIZE = 5;
 
@@ -37,11 +36,11 @@ export default function OrdersContent() {
  );
 
  return (
-  <div className={`container py-5 ${styles.shell}`}>
+  <div className="container py-5">
    <div className="d-flex align-items-center gap-3 mb-4">
-    <i className={`bi bi-clipboard-data ${styles.iconAccent}`}></i>
+    <i className="bi bi-clipboard-data text-yellow"></i>
     <div>
-     <h1 className={`fw-bold m-0 ${styles.title}`}>Orçamentos</h1>
+     <h1 className="fw-bold m-0 text-dark-2">Orçamentos</h1>
      <p className="text-secondary m-0">
       {MOCK_ORDERS.length} solicitações recebidas.
      </p>

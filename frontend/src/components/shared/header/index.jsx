@@ -210,10 +210,7 @@ export function UserMenu() {
    >
     <span className={cx("lh__avatar-circle")}>{inicial}</span>
     <span className={cx("lh__avatar-name")}>Olá, {primeiroNome}</span>
-    <i
-     className={`bi bi-chevron-down ${cx("lh__caret")}`}
-     style={{ transform: open ? "rotate(180deg)" : "rotate(0)" }}
-    />
+    <i className={`bi bi-chevron-down ${cx("lh__caret")}`} />
    </button>
 
    <div
@@ -283,9 +280,8 @@ export function DrawerLogoutButton() {
  return (
   <button
    type="button"
-   className={cx("lh-drawer__link")}
+   className={cx("lh-drawer__link", "is-danger")}
    onClick={() => logout()}
-   style={{ color: "#ff7b7b" }}
   >
    Sair
   </button>

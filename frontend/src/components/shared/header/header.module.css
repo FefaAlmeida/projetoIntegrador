@@ -159,7 +159,8 @@
   transition: transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .lh__dd-trigger.is-open .lh__caret,
-.lh-drawer__accordion.is-open .lh__caret {
+.lh-drawer__accordion.is-open .lh__caret,
+.lh__avatar.is-open .lh__caret {
   transform: rotate(180deg);
 }
 .lh__dd-trigger.is-open {
@@ -502,6 +503,13 @@
 .lh-drawer__link.is-active {
   background: var(--lh-yellow-soft);
   color: var(--lh-yellow);
+}
+.lh-drawer__link.is-danger {
+  color: #ff7b7b;
+}
+.lh-drawer__link.is-danger:hover {
+  background: rgba(220, 53, 69, 0.14);
+  color: #ff7b7b;
 }
 .lh-drawer__sub {
   max-height: 0;

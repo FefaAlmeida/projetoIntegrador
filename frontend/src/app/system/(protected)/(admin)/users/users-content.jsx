@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import Pagination from "@/components/shared/pagination";
 import { USER_TYPE } from "@/constants/enums";
-import styles from "./page.module.css";
 
 const PAGE_SIZE = 5;
 
@@ -30,11 +29,11 @@ export default function UsersContent() {
  );
 
  return (
-  <div className={`container py-5 ${styles.shell}`}>
+  <div className="container py-5">
    <div className="d-flex align-items-center gap-3 mb-4">
-    <i className={`bi bi-people-fill ${styles.iconAccent}`}></i>
+    <i className="bi bi-people-fill text-yellow"></i>
     <div>
-     <h1 className={`fw-bold m-0 ${styles.title}`}>Usuários</h1>
+     <h1 className="fw-bold m-0 text-dark-2">Usuários</h1>
      <p className="text-secondary m-0">
       {MOCK_USERS.length} usuários cadastrados.
      </p>

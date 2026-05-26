@@ -1,22 +1,12 @@
-/* Estilos da página de preferências do usuário */
+/* Estilos da página de preferências do usuário — só o que Bootstrap não cobre */
 
 .shell {
  background-color: #f6f6f6;
- font-family: var(--font-base);
  position: relative;
  overflow: hidden;
 }
 
-.spinnerShell {
- min-height: 60vh;
-}
-
-.spinner {
- color: var(--color-yellow);
-}
-
 .banner {
- background: linear-gradient(135deg, var(--color-dark) 0%, var(--color-dark-2) 100%);
  padding-top: 70px;
  padding-bottom: 150px;
 }
@@ -32,22 +22,9 @@
  flex-shrink: 0;
 }
 
-.tipoBadge {
- background-color: var(--color-yellow);
- color: var(--color-dark);
-}
-
 .bannerTitle {
  font-size: 2.6rem;
  line-height: 1.1;
-}
-
-.bannerAccent {
- color: var(--color-yellow);
-}
-
-.bannerSub {
- color: rgba(255, 255, 255, 0.7);
 }
 
 .cardsWrap {
@@ -59,49 +36,4 @@
 
 .card {
  box-shadow: 0 25px 50px rgba(34, 31, 32, 0.12);
- border: 1px solid #ececec;
-}
-
-.cardIcon {
- color: var(--color-yellow);
-}
-
-.cardTitle {
- color: var(--color-dark);
-}
-
-.input {
- border-color: var(--color-dark);
- border-bottom-width: 2px;
- font-size: 1.05rem;
- padding-bottom: 12px;
-}
-
-.btnPrimary {
- background-color: var(--color-yellow);
- color: var(--color-dark);
- border: none;
- letter-spacing: 0.3px;
-}
-
-.btnInverted {
- background-color: var(--color-dark);
- color: var(--color-yellow);
- border: none;
- letter-spacing: 0.3px;
-}
-
-.dangerCard {
- background-color: #fff;
- border: 1px dashed #dc3545;
-}
-
-.dangerTitle {
- color: var(--color-dark);
-}
-
-.btnDanger {
- background-color: transparent;
- color: #dc3545;
- border: 2px solid #dc3545;
 }
