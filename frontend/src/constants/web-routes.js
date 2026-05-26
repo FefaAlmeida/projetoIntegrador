@@ -4,13 +4,13 @@ export const ROUTES = {
  REGISTER: { href: "/register", label: "Criar conta" },
  CONTACT: { href: "/contact", label: "Fale conosco" },
  QUOTE: { href: "/quote", label: "Orçamento" },
- PREFERENCES: { href: "/preferences", label: "Preferências" },
+ PREFERENCES: { href: "/system/preferences", label: "Preferências" },
  ADMIN: {
-  USERS: { href: "/users", label: "Usuários" },
-  ORDERS: { href: "/orders", label: "Orçamentos" },
+  USERS: { href: "/system/users", label: "Usuários" },
+  ORDERS: { href: "/system/orders", label: "Orçamentos" },
  },
  CUSTOMER: {
-  DASHBOARD: { href: "/dashboard", label: "Dashboard" },
-  MY_ORDERS: { href: "/my-orders", label: "Meus orçamentos" },
+  DASHBOARD: { href: "/system/dashboard", label: "Dashboard" },
+  MY_ORDERS: { href: "/system/my-orders", label: "Meus orçamentos" },
  },
 };
