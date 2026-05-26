@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Image from "next/image";
 import LoginForm from "./login-form";
 import styles from "./page.module.css";
@@ -94,7 +95,9 @@ export default function LoginPage() {
         <strong className={styles.formTitleStrong}>Entrar</strong> na sua conta
        </h2>
 
-       <LoginForm />
+       <Suspense fallback={null}>
+        <LoginForm />
+       </Suspense>
       </div>
      </div>
     </div>
