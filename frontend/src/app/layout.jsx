@@ -2,10 +2,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "bootstrap/dist/css/bootstrap.min.css";
 import BootstrapClient from "./bootstrap-client";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import { AuthProvider } from "@/providers/auth-provider";
-import { ToastProvider } from "@/providers/toast-provider";
-import Footer from "@/components/shared/footer";
 import "./globals.css";
+import "./home.css";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 const geistSans = Geist({
  variable: "--font-geist-sans",
@@ -18,20 +18,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
- title: "OfficeTech",
- description: "Site corporativo OfficeTech",
+ title: "Luminar",
+ description: "Energia solar para reduzir sua conta de luz",
 };
 
 export default function RootLayout({ children }) {
  return (
   <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable}`}>
    <body>
-    <AuthProvider>
-     <BootstrapClient />
-     <ToastProvider />
-     {children}
-     <Footer />
-    </AuthProvider>
+    <BootstrapClient />
+    <Header/>
+    {children}
+    <Footer/>
    </body>
   </html>
  );

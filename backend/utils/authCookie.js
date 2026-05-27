@@ -1,4 +1,4 @@
-// Helper para o cookie httpOnly de autenticação
+// Helper para o cookie de autenticação para manter informações entre as requisições
 export const AUTH_COOKIE = 'auth-token';
 
 const ONE_HOUR_MS = 60 * 60 * 1000;
