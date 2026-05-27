@@ -65,7 +65,6 @@ const FAQS = [
 export default function Home() {
   return (
     <>
-      <Header />
       <main className="main">
         {/* HERO */}
         <section className="hero">
@@ -342,7 +341,6 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

@@ -4,7 +4,6 @@ import Footer from "../../components/Footer";
 export default function RegisterPage() {
   return (
     <>
-      <Header />
 
       <main
         className="container-fluid d-flex align-items-center position-relative overflow-hidden bg-white px-0"
@@ -195,8 +194,6 @@ export default function RegisterPage() {
           </div>
         </div>
       </main>
-
-      <Footer />
     </>
   );
 }

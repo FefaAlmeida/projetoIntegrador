@@ -4,6 +4,8 @@ import BootstrapClient from "./bootstrap-client";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./globals.css";
 import "./home.css";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 const geistSans = Geist({
  variable: "--font-geist-sans",
@@ -25,7 +27,9 @@ export default function RootLayout({ children }) {
   <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable}`}>
    <body>
     <BootstrapClient />
+    <Header/>
     {children}
+    <Footer/>
    </body>
   </html>
  );

@@ -3,7 +3,7 @@ import Footer from "../../components/Footer"
 export default function FaleConosco() {
   return (
     <>
-      <Header />
+   
     <div
       className="d-flex flex-column min-vh-100"
       style={{
@@ -258,8 +258,6 @@ export default function FaleConosco() {
           </div>
         </div>
       </main>
-
-      <Footer />
       </div>
     </>
   );

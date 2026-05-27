@@ -5,7 +5,6 @@ import Footer from "../../components/Footer";
 export default function OrcamentoPage() {
   return (
     <>
-      <Header />
       <div
         className="d-flex flex-column min-vh-100"
         style={{
@@ -160,7 +159,6 @@ export default function OrcamentoPage() {
             </div>
           </div>
         </main>
-        <Footer />
       </div>
       <link
         rel="stylesheet"
