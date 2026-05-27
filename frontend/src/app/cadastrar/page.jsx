@@ -1,294 +1,202 @@
-import React from 'react';
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
 export default function RegisterPage() {
- return (
-  <>
-    <Header/>
+  return (
+    <>
+      <Header />
 
-    <div
-      className="container-fluid min-vh-100 d-flex align-items-center position-relative overflow-hidden p-0"
-      style={{
-        backgroundColor: "#ffffff",
-        fontFamily: "'Poppins', sans-serif",
-        marginTop: "-1px",
-      }}
-    >
-
-      {/* 1. ONDA ROXA SUPERIOR ESQUERDA */}
-      <div
-        className="position-absolute top-0 start-0 w-50"
-        style={{ zIndex: 1, pointerEvents: "none" }}
+      <main
+        className="container-fluid d-flex align-items-center position-relative overflow-hidden bg-white px-0"
+        style={{
+          minHeight: "calc(100vh - 180px)",
+          fontFamily: "'Poppins', sans-serif",
+          paddingTop: "72px",
+          paddingBottom: "72px",
+        }}
       >
-        <svg
-          viewBox="0 0 500 300"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          style={{ width: "100%", height: "auto" }}
-        >
-          <path
-            d="M0 0H500C400 120 250 50 150 180C70 260 0 220 0 300V0Z"
-            fill="#FFC107"
-            opacity="0.2"
-          />
-          <path
-            d="M0 0H450C350 90 220 30 120 140C50 210 0 180 0 250V0Z"
-            fill="#FFC107"
-            opacity="0.4"
-          />
-          <path
-            d="M0 0H400C300 70 200 10 100 110C40 170 0 140 0 200V0Z"
-            fill="#FFC107"
-          />
-        </svg>
-      </div>
-
-      {/* 2. ONDA ROXA INFERIOR DIREITA */}
-      <div
-        className="position-absolute bottom-0 end-0 w-50"
-        style={{ zIndex: 1, pointerEvents: "none" }}
-      >
-        <svg
-          viewBox="0 0 500 300"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          style={{
-            width: "100%",
-            height: "auto",
-            transform: "rotate(180deg)",
-          }}
-        >
-          <path
-            d="M0 0H500C400 120 250 50 150 180C70 260 0 220 0 300V0Z"
-            fill="#221f20"
-            opacity="0.2"
-          />
-          <path
-            d="M0 0H450C350 90 220 30 120 140C50 210 0 180 0 250V0Z"
-            fill="#221f20"
-            opacity="0.4"
-          />
-          <path
-            d="M0 0H400C300 70 200 10 100 110C40 170 0 140 0 200V0Z"
-            fill="#221f20"
-          />
-        </svg>
-      </div>
-
-      {/* CONTEÚDO PRINCIPAL */}
-      <div
-        className="container position-relative px-4 px-md-5"
-        style={{ zIndex: 2 }}
-      >
-        <div className="row align-items-center gy-5">
-
-         {/* COLUNA DA ESQUERDA */}
-        <div
-          className="col-lg-6 position-relative d-flex flex-column justify-content-center"
-          style={{ minHeight: "650px" }}
-        >
-
-          {/* BLOB */}
-          <div
-            className="mx-auto mx-lg-0 mb-4 d-flex align-items-center justify-content-center position-relative"
-            style={{
-              width: "100%",
-              maxWidth: "520px",
-              height: "340px",
-              borderRadius: "43% 57% 41% 59% / 57% 45% 55% 43%",
-              boxShadow: "0 18px 40px #756f72",
-              overflow: "hidden",
-              background: "#fff",
-            }}
-          >
-            <img
-              src="/painelsolar.jpg"
-              alt="Imagem"
-              style={{
-                width: "120%",
-                height: "120%",
-                objectFit: "contain",
-              }}
+        <div className="position-absolute top-0 start-0 w-50" style={{ zIndex: 1 }}>
+          <svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M0 0H620C520 60 460 112 376 90C250 56 204 162 92 170C44 173 12 194 0 218V0Z"
+              fill="#ffc107"
             />
-          </div>
-
-          {/* TEXTO */}
-          <div
-            className="text-start"
-            style={{
-              maxWidth: "620px",
-              marginTop: "20px",
-              paddingLeft: "8px",
-            }}
-          >
-            <h1
-              style={{
-                fontSize: "4.2rem",
-                lineHeight: "1",
-                fontWeight: "900",
-                marginBottom: "18px",
-                color: "#221f20",
-              }}
-            >
-              Energia{" "}
-              <span style={{ color: "#f5bd31" }}>
-                Solar
-              </span>
-            </h1>
-
-            <p
-              style={{
-                fontSize: "2rem",
-                color: "#221f20",
-                lineHeight: "1.15",
-                margin: 0,
-              }}
-            >
-              Reduza sua conta de luz com tecnologia limpa e sustentável
-            </p>
-          </div>
+            <path
+              d="M0 80C106 154 194 88 278 116C356 142 396 218 508 156C552 132 590 128 620 142V0H0V80Z"
+              fill="#ffe58a"
+              opacity="0.75"
+            />
+          </svg>
         </div>
 
-        {/* COLUNA DA DIREITA */}
-        <div className="col-lg-5 offset-lg-1 d-flex justify-content-center justify-content-lg-end">
-          <div
-            className="bg-white p-5 rounded-4"
-            style={{
-              width: "100%",
-              maxWidth: "470px",
-              boxShadow: "0 25px 50px #756f72",
-              border: "1px solid #221f20",
-            }}
-          >
+        <div
+          className="position-absolute bottom-0 end-0 w-50"
+          style={{ zIndex: 1, transform: "rotate(180deg)" }}
+        >
+          <svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M0 0H620C520 60 460 112 376 90C250 56 204 162 92 170C44 173 12 194 0 218V0Z"
+              fill="#221f20"
+            />
+            <path
+              d="M0 80C106 154 194 88 278 116C356 142 396 218 508 156C552 132 590 128 620 142V0H0V80Z"
+              fill="#d9d9d9"
+              opacity="0.8"
+            />
+          </svg>
+        </div>
 
-            {/* TÍTULO */}
-            <h2
-              className="fs-3 fw-normal mb-5"
-              style={{ color: "#221f20" }}
-            >
-              <strong
+        <div className="container position-relative" style={{ zIndex: 2 }}>
+          <div className="row align-items-center gy-5">
+            <section className="col-lg-6">
+              <div
+                className="mb-5 overflow-hidden bg-white mx-auto mx-lg-0"
                 style={{
-                  color: "#221f20",
-                  fontWeight: "700",
+                  width: "min(520px, 100%)",
+                  height: "300px",
+                  borderRadius: "48% 52% 45% 55% / 52% 43% 57% 48%",
+                  boxShadow: "0 24px 42px rgba(34, 31, 32, 0.38)",
                 }}
               >
-                Criar
-              </strong>{" "}
-              sua conta
-            </h2>
-
-            <form>
-
-              {/* NOME COMPLETO */}
-              <div className="mb-4">
-                <label className="form-label small fw-bold text-secondary mb-2">
-                  Nome Completo
-                </label>
-                <input
-                  type="text"
-                  className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
-                  style={{
-                    borderColor: "#221f20",
-                    borderBottomWidth: "2px",
-                    fontSize: "1.05rem",
-                    paddingBottom: "12px",
-                  }}
+                <img
+                  src="/painelsolar.jpg"
+                  alt="Painéis solares"
+                  className="w-100 h-100"
+                  style={{ objectFit: "cover" }}
                 />
               </div>
 
-              {/* EMAIL */}
-              <div className="mb-4">
-                <label className="form-label small fw-bold text-secondary mb-2">
-                  E-mail
-                </label>
-                <input
-                  type="email"
-                  className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
+              <div className="text-center text-lg-start">
+                <h1
+                  className="mb-3"
                   style={{
-                    borderColor: "#221f20",
-                    borderBottomWidth: "2px",
-                    fontSize: "1.05rem",
-                    paddingBottom: "12px",
-                  }}
-                />
-              </div>
-
-              {/* SENHA */}
-              <div className="mb-4">
-                <label className="form-label small fw-bold text-secondary mb-2">
-                  Senha
-                </label>
-                <input
-                  type="password"
-                  className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
-                  style={{
-                    borderColor: "#221f20",
-                    borderBottomWidth: "2px",
-                    fontSize: "1.05rem",
-                    paddingBottom: "12px",
-                  }}
-                />
-              </div>
-
-              {/* CONFIRME A SENHA */}
-              <div className="mb-5">
-                <label className="form-label small fw-bold text-secondary mb-2">
-                  Confirme sua Senha
-                </label>
-                <input
-                  type="password"
-                  className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
-                  style={{
-                    borderColor: "#221f20",
-                    borderBottomWidth: "2px",
-                    fontSize: "1.05rem",
-                    paddingBottom: "12px",
-                  }}
-                />
-              </div>
-
-              {/* BOTÃO CADASTRAR */}
-              <button
-                type="submit"
-                className="btn w-100 py-3 rounded-pill fw-bold shadow-sm mb-4"
-                style={{
-                  backgroundColor: "#febd17",
-                  color: "#221f20",
-                  border: "none",
-                  letterSpacing: "0.5px",
-                  transition: "0.3s",
-                  cursor: "pointer",
-                  fontSize: "1rem",
-                  fontWeight: "700",
-                }}
-              >
-                Cadastrar agora
-              </button>
-
-              {/* RETORNAR PARA O LOGIN */}
-              <div className="text-center">
-                <a
-                  href="/login"
-                  className="text-decoration-none small"
-                  style={{
-                    color: "#f5bd31",
-                    fontSize: "0.95rem",
-                    transition: "0.3s",
-                    fontWeight: "700",
+                    color: "#221f20",
+                    fontSize: "clamp(3.2rem, 6vw, 5rem)",
+                    fontWeight: 900,
+                    lineHeight: 1,
                   }}
                 >
-                  Já tem uma conta? Faça login!
-                </a>
+                  Junte-se à <br />
+                  <span style={{ color: "#f5bd31" }}>Luminar</span>
+                </h1>
+                <p
+                  className="m-0"
+                  style={{
+                    maxWidth: "560px",
+                    color: "#221f20",
+                    fontSize: "clamp(1.45rem, 2.6vw, 2.05rem)",
+                    lineHeight: 1.15,
+                  }}
+                >
+                  Comece sua jornada rumo à independência energética hoje mesmo.
+                </p>
               </div>
-            </form>
+            </section>
+
+            <section className="col-lg-5 offset-lg-1 d-flex justify-content-center justify-content-lg-end">
+              <div
+                className="bg-white rounded-4 p-4 p-md-5 w-100"
+                style={{
+                  maxWidth: "430px",
+                  border: "1px solid #221f20",
+                  boxShadow: "0 24px 48px rgba(34, 31, 32, 0.32)",
+                }}
+              >
+                <h2 className="fw-bold mb-5" style={{ color: "#221f20" }}>
+                  Criar conta
+                </h2>
+
+                <form>
+                  <div className="mb-4">
+                    <label className="form-label small fw-bold text-secondary mb-2">
+                      Nome Completo
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
+                      style={{
+                        borderColor: "#d8d8d8",
+                        borderBottomWidth: "2px",
+                        fontSize: "1.05rem",
+                        paddingBottom: "12px",
+                      }}
+                    />
+                  </div>
+
+                  <div className="mb-4">
+                    <label className="form-label small fw-bold text-secondary mb-2">
+                      E-mail
+                    </label>
+                    <input
+                      type="email"
+                      className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
+                      style={{
+                        borderColor: "#d8d8d8",
+                        borderBottomWidth: "2px",
+                        fontSize: "1.05rem",
+                        paddingBottom: "12px",
+                      }}
+                    />
+                  </div>
+
+                  <div className="mb-4">
+                    <label className="form-label small fw-bold text-secondary mb-2">
+                      Senha
+                    </label>
+                    <input
+                      type="password"
+                      className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
+                      style={{
+                        borderColor: "#d8d8d8",
+                        borderBottomWidth: "2px",
+                        fontSize: "1.05rem",
+                        paddingBottom: "12px",
+                      }}
+                    />
+                  </div>
+
+                  <div className="mb-5">
+                    <label className="form-label small fw-bold text-secondary mb-2">
+                      Confirmar Senha
+                    </label>
+                    <input
+                      type="password"
+                      className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
+                      style={{
+                        borderColor: "#d8d8d8",
+                        borderBottomWidth: "2px",
+                        fontSize: "1.05rem",
+                        paddingBottom: "12px",
+                      }}
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    className="btn btn-warning w-100 py-3 rounded-pill fw-bold shadow-sm mb-4"
+                    style={{ color: "#221f20" }}
+                  >
+                    Cadastrar agora
+                  </button>
+
+                  <p className="text-center small mb-0">
+                    Já tem uma conta?{" "}
+                    <a
+                      href="/login"
+                      className="text-decoration-none fw-bold"
+                      style={{ color: "#f5bd31" }}
+                    >
+                      Faça login
+                    </a>
+                  </p>
+                </form>
+              </div>
+            </section>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
+      </main>
 
-  <Footer/>
-</>
- );
+      <Footer />
+    </>
+  );
 }

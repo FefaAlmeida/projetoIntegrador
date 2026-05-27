@@ -1,31 +1,32 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import BootstrapClient from "./bootstrap-client";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import "./globals.css";
+import "./home.css";
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+ variable: "--font-geist-sans",
+ subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+ variable: "--font-geist-mono",
+ subsets: ["latin"],
 });
 
 export const metadata = {
-  title: "OfficeTech",
-  description: "Site corporativo OfficeTech",
+ title: "Luminar",
+ description: "Energia solar para reduzir sua conta de luz",
 };
 
 export default function RootLayout({ children }) {
-  return (
-    <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body>
-        <BootstrapClient />
-        {children}
-      </body>
-    </html>
-  );
+ return (
+  <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable}`}>
+   <body>
+    <BootstrapClient />
+    {children}
+   </body>
+  </html>
+ );
 }

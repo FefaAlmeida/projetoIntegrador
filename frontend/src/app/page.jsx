@@ -1,201 +1,348 @@
-"use client";
+import Image from "next/image";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const CEP_REGEX = /^\d{5}-?\d{3}$/;
-const PHONE_REGEX = /^[\d\s()+\-]{8,20}$/;
-
-const TIPO_IMOVEL = {
- RESIDENCIAL: "RESIDENCIAL",
- COMERCIAL: "COMERCIAL",
+export const metadata = {
+ title: "Luminar — Energia solar para empresas",
+ description:
+  "Reduza sua conta de luz com sistemas fotovoltaicos projetados e instalados pela Luminar.",
 };
 
-const DEFAULT_VALUES = {
- nome: "",
- email: "",
- telefone: "",
- cep: "",
- consumoMedio: "",
- tipoImovel: "",
- mensagem: "",
-};
+const FEATURES = [
+  {
+    icon: "bi-cash-coin",
+    title: "Economia Real",
+    text:
+      "Economize até 95% na conta de energia com soluções projetadas para o seu consumo exato.",
+  },
+  {
+    icon: "bi-lightning-charge",
+    title: "Tecnologia Moderna",
+    text:
+      "Equipamentos de última geração com alta eficiência de captação e décadas de durabilidade.",
+  },
+  {
+    icon: "bi-headset",
+    title: "Suporte Especializado",
+    text:
+      "Atendimento técnico rápido, garantia estendida e suporte completo no pós-venda para você.",
+  },
+];
 
-export default function QuoteForm() {
- const {
-  register,
-  handleSubmit,
-  reset,
-  formState: { errors, isSubmitting },
- } = useForm({ defaultValues: DEFAULT_VALUES });
+const SERVICES = [
+  {
+    img:
+      "https://descarbonizesolucoes.com.br/blog/wp-content/uploads/2024/12/engenharia-instalacao-paineis-solares-campo-aberto.webp",
+    title: "Instalação de painéis",
+  },
+  {
+    img:
+      "https://cdn.prod.website-files.com/6800d450c97b7af1e8cc4be2/681b4df93cee4c65220a1fa8_Design%20sem%20nome%20-%202025-05-07T091107.350.png",
+    title: "Monitoramento energético",
+  },
+  {
+    img:
+      "https://institutosolar.com/wp-content/uploads/2019/05/Manuten%C3%A7%C3%A3o-do-painel-solar.jpg",
+    title: "Manutenção preventiva",
+  },
+];
 
- // TODO: trocar por POST real quando backend tiver endpoint /quotes
- const onSubmit = async (_data) => {
-  const promise = new Promise((resolve) => setTimeout(resolve, 1000));
-  toast.promise(promise, {
-   loading: "Enviando sua solicitação...",
-   success: "Recebemos seu pedido! Nossa equipe entrará em contato em breve.",
-   error: "Falha ao enviar. Tente novamente.",
-  });
-  await promise;
-  reset(DEFAULT_VALUES);
- };
+const FAQS = [
+  {
+    q: "Como funciona a energia solar?",
+    a: "A energia solar converte a luz do sol em energia elétrica através dos painéis fotovoltaicos. Essa energia passa por um inversor e fica pronta para ser usada nas tomadas da sua casa ou empresa.",
+  },
+  {
+    q: "Quanto posso economizar?",
+    a: "Você pode economizar até 95% na conta de energia. Os 5% restantes costumam ser a taxa mínima cobrada pela concessionária de energia da sua região para manter você conectado à rede.",
+  },
+  {
+    q: "Vocês fazem manutenção?",
+    a: "Sim! Embora os sistemas solares exijam pouquíssima manutenção, nós realizamos a limpeza especializada dos módulos e a manutenção preventiva/corretiva do seu sistema.",
+  },
+];
 
- const fieldClass = (hasError) =>
-  `form-control border-0 border-bottom rounded-0 px-0 shadow-none input-underline ${
-   hasError ? "is-invalid" : ""
-  }`;
+export default function Home() {
+  return (
+    <>
+      <Header />
+      <main className="main">
+        {/* HERO */}
+        <section className="hero">
+          <div className="container heroInner">
+            <div className="row justify-content-center text-center">
+              <div className="col-lg-9 col-xl-8">
+                <span className="badge bg-warning text-dark px-3 py-2 mb-4 rounded-pill fw-bold heroBadge">
+                  PROJETADO PARA EMPRESAS
+                </span>
+                <h1 className="display-3 fw-bolder text-white mb-4 lh-1">
+                  Energia inteligente para <br />
+                  <span className="text-warning">reduzir sua conta de luz</span>
+                </h1>
+                <p className="lead text-light mb-5 px-md-5 fw-light fs-4">
+                  Projetamos e instalamos sistemas de energia solar fotovoltaica
+                  com alta eficiência e economia garantida. Consiga tudo o que
+                  quiser com a Luminar.
+                </p>
+                <div className="d-flex flex-wrap justify-content-center gap-3">
+                  <a
+                    href="/orcamento"
+                    className="btn btn-warning btn-lg fw-bold px-5 py-3 rounded-pill customBtn shadowGlow"
+                  >
+                    Solicitar orçamento
+                  </a>
+                  <a
+                    href="#simulacao"
+                    className="btn btn-outline-light btn-lg fw-bold px-5 py-3 rounded-pill customBtnOutline"
+                  >
+                    Simular economia
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
- const selectClass = (hasError) =>
-  `form-select border-0 border-bottom rounded-0 px-0 shadow-none input-underline ${
-   hasError ? "is-invalid" : ""
-  }`;
+        {/* ABOUT */}
+        <section className="section bg-white">
+          <div className="container">
+            <div className="row align-items-center g-5">
+              <div className="col-lg-6 pe-lg-5">
+                <h2 className="fw-bold mb-4 text-dark display-6 lh-sm sectionTitle">
+                  Faça a transição para o futuro da energia
+                </h2>
+                <p className="text-secondary fs-5 mb-4 aboutText">
+                  Ajudamos residências, comércios e indústrias a se libertarem
+                  das altas tarifas de energia. Nossa equipe cuida de tudo:
+                  desde o projeto de engenharia até a homologação na
+                  concessionária.
+                </p>
+                <ul className="list-unstyled mt-4">
+                  <li className="d-flex align-items-center mb-3 text-secondary">
+                    <i className="bi bi-check-circle-fill text-warning fs-4 me-3"></i>
+                    Instalação rápida e sem dor de cabeça
+                  </li>
+                  <li className="d-flex align-items-center mb-3 text-secondary">
+                    <i className="bi bi-check-circle-fill text-warning fs-4 me-3"></i>
+                    Retorno do investimento em poucos anos
+                  </li>
+                  <li className="d-flex align-items-center text-secondary">
+                    <i className="bi bi-check-circle-fill text-warning fs-4 me-3"></i>
+                    Valorização imediata do seu imóvel
+                  </li>
+                </ul>
+              </div>
+              <div className="col-lg-6 aboutImageWrap">
+                <div className="aboutImageOffset"></div>
+                <div className="aboutImageBox">
+                  <Image
+                    src="/painelsolar.jpg"
+                    alt="Instalação de painel solar"
+                    fill
+                    sizes="(max-width: 992px) 90vw, 50vw"
+                    className="aboutImage"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
- return (
-  <form onSubmit={handleSubmit(onSubmit)} noValidate>
-   <div className="row g-4">
-    <div className="col-md-6">
-     <label className="form-label small fw-bold text-secondary mb-2">
-      Nome completo
-     </label>
-     <input
-      type="text"
-      {...register("nome", {
-       required: "Informe seu nome",
-       minLength: { value: 2, message: "Nome muito curto" },
-      })}
-      className={fieldClass(errors.nome)}
-     />
-     {errors.nome && (
-      <div className="invalid-feedback d-block">{errors.nome.message}</div>
-     )}
-    </div>
+        {/* FEATURES */}
+        <section className="section bg-light">
+          <div className="container">
+            <div className="text-center mb-5 pb-3">
+              <h2 className="fw-bold text-dark display-6 sectionTitle">
+                Nossos Diferenciais
+              </h2>
+              <div className="titleBar"></div>
+            </div>
 
-    <div className="col-md-6">
-     <label className="form-label small fw-bold text-secondary mb-2">
-      E-mail
-     </label>
-     <input
-      type="email"
-      {...register("email", {
-       required: "Informe seu e-mail",
-       pattern: { value: EMAIL_REGEX, message: "Formato de e-mail inválido" },
-      })}
-      className={fieldClass(errors.email)}
-     />
-     {errors.email && (
-      <div className="invalid-feedback d-block">{errors.email.message}</div>
-     )}
-    </div>
+            <div className="row g-4 text-center">
+              {FEATURES.map((item) => (
+                <div className="col-md-4" key={item.title}>
+                  <div className="card border-0 shadow-sm h-100 p-5 rounded-4 bg-white hoverLift">
+                    <div className="featureIconBox mb-4 mx-auto d-flex align-items-center justify-content-center rounded-3 bg-warning bg-opacity-10">
+                      <i className={`bi ${item.icon} fs-1 text-warning`}></i>
+                    </div>
+                    <h4 className="fw-bold mb-3 text-dark">{item.title}</h4>
+                    <p className="text-secondary m-0 lh-base">{item.text}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
-    <div className="col-md-6">
-     <label className="form-label small fw-bold text-secondary mb-2">
-      Telefone
-     </label>
-     <input
-      type="tel"
-      placeholder="(11) 99999-9999"
-      {...register("telefone", {
-       required: "Informe seu telefone",
-       pattern: { value: PHONE_REGEX, message: "Telefone inválido" },
-      })}
-      className={fieldClass(errors.telefone)}
-     />
-     {errors.telefone && (
-      <div className="invalid-feedback d-block">{errors.telefone.message}</div>
-     )}
-    </div>
+        {/* SERVICES */}
+        <section className="sectionDark">
+          <div className="container">
+            <div className="d-flex justify-content-between align-items-end mb-5">
+              <div>
+                <h2 className="fw-bold text-white mb-2 display-6 sectionTitle">
+                  Nossos Serviços
+                </h2>
+                <div className="titleBarLeft"></div>
+              </div>
+            </div>
 
-    <div className="col-md-6">
-     <label className="form-label small fw-bold text-secondary mb-2">CEP</label>
-     <input
-      type="text"
-      placeholder="00000-000"
-      {...register("cep", {
-       required: "Informe seu CEP",
-       pattern: { value: CEP_REGEX, message: "CEP no formato 00000-000" },
-      })}
-      className={fieldClass(errors.cep)}
-     />
-     {errors.cep && (
-      <div className="invalid-feedback d-block">{errors.cep.message}</div>
-     )}
-    </div>
+            <div className="row g-4">
+              {SERVICES.map((svc) => (
+                <div className="col-lg-4 col-md-6" key={svc.title}>
+                  <article className="card border-0 rounded-4 overflow-hidden h-100 position-relative shadow-lg serviceCard">
+                    <div
+                      className="serviceBg"
+                      style={{ backgroundImage: `url(${svc.img})` }}
+                    ></div>
+                    <div className="serviceOverlay"></div>
+                    <div className="card-body serviceBody">
+                      <h3 className="fw-bold text-white serviceTitle">
+                        {svc.title}
+                      </h3>
+                      <div className="serviceLine"></div>
+                    </div>
+                  </article>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
-    <div className="col-md-6">
-     <label className="form-label small fw-bold text-secondary mb-2">
-      Consumo médio (kWh/mês)
-     </label>
-     <input
-      type="number"
-      min="1"
-      step="1"
-      placeholder="ex: 350"
-      {...register("consumoMedio", {
-       required: "Informe o consumo médio",
-       valueAsNumber: true,
-       min: { value: 1, message: "Consumo deve ser positivo" },
-       max: { value: 100000, message: "Consumo muito alto" },
-       validate: (v) => !Number.isNaN(v) || "Consumo deve ser número",
-      })}
-      className={fieldClass(errors.consumoMedio)}
-     />
-     {errors.consumoMedio && (
-      <div className="invalid-feedback d-block">
-       {errors.consumoMedio.message}
-      </div>
-     )}
-    </div>
+        {/* STATIC SIMULATION */}
+        <section className="simulationSection" id="simulacao">
+          <div className="simulationGlow"></div>
+          <div className="container">
+            <div className="row align-items-center position-relative simulationCard">
+              <div className="simulationBg"></div>
+              <div className="simulationOverlay"></div>
 
-    <div className="col-md-6">
-     <label className="form-label small fw-bold text-secondary mb-2">
-      Tipo de imóvel
-     </label>
-     <select
-      {...register("tipoImovel", {
-       required: "Selecione o tipo de imóvel",
-      })}
-      className={selectClass(errors.tipoImovel)}
-      defaultValue=""
-     >
-      <option value="" disabled>
-       Selecione…
-      </option>
-      <option value={TIPO_IMOVEL.RESIDENCIAL}>Residencial</option>
-      <option value={TIPO_IMOVEL.COMERCIAL}>Comercial</option>
-     </select>
-     {errors.tipoImovel && (
-      <div className="invalid-feedback d-block">{errors.tipoImovel.message}</div>
-     )}
-    </div>
+              <div className="col-lg-4 position-relative z-2 simulationContent">
+                <h2 className="simulationTitle">Simule sua economia</h2>
+                <p className="simulationText">
+                  Descubra quanto você pode economizar com energia solar.
+                </p>
 
-    <div className="col-12">
-     <label className="form-label small fw-bold text-secondary mb-2">
-      Mensagem (opcional)
-     </label>
-     <textarea
-      rows="4"
-      {...register("mensagem", {
-       maxLength: { value: 2000, message: "Mensagem muito longa" },
-      })}
-      className={fieldClass(errors.mensagem)}
-     ></textarea>
-     {errors.mensagem && (
-      <div className="invalid-feedback d-block">{errors.mensagem.message}</div>
-     )}
-    </div>
+                <label className="form-label text-white fw-bold mb-3">
+                  Quanto você paga na sua conta de luz?
+                </label>
+                <input
+                  type="text"
+                  className="form-control simulationInput"
+                  value="R$      350,00"
+                  readOnly
+                  aria-label="Valor atual da conta de luz"
+                />
 
-    <div className="col-12">
-     <button
-      type="submit"
-      disabled={isSubmitting}
-      className="btn btn-yellow w-100 py-3 rounded-pill"
-     >
-      {isSubmitting ? "Enviando…" : "Solicitar orçamento"}
-     </button>
-    </div>
-   </div>
-  </form>
- );
+                <div className="d-flex flex-wrap align-items-center gap-3 mt-3">
+                  <a href="#simulacao" className="btn simulationPrimaryBtn">
+                    Simular agora →
+                  </a>
+                  <a href="/orcamento" className="btn simulationSecondaryBtn">
+                    Solicitar orçamento
+                  </a>
+                </div>
+              </div>
+
+              <div className="col-lg-4 position-relative z-2 d-flex justify-content-center">
+                <div className="simulationResultCard">
+                  <p className="text-secondary mb-3">Você pode economizar até</p>
+                  <h3 className="simulationAmount">
+                    R$ 280,00 <span>/mês</span>
+                  </h3>
+                  <p className="text-secondary mb-4">
+                    Isso significa R$ 3.360,00 por ano!
+                  </p>
+                  <hr className="my-4" />
+                  <p className="text-secondary lh-base m-0">
+                    Retorno do investimento em aproximadamente{" "}
+                    <span className="fw-bold text-warning">3 a 5 anos</span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="col-lg-4"></div>
+            </div>
+
+            <div className="row statsRow g-4 mt-5">
+              <div className="col-6 col-lg-3">
+                <div className="statItem">
+                  <i className="bi bi-people"></i>
+                  <div>
+                    <h4>+500</h4>
+                    <p>Clientes satisfeitos</p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-6 col-lg-3">
+                <div className="statItem">
+                  <i className="bi bi-grid-1x2"></i>
+                  <div>
+                    <h4>+1200</h4>
+                    <p>Sistemas instalados</p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-6 col-lg-3">
+                <div className="statItem">
+                  <i className="bi bi-shield-check"></i>
+                  <div>
+                    <h4>15 anos</h4>
+                    <p>Garantia estendida</p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-6 col-lg-3">
+                <div className="statItem border-end-0">
+                  <i className="bi bi-leaf"></i>
+                  <div>
+                    <h4>+2.5M</h4>
+                    <p>kg de CO₂ evitados</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section className="section bg-white">
+          <div className="container faqContainer">
+            <div className="text-center mb-5">
+              <h2 className="fw-bold text-dark display-6 sectionTitle">
+                Perguntas Frequentes
+              </h2>
+              <div className="titleBar"></div>
+            </div>
+
+            <div className="accordion" id="accordionFAQ">
+              {FAQS.map((faq, idx) => (
+                <div className="accordion-item shadow-sm faqItem" key={faq.q}>
+                  <h2 className="accordion-header">
+                    <button
+                      className="accordion-button collapsed fw-bold p-4 faqButton"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target={`#faq-${idx}`}
+                    >
+                      {faq.q}
+                    </button>
+                  </h2>
+                  <div
+                    id={`faq-${idx}`}
+                    className="accordion-collapse collapse"
+                    data-bs-parent="#accordionFAQ"
+                  >
+                    <div className="accordion-body px-4 pb-4 pt-3 text-secondary faqBody">
+                      {faq.a}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </>
+  );
 }
