@@ -20,13 +20,13 @@ CREATE TABLE IF NOT EXISTS alertas (
         'ALTO',
         'CRITICO'
     ) NOT NULL,
-    
-    data_alerta DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     status_alerta ENUM(
         'ATIVO',
         'RESOLVIDO'
     ) NOT NULL DEFAULT 'ATIVO',
+
+    data_alerta DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_alerta_monitoramento
         FOREIGN KEY (id_monitoramento)

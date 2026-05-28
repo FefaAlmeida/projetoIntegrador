@@ -74,41 +74,40 @@ export default function InstallationPage() {
       </div>
 
       {/* LADO DIREITO — IMAGEM */}
-      <div className="col-lg-6 text-center">
+<div className="col-lg-6 text-end">
 
-        <div className="position-relative d-inline-block">
+  <div
+    className="position-relative d-inline-block"
+    style={{
+      transform: "translateX(40px)",
+    }}
+  >
 
-          
+    {/* IMAGEM */}
+    <img
+      src="/logo-luminar-removebg-preview.png"
+      alt="Painéis solares"
+      className="img-fluid position-relative"
+      style={{
+        maxWidth: "95%",
+        zIndex: 2,
+      }}
+    />
 
-          {/* IMAGEM */}
-          <img
-            src="/logo-luminar-removebg-preview.png"
-            alt="Painéis solares"
-            className="img-fluid position-relative"
-            style={{
-              maxWidth: "95%",
-              zIndex: 2,
-            }}
-          />
+  </div>
 
-        </div>
-
-      </div>
+</div>
 
     </div>
   </div>
 </section>
 
-
-  
-
-  
   {/* PROCESSO */}
 {/* PROCESSO */}
 <section
   className="py-5"
   style={{
-    backgroundColor: "#221f20",
+    backgroundColor: "#2e2e2e",
     color: "#ffffff",
   }}
 >
