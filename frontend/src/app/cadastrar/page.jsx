@@ -1,7 +1,70 @@
+"use client";
+import { useState } from "react";
+import { registrarUsuario } from "../../api"
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
 export default function RegisterPage() {
+
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [confirmarSenha, setConfirmarSenha] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [mensagem, setMensagem] = useState("");
+  
+  async function handleSubimit() {
+    
+    setMensagem("");
+    
+    if (!nome || !email || !senha || !confirmarSenha) {
+      setMensagem("Preencha todos os campos.");
+      return;
+    }
+
+    if (senha !== confirmarSenha) {
+      setMensagem("As senhas não coincidem.");
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      const data = {
+        nome,
+        email,
+        senha,
+        tipo_usuario: "CLIENTE",
+      };
+
+      const response = await registrarUsuario(data);
+
+      if (response.sucesso) {
+
+        setMensagem("Cadastro realizado com sucesso.");
+
+        setNome("");
+        setEmail("");
+        setSenha("");
+        setConfirmarSenha("");
+
+      } else {
+
+        setMensagem(response.mensagem || "Erro ao cadastrar usuário.");
+      }
+    
+    } catch (error) {
+
+      setMensagem("Erro inesperado ao cadastrar.");
+      
+    } finally {
+
+      setLoading(false);
+
+    }
+
+  }
+
   return (
     <>
 
@@ -119,6 +182,8 @@ export default function RegisterPage() {
                         fontSize: "1.05rem",
                         paddingBottom: "12px",
                       }}
+                      value={nome}
+                      onChange={(e) => setNome(e.target.value)}
                     />
                   </div>
 
@@ -135,6 +200,8 @@ export default function RegisterPage() {
                         fontSize: "1.05rem",
                         paddingBottom: "12px",
                       }}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
 
@@ -151,6 +218,8 @@ export default function RegisterPage() {
                         fontSize: "1.05rem",
                         paddingBottom: "12px",
                       }}
+                      value={senha}
+                      onChange={(e) => setSenha(e.target.value)}
                     />
                   </div>
 
@@ -167,6 +236,8 @@ export default function RegisterPage() {
                         fontSize: "1.05rem",
                         paddingBottom: "12px",
                       }}
+                      value={confirmarSenha}
+                      onChange={(e) => setConfirmarSenha(e.target.value)}
                     />
                   </div>
 
@@ -174,11 +245,19 @@ export default function RegisterPage() {
                     type="button"
                     className="btn btn-warning w-100 py-3 rounded-pill fw-bold shadow-sm mb-4"
                     style={{ color: "#221f20" }}
+                    onClick={handleSubimit}
+                    disabled={loading}
                   >
-                    Cadastrar agora
+                    {loading ? "Cadastrando..." : "Cadastrar"}
                   </button>
 
-                  <p className="text-center small mb-0">
+                  {mensagem && (
+                    <p className="text-center fw-bold mb-3 text-dark">
+                      {mensagem}
+                    </p>
+                  )}
+
+                  <p className="text-center small mb-0 text-dark">
                     Já tem uma conta?{" "}
                     <a
                       href="/login"
