@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS chamados (
         'BAIXA',
         'MEDIA',
         'ALTA'
-    ) NOT NULL,
+    ),
 
     status_chamado ENUM(
         'ABERTO',
