@@ -68,7 +68,7 @@ export default function InstallationPage() {
             border: "none",
           }}
         >
-          Solicitar orçamento
+          Solicitar Orcamento
         </a>
 
       </div>
@@ -230,6 +230,13 @@ export default function InstallationPage() {
 
   </div>
 </section>
+<div
+style={{
+  backgroundColor: "#2e2e2e"
+}}
+>
+  <h6 style={{color:"#2e2e2e"}}> feito por marcelo</h6>
+</div>
 
 </div>
  );
