@@ -11,7 +11,8 @@ CREATE TABLE IF NOT EXISTS chamados (
     tipo_chamado ENUM(
         'MANUTENCAO',
         'LIMPEZA',
-        'EMERGENCIA'
+        'EMERGENCIA',
+        'OUTROS'
     ) NOT NULL,
 
     titulo VARCHAR(150) NOT NULL,
