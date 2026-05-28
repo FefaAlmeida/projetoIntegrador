@@ -5,87 +5,239 @@ export const metadata = {
 
 export default function InstallationPage() {
  return (
-    <div className="bg-white min-vh-100" style={{ color: '#221f20' }}>
-      
-      {/* 1. HERO */}
-      <section className="py-5 text-center d-flex align-items-center" style={{ background: '#ffffff', minHeight: '65vh' }}>
-        <div className="container py-5">
-          <span className="badge px-4 py-2 rounded-pill fw-bold mb-4 fs-6" style={{ backgroundColor: '#febd17', color: '#221f20' }}>
-            ENGENHARIA E EXECUÇÃO
-          </span>
-          <h1 className="display-2 fw-black mb-4" style={{ color: '#221f20', fontWeight: '900', letterSpacing: '-1px' }}>
-            Instalação profissional de <br />
-            <span style={{ color: '#febd17' }}>sistemas fotovoltaicos</span>
-          </h1>
-          <p className="lead col-md-8 mx-auto fs-3 fw-normal mb-5" style={{ color: '#221f20', opacity: 0.85 }}>
-            Transformamos seu telhado em uma geradora de economia com rapidez, segurança e zero dor de cabeça.
-          </p>
-          <a href="/quote" className="btn btn-lg px-5 py-4 rounded-4 fw-bold shadow border-0 fs-4" style={{ backgroundColor: '#febd17', color: '#221f20' }}>
-            Realizar um Orçamento
-          </a>
-        </div>
-      </section>
+    <div className="bg-white min-vh-100" style={{ color: "#221f20" }}>
 
-      {/* 2. PROCESSO EM DOIS PASSOS */}
-      <section className="py-5" style={{ backgroundColor: '#f8f9fa' }}>
-        <div className="container py-5">
-          <div className="row g-5 justify-content-center">
-            {/* Passo 1 */}
-            <div className="col-md-6 col-lg-5">
-              <div className="card p-5 h-100 rounded-4 shadow-sm bg-white" style={{ border: '2px solid #221f20' }}>
-                <div className="d-flex align-items-center mb-4">
-                  <span className="fs-3 rounded-circle me-3 d-flex align-items-center justify-content-center fw-bold" style={{ width: '55px', height: '55px', backgroundColor: '#febd17', color: '#221f20' }}>
-                    1
-                  </span>
-                  <h3 className="display-6 fw-bold m-0" style={{ color: '#221f20' }}>Engenharia</h3>
-                </div>
-                <p className="m-0 fs-4 lh-base" style={{ color: '#221f20', opacity: 0.9 }}>
-                  Análise estrutural completa e desenvolvimento do projeto ideal para o seu consumo.
-                </p>
-              </div>
-            </div>
+  {/* HERO */}
+  <section
+  className="d-flex align-items-center overflow-hidden"
+  style={{
+    minHeight: "100vh",
+    background:
+      "linear-gradient(180deg, #ffffff 0%, #fff8df 100%)",
+  }}
+>
+  <div className="container-fluid px-5  ">
 
-            {/* Passo 2 */}
-            <div className="col-md-6 col-lg-5">
-              <div className="card p-5 h-100 rounded-4 shadow-sm bg-white" style={{ border: '2px solid #221f20' }}>
-                <div className="d-flex align-items-center mb-4">
-                  <span className="fs-3 rounded-circle me-3 d-flex align-items-center justify-content-center fw-bold" style={{ width: '55px', height: '55px', backgroundColor: '#febd17', color: '#221f20' }}>
-                    2
-                  </span>
-                  <h3 className="display-6 fw-bold m-0" style={{ color: '#221f20' }}>Ativação</h3>
-                </div>
-                <p className="m-0 fs-4 lh-base" style={{ color: '#221f20', opacity: 0.9 }}>
-                  Montagem física ágil e homologação burocrática 100% resolvida com a concessionária.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+    <div className="row align-items-center justify-content-between"
+    style={{
+    }}
+    >
 
-      {/* 3. CAPTURA DE LEAD DIRETA */}
-      <section className="py-5" style={{ backgroundColor: '#febd17' }}>
-        <div className="container py-5">
-          <div className="card p-5 rounded-4 border-0 shadow-lg" style={{ backgroundColor: '#221f20', color: '#ffffff' }}>
-            <div className="row align-items-center g-4">
-              <div className="col-lg-6">
-                <h2 className="display-4 fw-bold mb-3">Deseja uma avaliacao de um dos nossos Engenheiros? </h2>
-                <p className="fs-4 opacity-75 mb-4">Insira o seu email para entrarmos em contato.</p>
-                <div className="mb-3">
-                  <input type="email" className="form-control form-control-lg rounded-3 border-0 py-3 fs-4" placeholder="Digite seu email" style={{ color: '#221f20' }} />
-                </div>
-                <button className="btn btn-lg w-100 py-3 fw-bold fs-4" style={{ backgroundColor: '#febd17', color: '#221f20' }}>
-                  Verificar Viabilidade Grátis
-                </button>
-              </div>
-              <div className="col-lg-6 text-center">
-                <img src="logo-luminar.png" alt="Logo" />
-              </div>
-            </div>
-          </div>
+      <div className="col-lg-6">
+
+        <span
+          className="badge px-4 py-3 rounded-pill fw-bold mb-4 fs-6"
+          style={{
+            backgroundColor: "#febd17",
+            color: "#221f20",
+          }}
+        >
+          ENGENHARIA • INSTALAÇÃO • HOMOLOGAÇÃO
+        </span>
+
+        <h1
+          className="display-1 fw-black mb-4"
+          style={{
+            fontWeight: "900",
+            lineHeight: "1.05",
+            letterSpacing: "-2px",
+          }}
+        >
+          Instalação de{" "}
+          <span style={{ color: "#febd17" }}>
+            energia solar
+          </span>{" "}
+          com máxima eficiência
+        </h1>
+
+        <p
+          className="fs-3 mb-5"
+          style={{
+            opacity: 0.85,
+            lineHeight: "1.5",
+            maxWidth: "700px",
+          }}
+        >
+          Economize até 95% na conta de energia com
+          projetos fotovoltaicos modernos e instalação
+          profissional.
+        </p>
+
+        <a
+          href="/orcamento"
+          className="btn btn-lg px-5 py-4 rounded-4 fw-bold shadow"
+          style={{
+            backgroundColor: "#febd17",
+            color: "#221f20",
+            border: "none",
+          }}
+        >
+          Solicitar orçamento
+        </a>
+
+      </div>
+
+      <div className="col-lg-4 text-end">
+
+        <div className="position-relative d-inline-block">
+
+          {/* GLOW */}
+          <div
+            
+          />
+
+          <img
+            src="/logo-luminar-removebg-preview.png"
+            alt="Painéis solares"
+            className="img-fluid position-relative"
+            style={{
+              width: "100%",
+              maxWidth: "850px",
+              zIndex: 2,
+            }}
+          />
+
         </div>
-      </section>
+
+      </div>
 
     </div>
+  </div>
+</section>
+
+
+  
+
+  
+  {/* PROCESSO */}
+{/* PROCESSO */}
+<section
+  className="py-5"
+  style={{
+    backgroundColor: "#221f20",
+    color: "#ffffff",
+  }}
+>
+  <div className="container py-5">
+
+    <div className="text-center mb-5">
+      <h2 className="display-4 fw-bold mb-3">
+        Como funciona
+      </h2>
+
+      <p className="fs-4 opacity-75 col-lg-8 mx-auto">
+        Cuidamos de todo o processo para você começar
+        a economizar energia com segurança, rapidez e
+        acompanhamento técnico especializado.
+      </p>
+    </div>
+
+    <div className="row g-4 text-center">
+
+      {[
+        {
+          titulo: "Análise de consumo",
+          descricao:
+            "Estudamos sua conta de energia para identificar o sistema ideal.",
+          icone: "bi-bar-chart-line",
+        },
+        {
+          titulo: "Projeto personalizado",
+          descricao:
+            "Criamos um projeto fotovoltaico sob medida para sua necessidade.",
+          icone: "bi-rulers",
+        },
+        {
+          titulo: "Aprovação técnica",
+          descricao:
+            "Realizamos toda documentação e aprovação junto à concessionária.",
+          icone: "bi-file-earmark-check",
+        },
+        {
+          titulo: "Instalação profissional",
+          descricao:
+            "O Marcelo realiza a instalação com rapidez e segurança.",
+          icone: "bi-tools",
+        },
+        {
+          titulo: "Homologação",
+          descricao:
+            "Seu sistema é conectado oficialmente à rede elétrica.",
+          icone: "bi-lightning-charge",
+        },
+        {
+          titulo: "Economia imediata",
+          descricao:
+            "Você começa a gerar sua própria energia e reduzir custos.",
+          icone: "bi-cash-stack",
+        },
+      ].map((item, index) => (
+        <div className="col-md-6 col-lg-4" key={index}>
+
+          <div
+            className="h-100 p-5 rounded-4"
+            style={{
+              backgroundColor: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              backdropFilter: "blur(10px)",
+              transition: "0.3s",
+            }}
+          >
+
+            {/* ÍCONE */}
+            <div
+              className="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4"
+              style={{
+                width: "80px",
+                height: "80px",
+                backgroundColor: "#febd17",
+                color: "#221f20",
+              }}
+            >
+              <i
+                className={`bi ${item.icone}`}
+                style={{
+                  fontSize: "36px",
+                }}
+              ></i>
+            </div>
+
+            {/* ETAPA */}
+            <span
+              className="badge mb-3 px-3 py-2 rounded-pill"
+              style={{
+                backgroundColor: "#febd17",
+                color: "#221f20",
+              }}
+            >
+              Etapa {index + 1}
+            </span>
+
+            {/* TÍTULO */}
+            <h3 className="fw-bold mb-3">
+              {item.titulo}
+            </h3>
+
+            {/* DESCRIÇÃO */}
+            <p
+              className="fs-5 opacity-75 m-0"
+              style={{
+                lineHeight: "1.7",
+              }}
+            >
+              {item.descricao}
+            </p>
+
+          </div>
+
+        </div>
+      ))}
+
+    </div>    
+
+  </div>
+</section>
+
+</div>
  );
 }
