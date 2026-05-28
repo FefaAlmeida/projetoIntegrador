@@ -66,11 +66,9 @@ export default function Header() {
                   className="dropdown-menu dropdown-menu-dark border-0 shadow-lg"
                   style={{ backgroundColor: "#1a1718", borderRadius: "12px", padding: "10px" }}
                 >
-                  <li><a className="dropdown-item py-2 px-3 rounded-2" href="#">Instalação de painéis</a></li>
-                  <li><a className="dropdown-item py-2 px-3 rounded-2" href="#">Monitoramento</a></li>
-                  <li><a className="dropdown-item py-2 px-3 rounded-2" href="#">Manutenção</a></li>
-                  <li><hr className="dropdown-divider bg-secondary" /></li>
-                  <li><a className="dropdown-item py-2 px-3 rounded-2" href="#">Investimento Empresarial</a></li>
+                  <li><a className="dropdown-item py-2 px-3 rounded-2" href="/servicos/instalacao">Instalação de painéis</a></li>
+                  <li><a className="dropdown-item py-2 px-3 rounded-2" href="/servicos/monitoramento">Monitoramento</a></li>
+                  <li><a className="dropdown-item py-2 px-3 rounded-2" href="/servicos/manutencao">Manutenção</a></li>
                 </ul>
               </li>
 

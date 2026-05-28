@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { registrarUsuario } from "../../api"
+import { registrarUsuario } from "../../../api"
 
 export default function RegisterPage() {
 
