@@ -1,5 +1,3 @@
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 
 const userPreview = {
   name: "Maria Oliveira",
@@ -12,7 +10,6 @@ const userPreview = {
 export default function PreferenciasPage() {
   return (
     <>
-      <Header />
 
       <main className="bg-soft py-section">
         <section className="container">
@@ -168,8 +165,6 @@ export default function PreferenciasPage() {
           </div>
         </section>
       </main>
-
-      <Footer />
     </>
   );
 }

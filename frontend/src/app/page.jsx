@@ -1,6 +1,6 @@
 import Image from "next/image";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import Header from "../components/public/Header";
+import Footer from "../components/public/Footer";
 
 export const metadata = {
  title: "Luminar — Energia solar para empresas",
