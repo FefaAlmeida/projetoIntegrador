@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS alertas (
         'ALTO',
         'CRITICO'
     ) NOT NULL,
+    
     data_alerta DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     status_alerta ENUM(

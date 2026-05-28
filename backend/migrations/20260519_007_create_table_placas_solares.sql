@@ -6,8 +6,8 @@ USE luminar_api;
 
 CREATE TABLE IF NOT EXISTS placas_solares (
     id_placa INT PRIMARY KEY AUTO_INCREMENT,
-    id_empresa INT,
-    id_instalacao INT,
+    id_empresa INT NOT NULL,
+    id_instalacao INT NOT NULL,
     modelo ENUM(
         'CANADIAN_550W',
         'JINKO_600W',

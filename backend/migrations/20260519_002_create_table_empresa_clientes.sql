@@ -10,8 +10,10 @@ CREATE TABLE IF NOT EXISTS empresa_clientes (
     cnpj VARCHAR(18) NOT NULL UNIQUE,
     telefone_principal VARCHAR(20) NOT NULL UNIQUE,
     email_principal VARCHAR(150) NOT NULL UNIQUE,
-        status_empresa ENUM(
+    
+    status_empresa ENUM(
         'ATIVA',
         'INATIVA'
     ) NOT NULL DEFAULT 'ATIVA'
+    
 ); 

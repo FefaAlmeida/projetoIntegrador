@@ -1,4 +1,3 @@
-
 export const metadata = {
  title: "Instalação de painéis solares — Luminar",
 };
