@@ -1,6 +1,8 @@
 "use client";
+
 import { useState } from "react";
-import { registrarUsuario } from "../../../api"
+import { registrarUsuario } from "../../../api";
+import { toast } from "sonner";
 
 export default function RegisterPage() {
 
@@ -9,28 +11,50 @@ export default function RegisterPage() {
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
   const [loading, setLoading] = useState(false);
-  const [mensagem, setMensagem] = useState("");
-  
+
   async function handleSubimit() {
-    
-    setMensagem("");
-    
+
     if (!nome || !email || !senha || !confirmarSenha) {
-      setMensagem("Preencha todos os campos.");
+      toast.error("Preencha todos os campos.");
+      return;
+    }
+
+    const nomeTrim = nome.trim();
+
+    if (nomeTrim.length < 2) {
+      toast.error("O nome deve ter pelo menos 2 caracteres.");
+      return;
+    }
+
+    if (nomeTrim.length > 255) {
+      toast.error("O nome deve ter no máximo 255 caracteres.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      toast.error("Formato de email inválido.");
+      return;
+    }
+
+    if (senha.length < 6) {
+      toast.error("A senha deve ter pelo menos 6 caracteres.");
       return;
     }
 
     if (senha !== confirmarSenha) {
-      setMensagem("As senhas não coincidem.");
+      toast.error("As senhas não coincidem.");
       return;
     }
 
     setLoading(true);
-    
+
     try {
+
       const data = {
-        nome,
-        email,
+        nome: nomeTrim,
+        email: email.trim().toLowerCase(),
         senha,
         tipo_usuario: "CLIENTE",
       };
@@ -39,7 +63,7 @@ export default function RegisterPage() {
 
       if (response.sucesso) {
 
-        setMensagem("Cadastro realizado com sucesso.");
+        toast.success("Cadastro realizado com sucesso.");
 
         setNome("");
         setEmail("");
@@ -48,13 +72,18 @@ export default function RegisterPage() {
 
       } else {
 
-        setMensagem(response.mensagem || "Erro ao cadastrar usuário.");
+        toast.error(response.mensagem || "Erro ao cadastrar usuário.");
+
       }
-    
+
     } catch (error) {
 
-      setMensagem("Erro inesperado ao cadastrar.");
-      
+      if (error.response?.data?.mensagem) {
+        toast.error(error.response.data.mensagem);
+      } else {
+        toast.error("Erro inesperado ao cadastrar.");
+      }
+
     } finally {
 
       setLoading(false);
@@ -75,7 +104,10 @@ export default function RegisterPage() {
           paddingBottom: "72px",
         }}
       >
-        <div className="position-absolute top-0 start-0 w-50" style={{ zIndex: 1 }}>
+        <div
+          className="position-absolute top-0 start-0 w-50"
+          style={{ zIndex: 1 }}
+        >
           <svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M0 0H620C520 60 460 112 376 90C250 56 204 162 92 170C44 173 12 194 0 218V0Z"
@@ -108,7 +140,9 @@ export default function RegisterPage() {
 
         <div className="container position-relative" style={{ zIndex: 2 }}>
           <div className="row align-items-center gy-5">
+
             <section className="col-lg-6">
+
               <div
                 className="mb-5 overflow-hidden bg-white mx-auto mx-lg-0"
                 style={{
@@ -127,6 +161,7 @@ export default function RegisterPage() {
               </div>
 
               <div className="text-center text-lg-start">
+
                 <h1
                   className="mb-3"
                   style={{
@@ -139,6 +174,7 @@ export default function RegisterPage() {
                   Junte-se à <br />
                   <span style={{ color: "#f5bd31" }}>Luminar</span>
                 </h1>
+
                 <p
                   className="m-0"
                   style={{
@@ -150,10 +186,13 @@ export default function RegisterPage() {
                 >
                   Comece sua jornada rumo à independência energética hoje mesmo.
                 </p>
+
               </div>
+
             </section>
 
             <section className="col-lg-5 offset-lg-1 d-flex justify-content-center justify-content-lg-end">
+
               <div
                 className="bg-white rounded-4 p-4 p-md-5 w-100"
                 style={{
@@ -162,15 +201,22 @@ export default function RegisterPage() {
                   boxShadow: "0 24px 48px rgba(34, 31, 32, 0.32)",
                 }}
               >
-                <h2 className="fw-bold mb-5" style={{ color: "#221f20" }}>
+
+                <h2
+                  className="fw-bold mb-5"
+                  style={{ color: "#221f20" }}
+                >
                   Criar conta
                 </h2>
 
                 <form>
+
                   <div className="mb-4">
+
                     <label className="form-label small fw-bold text-secondary mb-2">
                       Nome Completo
                     </label>
+
                     <input
                       type="text"
                       className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
@@ -183,12 +229,15 @@ export default function RegisterPage() {
                       value={nome}
                       onChange={(e) => setNome(e.target.value)}
                     />
+
                   </div>
 
                   <div className="mb-4">
+
                     <label className="form-label small fw-bold text-secondary mb-2">
                       E-mail
                     </label>
+
                     <input
                       type="email"
                       className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
@@ -201,12 +250,15 @@ export default function RegisterPage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                     />
+
                   </div>
 
                   <div className="mb-4">
+
                     <label className="form-label small fw-bold text-secondary mb-2">
-                      Senha
+                      Senha (mínimo de 6 dígitos)
                     </label>
+
                     <input
                       type="password"
                       className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
@@ -219,12 +271,15 @@ export default function RegisterPage() {
                       value={senha}
                       onChange={(e) => setSenha(e.target.value)}
                     />
+
                   </div>
 
                   <div className="mb-5">
+
                     <label className="form-label small fw-bold text-secondary mb-2">
                       Confirmar Senha
                     </label>
+
                     <input
                       type="password"
                       className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
@@ -237,6 +292,7 @@ export default function RegisterPage() {
                       value={confirmarSenha}
                       onChange={(e) => setConfirmarSenha(e.target.value)}
                     />
+
                   </div>
 
                   <button
@@ -249,12 +305,6 @@ export default function RegisterPage() {
                     {loading ? "Cadastrando..." : "Cadastrar"}
                   </button>
 
-                  {mensagem && (
-                    <p className="text-center fw-bold mb-3 text-dark">
-                      {mensagem}
-                    </p>
-                  )}
-
                   <p className="text-center small mb-0 text-dark">
                     Já tem uma conta?{" "}
                     <a
@@ -265,9 +315,13 @@ export default function RegisterPage() {
                       Faça login
                     </a>
                   </p>
+
                 </form>
+
               </div>
+
             </section>
+
           </div>
         </div>
       </main>
