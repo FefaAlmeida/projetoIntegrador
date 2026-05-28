@@ -6,6 +6,8 @@ import "./globals.css";
 import "./home.css";
 import Header from "../components/public/Header";
 import Footer from "../components/public/Footer";
+import { Toaster } from "sonner";
+
 
 const geistSans = Geist({
  variable: "--font-geist-sans",
@@ -29,6 +31,18 @@ export default function RootLayout({ children }) {
     <BootstrapClient />
     <Header/>
     {children}
+    <Toaster
+  richColors
+  closeButton
+  toastOptions={{
+    style: {
+      width: "420px",
+      padding: "18px",
+      fontSize: "16px",
+      borderRadius: "16px",
+    },
+  }}
+/>
     <Footer/>
    </body>
   </html>
