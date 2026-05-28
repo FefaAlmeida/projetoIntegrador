@@ -6,8 +6,8 @@ import "../../home.css";
 
 import BootstrapClient from "../../bootstrap-client";
 
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 export const metadata = {
   title: "Painel do Cliente",

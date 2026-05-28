@@ -47,39 +47,34 @@ export default function Header() {
             />
           </button>
 
-          {/* LOGO DIREITA */}
-          <a
-            className="navbar-brand d-flex align-items-center gap-2 text-decoration-none m-0"
-            href="#"
-          >
-            <span
-              style={{
-                color: "#fff",
-                fontWeight: "700",
-                fontSize: "1.8rem",
-                letterSpacing: "-1px",
-              }}
-            >
-              Luminar
-            </span>
+        {/* LOGO DIREITA */}
+        <a
+        className="navbar-brand d-flex align-items-center gap-2 text-decoration-none m-0"
+        href="#"
+        >
+        <span
+            style={{
+            color: "#fff",
+            fontWeight: "700",
+            fontSize: "1.8rem",
+            letterSpacing: "-1px",
+            }}
+        >
+            Luminar
+        </span>
 
-            <div
-              style={{
-                width: "40px",
-                height: "40px",
-                borderRadius: "14px",
-                background: "#febd17",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#221f20",
-                fontWeight: "900",
-                fontSize: "1.3rem",
-              }}
-            >
-              S
-            </div>
-          </a>
+        <img
+            src="/logo-semEscrita.png"
+            alt="Logo Luminar"
+            style={{
+            width: "40px",
+            height: "40px",
+            borderRadius: "14px",
+            objectFit: "cover",
+            padding: "4px",
+            }}
+        />
+        </a>
         </div>
       </nav>
 
@@ -189,7 +184,7 @@ export default function Header() {
 
           <hr
             style={{
-              borderColor: "rgba(255,255,255,0.08)",
+              borderColor: "rgba(255, 255, 255, 0.08)",
             }}
           />
 
@@ -216,7 +211,7 @@ export default function Header() {
                     fontSize: "0.95rem",
                   }}
                 >
-                  Giovana
+                  Natalia
                 </strong>
 
                 <small
@@ -224,7 +219,7 @@ export default function Header() {
                     color: "#b5b5b5",
                   }}
                 >
-                  Administradora
+                  Cliente
                 </small>
               </div>
             </a>

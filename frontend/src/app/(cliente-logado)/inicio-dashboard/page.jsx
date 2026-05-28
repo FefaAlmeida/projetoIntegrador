@@ -7,7 +7,6 @@ export default function Page() {
       <section
         style={{
           minHeight: "100vh",
-          background: "#f5f5f5",
           fontFamily: "'Poppins', sans-serif",
           padding: "40px",
         }}
@@ -38,13 +37,13 @@ export default function Page() {
                   fontSize: "1rem",
                 }}
               >
-                Bem-vinda de volta,
+                Bem-vinda,
               </p>
 
               <h1
                 style={{
                   fontSize: "3.7rem",
-                  color: "#111",
+                  color: "#221f20",
                   margin: 0,
                   fontWeight: "700",
                   letterSpacing: "-2px",
@@ -59,8 +58,8 @@ export default function Page() {
             <button
               style={{
                 border: "none",
-                background: "#111",
-                color: "#fff",
+                background: "#febd17",
+                color: "#221f20",
                 height: "58px",
                 padding: "0 28px",
                 borderRadius: "18px",
@@ -142,7 +141,7 @@ export default function Page() {
 
                 <p
                   style={{
-                    color: "#bdbdbd",
+                    color: "#febd17",
                     fontSize: "1.15rem",
                     lineHeight: "34px",
                     maxWidth: "620px",

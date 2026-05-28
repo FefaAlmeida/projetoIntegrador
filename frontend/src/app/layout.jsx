@@ -29,7 +29,6 @@ export default function RootLayout({ children }) {
   <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable}`}>
    <body>
     <BootstrapClient />
-    <Header/>
     {children}
     <Toaster
   richColors
@@ -43,7 +42,6 @@ export default function RootLayout({ children }) {
     },
   }}
 />
-    <Footer/>
    </body>
   </html>
  );
