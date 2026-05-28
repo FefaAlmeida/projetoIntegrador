@@ -8,21 +8,20 @@ export default function InstallationPage() {
     <div className="bg-white min-vh-100" style={{ color: "#221f20" }}>
 
   {/* HERO */}
-  <section
-  className="d-flex align-items-center overflow-hidden"
+ {/* HERO */}
+<section
+  className="d-flex align-items-center"
   style={{
-    minHeight: "100vh",
+    minHeight: "90vh",
     background:
       "linear-gradient(180deg, #ffffff 0%, #fff8df 100%)",
   }}
 >
-  <div className="container-fluid px-5  ">
+  <div className="container">
 
-    <div className="row align-items-center justify-content-between"
-    style={{
-    }}
-    >
+    <div className="row align-items-center g-5">
 
+      {/* LADO ESQUERDO — TEXTO */}
       <div className="col-lg-6">
 
         <span
@@ -55,12 +54,10 @@ export default function InstallationPage() {
           style={{
             opacity: 0.85,
             lineHeight: "1.5",
-            maxWidth: "700px",
           }}
         >
           Economize até 95% na conta de energia com
-          projetos fotovoltaicos modernos e instalação
-          profissional.
+          projetos fotovoltaicos modernos.
         </p>
 
         <a
@@ -77,22 +74,20 @@ export default function InstallationPage() {
 
       </div>
 
-      <div className="col-lg-4 text-end">
+      {/* LADO DIREITO — IMAGEM */}
+      <div className="col-lg-6 text-center">
 
         <div className="position-relative d-inline-block">
 
-          {/* GLOW */}
-          <div
-            
-          />
+          
 
+          {/* IMAGEM */}
           <img
             src="/logo-luminar-removebg-preview.png"
             alt="Painéis solares"
             className="img-fluid position-relative"
             style={{
-              width: "100%",
-              maxWidth: "850px",
+              maxWidth: "95%",
               zIndex: 2,
             }}
           />

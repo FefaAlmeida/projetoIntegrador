@@ -136,3 +136,11 @@ a {
   box-shadow: none !important;
   border-color: #FFC107 !important;
 }
+
+main {
+  transition: margin-left 0.35s ease;
+}
+
+body.sidebar-open main {
+  margin-left: 290px;
+}
