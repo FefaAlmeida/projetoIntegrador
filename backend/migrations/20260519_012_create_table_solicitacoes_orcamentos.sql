@@ -28,8 +28,7 @@ CREATE TABLE IF NOT EXISTS solicitacoes_orcamentos (
     status_solicitacao ENUM(
         'PENDENTE',
         'ACEITA',
-        'RECUSADA',
-        'EXPIRADA'
+        'RECUSADA'
     ) NOT NULL DEFAULT 'PENDENTE',
 
     data_solicitacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP

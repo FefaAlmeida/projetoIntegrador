@@ -56,7 +56,6 @@ a {
   --soft: #f8f9fa;
 }
 
-/* BACKGROUNDS */
 .bg-dark-custom {
   background-color: var(--dark);
 }
@@ -78,7 +77,6 @@ a {
   color: var(--gray);
 }
 
-/* BOTÕES */
 .btn-primary-custom {
   background-color: var(--primary);
   color: var(--dark);

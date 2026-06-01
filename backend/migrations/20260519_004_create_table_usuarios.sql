@@ -6,7 +6,7 @@ USE luminar_api;
 
 CREATE TABLE IF NOT EXISTS usuarios (
     id_usuario INT PRIMARY KEY AUTO_INCREMENT,
-    id_solicitacao INT NOT NULL,
+    id_solicitacao INT,
     nome VARCHAR(150) NOT NULL,
     email VARCHAR(150) NOT NULL UNIQUE,
     senha VARCHAR(255) NOT NULL,
@@ -21,10 +21,9 @@ CREATE TABLE IF NOT EXISTS usuarios (
 
     CONSTRAINT fk_usuario_solicitacao
         FOREIGN KEY (id_solicitacao)
-        REFERENCES solicitacoes_orcamentos(id_solicitacao);
+        REFERENCES solicitacoes_orcamentos(id_solicitacao),
 
     CONSTRAINT fk_usuario_empresa
         FOREIGN KEY (id_empresa)
-        REFERENCES empresa_clientes(id_empresa); 
-    
+        REFERENCES empresa_clientes(id_empresa)
 );

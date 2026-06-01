@@ -11,6 +11,7 @@ import produtoRotas from './routes/produtoRotas.js';
 import authRotas from './routes/authRotas.js';
 import criptografiaRotas from './routes/criptografiaRotas.js';
 import usuarioRotas from './routes/usuarioRotas.js';
+import orcamentoRotas from './routes/orcamentoRotas.js';
 
 // Importar middlewares
 import { logMiddleware } from './middlewares/logMiddleware.js';
@@ -55,6 +56,7 @@ app.use('/api/auth', authRotas);
 app.use('/api/produtos', produtoRotas);
 app.use('/api/criptografia', criptografiaRotas);
 app.use('/api/usuarios', usuarioRotas);
+app.use('/api/orcamentos', orcamentoRotas);
 
 // Rota raiz
 app.get('/', (req, res) => {
@@ -65,19 +67,30 @@ app.get('/', (req, res) => {
         rotas: {
             autenticacao: '/api/auth',
             produtos: '/api/produtos',
-            criptografia: '/api/criptografia'
+            criptografia: '/api/criptografia',
+            orcamentos: '/api/orcamentos'
         },
         documentacao: {
             login: 'POST /api/auth/login',
             registrar: 'POST /api/auth/registrar',
-            perfil: 'GET /api/auth/perfil',
+            perfil: 'GET /api/auth/perfil', 
+
             listarProdutos: 'GET /api/produtos',
             buscarProduto: 'GET /api/produtos/:id',
             criarProduto: 'POST /api/produtos',
             atualizarProduto: 'PUT /api/produtos/:id',
             excluirProduto: 'DELETE /api/produtos/:id',
+
             infoCriptografia: 'GET /api/criptografia/info',
-            cadastrarUsuario: 'POST /api/criptografia/cadastrar-usuario'
+            cadastrarUsuario: 'POST /api/criptografia/cadastrar-usuario',
+            
+            criarOrcamento: 'POST /api/orcamentos',
+            listarOrcamentos: 'GET /api/orcamentos',
+            buscarOrcamento: 'GET /api/orcamentos/:id',
+            atualizarOrcamento: 'PUT /api/orcamentos/:id',
+            aceitarOrcamento: 'PATCH /api/orcamentos/:id/aceitar',
+            recusarOrcamento: 'PATCH /api/orcamentos/:id/recusar',
+            excluirOrcamento: 'DELETE /api/orcamentos/:id'
         }
     });
 });
@@ -97,7 +110,7 @@ app.use(errorMiddleware);
 // Iniciar servidor
 app.listen(PORT, () => {
     console.log(`Acesse: http://localhost:${PORT}`);
-    console.log(`API de Produtos - Sistema de Gestão`);
+    console.log(`API da Luminar - Sistema de Gestão de Energia Solar`);
     console.log(`Ambiente: ${process.env.NODE_ENV || 'development'}`);
 });
 

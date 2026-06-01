@@ -7,7 +7,7 @@ export default function Footer() {
         color: "#999",
       }}
     >
-      © 2026 Luminar Solar Energy
+      © 2026 Luminar
     </footer>
   );
 }

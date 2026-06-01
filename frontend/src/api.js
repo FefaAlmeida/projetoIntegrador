@@ -1,8 +1,8 @@
-const BASE_URL = "http://localhost:3002/api/auth";
+const BASE_URL = "http://localhost:3002/api";
 
 // REGISTRO
 export async function registrarUsuario(data) {
-  const res = await fetch(`${BASE_URL}/registrar`, {
+  const res = await fetch(`${BASE_URL}/auth/registrar`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -15,7 +15,7 @@ export async function registrarUsuario(data) {
 
 // LOGIN
 export async function loginUsuario(data) {
-  const res = await fetch(`${BASE_URL}/login`, {
+  const res = await fetch(`${BASE_URL}/auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -28,8 +28,21 @@ export async function loginUsuario(data) {
 
 // PERFIL
 export async function getPerfil() {
-  const res = await fetch(`${BASE_URL}/perfil`, {
+  const res = await fetch(`${BASE_URL}/auth/perfil`, {
     method: "GET",
+  });
+
+  return res.json();
+}
+
+// ORÇAMENTO
+export async function criarOrcamento(data) {
+  const res = await fetch(`${BASE_URL}/orcamentos`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
   });
 
   return res.json();

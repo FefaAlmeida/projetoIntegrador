@@ -115,16 +115,6 @@ export default function Header() {
             <span className="fs-4 fw-bold">
             Luminar
             </span>
-
-            <p
-            style={{
-                margin: 0,
-                fontSize: "0.85rem",
-                color: "#b5b5b5",
-            }}
-            >
-            Energia inteligente
-            </p>
         </div>
         </a>
 

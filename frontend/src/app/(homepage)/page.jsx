@@ -1,6 +1,5 @@
 import Image from "next/image";
 
-
 export const metadata = {
  title: "Luminar — Energia solar para empresas",
  description:
