@@ -160,20 +160,63 @@ class OrcamentoModel {
         }
     }
 
-    static async buscarAceitoPorId(id) {
+    static async salvarToken(id_solicitacao, token) {
         const connection = await getConnection();
 
         try {
             const sql = `
+                UPDATE solicitacoes_orcamentos
+                SET token_cadastro = ?
+                WHERE id_solicitacao = ?
+            `;
+
+            await connection.execute(sql, [
+                token,
+                id_solicitacao
+            ]);
+
+        } finally {
+            connection.release();
+        }
+    }
+
+    static async buscarPorToken(token) {
+        const connection = await getConnection();
+
+        try {
+
+            const sql = `
                 SELECT *
                 FROM solicitacoes_orcamentos
-                WHERE id_solicitacao = ?
+                WHERE token_cadastro = ?
                 AND status_solicitacao = 'ACEITA'
                 LIMIT 1
             `;
 
-            const [rows] = await connection.execute(sql, [id]);
+            const [rows] = await connection.execute(
+                sql,
+                [token]
+            );
+
             return rows[0] || null;
+
+        } finally {
+            connection.release();
+        }
+    }
+
+    static async invalidarToken(token) {
+        const connection = await getConnection();
+
+        try {
+
+            const sql = `
+                UPDATE solicitacoes_orcamentos
+                SET token_cadastro = NULL
+                WHERE token_cadastro = ?
+            `;
+
+            await connection.execute(sql, [token]);
 
         } finally {
             connection.release();

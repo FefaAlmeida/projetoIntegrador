@@ -72,7 +72,7 @@ app.get('/', (req, res) => {
         },
         documentacao: {
             login: 'POST /api/auth/login',
-            registrar: 'POST /api/auth/registrar',
+            registrar: 'POST /api/criarUsuario',
             perfil: 'GET /api/auth/perfil', 
 
             listarProdutos: 'GET /api/produtos',

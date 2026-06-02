@@ -1,8 +1,8 @@
 const BASE_URL = "http://localhost:3002/api";
 
 // REGISTRO
-export async function registrarUsuario(data) {
-  const res = await fetch(`${BASE_URL}/auth/registrar`, {
+export async function criarUsuario(data) {
+  const res = await fetch(`${BASE_URL}/auth/criarUsuario`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

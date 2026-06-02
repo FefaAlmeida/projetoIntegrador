@@ -145,7 +145,7 @@ export default function OrcamentoPage() {
       if (response.sucesso) {
 
         window.location.href =
-          `/cadastrar?id_solicitacao=${resultado.id}`;
+          `/cadastrar?token=${response.dados.token}`;
 
       } else {
 
@@ -498,6 +498,7 @@ export default function OrcamentoPage() {
                               <div className="d-flex gap-2 mt-3">
 
                                 <button
+                                type="button"
                                   className="btn flex-fill"
                                   style={{
                                     backgroundColor: "#febd17",
@@ -509,6 +510,7 @@ export default function OrcamentoPage() {
                                 </button>
 
                                 <button
+                                type="button"
                                   className="btn btn-outline-secondary flex-fill"
                                   onClick={() => {
                                     setShowModal(false);

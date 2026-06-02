@@ -7,6 +7,7 @@ const router = express.Router();
 // Rotas públicas
 router.get('/', OrcamentoController.listarTodos);
 router.get('/email/:email', OrcamentoController.buscarPorEmail);
+router.get('/cadastro/:token', OrcamentoController.validarToken)
 router.get('/:id', OrcamentoController.buscarPorId);
 
 router.post('/', OrcamentoController.criar);

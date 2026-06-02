@@ -6,10 +6,11 @@ import { authMiddleware, adminMiddleware } from '../middlewares/authMiddleware.j
 const router = express.Router();
 
 // REGISTRO
-router.post('/registrar', UsuarioController.criarUsuario);
+router.post('/criarUsuario', UsuarioController.criarUsuario);
 
 // LOGIN
 router.post('/login', AuthController.login);
+
 
 // VER PRÓPRIO PERFIL
 router.get('/me', authMiddleware, UsuarioController.me);

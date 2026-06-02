@@ -5,38 +5,37 @@ class UsuarioController {
 
     static async criarUsuario(req, res) {
         try {
-            const {
-                nome,
-                email,
-                senha,
-                id_solicitacao
-            } = req.body;
+            const { nome, email, senha, token } = req.body;
 
-            if (!nome || !email || !senha || !id_solicitacao) {
+            if (!nome || !email || !senha || !token) {
                 return res.status(400).json({
                     sucesso: false,
                     erro: 'Todos os campos são obrigatórios'
                 });
             }
 
-            // valida ORÇAMENTO
-            const orcamento =
-                await OrcamentoModel.buscarAceitoPorId(id_solicitacao);
+            const orcamento = await OrcamentoModel.buscarPorToken(token);
 
             if (!orcamento) {
                 return res.status(403).json({
                     sucesso: false,
-                    erro: 'Orçamento não aceito ou inexistente'
+                    erro: 'Token inválido ou orçamento não aceito'
                 });
             }
 
-            // evita duplicidade
+            if (orcamento.status_solicitacao !== 'ACEITA') {
+                return res.status(403).json({
+                    sucesso: false,
+                    erro: 'Orçamento não aceito'
+                });
+            }
+
             const existe = await UsuarioModel.buscarPorEmail(email);
 
             if (existe) {
                 return res.status(409).json({
                     sucesso: false,
-                    erro: 'Usuário já existe'
+                    erro: 'Usuário já existe.'
                 });
             }
 
@@ -45,15 +44,17 @@ class UsuarioController {
                 email: email.trim().toLowerCase(),
                 senha,
                 tipo_usuario: 'CLIENTE',
-                id_solicitacao
+                id_solicitacao: orcamento.id_solicitacao
             });
+
+            await OrcamentoModel.invalidarToken(token);
 
             return res.status(201).json({
                 sucesso: true,
                 mensagem: 'Usuário criado com sucesso',
                 dados: {
                     id,
-                    id_solicitacao
+                    id_solicitacao: orcamento.id_solicitacao
                 }
             });
 

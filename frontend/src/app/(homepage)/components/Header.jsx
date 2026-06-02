@@ -87,13 +87,6 @@ export default function Header() {
 
             {/* CTA BUTTONS */}
             <div className="d-flex align-items-center gap-2 mt-3 mt-lg-0">
-              <a 
-                href="/login" 
-                className="btn text-white fw-bold px-4 py-2 border-0"
-                style={{ fontSize: "0.9rem" }}
-              >
-                Entrar
-              </a>
               <a
                 href="/cadastrar"
                 className="btn fw-bold px-4 py-2"
@@ -105,7 +98,7 @@ export default function Header() {
                   transition: "0.3s",
                 }}
               >
-                Cadastrar
+                Entrar
               </a>
             </div>
           </div>

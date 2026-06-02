@@ -1,4 +1,5 @@
 import OrcamentoModel from '../models/OrcamentoModel.js';
+import crypto from "crypto";
 
 class OrcamentoController {
 
@@ -379,16 +380,19 @@ class OrcamentoController {
                 });
             }
 
+            const token = crypto.randomUUID();
+
             await OrcamentoModel.atualizar(id, {
-                status_solicitacao: 'ACEITA'
+                status_solicitacao: 'ACEITA',
+                token_cadastro: token
             });
 
             return res.status(200).json({
                 sucesso: true,
                 mensagem: 'Orçamento aceito com sucesso',
                 dados: {
-                    id_solicitacao: id,
-                    proximo_passo: 'CRIAR_USUARIO'
+                    token,
+                    id_solicitacao: id
                 }
             });
 
@@ -458,6 +462,33 @@ class OrcamentoController {
         }
     }
 
+    static async validarToken(req, res) {
+        try {
+            const { token } = req.params;
+
+            const orcamento = await OrcamentoModel.buscarPorToken(token);
+
+            if (!orcamento) {
+                return res.status(404).json({
+                    sucesso: false,
+                    erro: 'Token inválido ou orçamento não aceito'
+                });
+            }
+
+            return res.status(200).json({
+                sucesso: true,
+                dados: {
+                    id_solicitacao: orcamento.id_solicitacao
+                }
+            });
+
+        } catch (error) {
+            return res.status(500).json({
+                sucesso: false,
+                erro: 'Erro interno do servidor'
+            });
+        }
+    }
 }
 
 export default OrcamentoController;

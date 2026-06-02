@@ -7,7 +7,7 @@ const router = express.Router();
 
 // Rotas públicas de autenticação
 router.post('/login', AuthController.login);
-router.post('/registrar', UsuarioController.criarUsuario);
+router.post('/criarUsuario', UsuarioController.criarUsuario);
 
 // Rotas protegidas (precisam de autenticação)
 router.post('/logout', authMiddleware, AuthController.logout);
@@ -22,7 +22,7 @@ router.options('/login', (req, res) => {
     res.sendStatus(200);
 });
 
-router.options('/registrar', (req, res) => {
+router.options('/criarUsuario', (req, res) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type');

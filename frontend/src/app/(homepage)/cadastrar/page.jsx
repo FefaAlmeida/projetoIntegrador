@@ -1,10 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { registrarUsuario } from "../../../api";
+import { criarUsuario } from "../../../api";
 import { toast } from "sonner";
+import { useSearchParams } from "next/navigation";
 
 export default function RegisterPage() {
+
+  const searchParams = useSearchParams();
+
+  const token = searchParams.get("token");
 
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
@@ -48,6 +53,11 @@ export default function RegisterPage() {
       return;
     }
 
+    if (!token) {
+      toast.error("Orçamento inválido. Solicite um orçamento antes de cadastrar-se.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -56,35 +66,38 @@ export default function RegisterPage() {
         nome: nomeTrim,
         email: email.trim().toLowerCase(),
         senha,
-        tipo_usuario: "CLIENTE",
+        token: token
       };
 
-      const response = await registrarUsuario(data);
+      const response = await criarUsuario(data);
 
-      if (response.sucesso) {
+      if (response && response.sucesso) {
 
         toast.success("Cadastro realizado com sucesso.");
 
-        setNome("");
-        setEmail("");
-        setSenha("");
-        setConfirmarSenha("");
+        setTimeout(() => {
+          window.location.href = "/login"
+        }, 1500);
 
       } else {
 
-        toast.error(response.mensagem || "Erro ao cadastrar usuário.");
+        toast.error(response?.erro || response?.mensagem || "Erro ao cadastrar usuário.");
 
       }
 
     } catch (error) {
 
-      if (error.response?.data?.mensagem) {
-        toast.error(error.response.data.mensagem);
-      } else {
-        toast.error("Erro inesperado ao cadastrar.");
-      }
+      console.error(error);
 
-    } finally {
+      if (error.response && error.response.data) {
+        const apiError = error.response.data.erro || error.response.data.mensage;
+        toast.error(apiError || "Erro de conexão com o servidor");
+      
+      } else {
+        toast.error("Erro de conexão com o servidor.");
+      } 
+    
+    }  finally {
 
       setLoading(false);
 
@@ -209,7 +222,7 @@ export default function RegisterPage() {
                   Criar conta
                 </h2>
 
-                <form>
+                <form onSubmit={(e) => e.preventDefault()}>
 
                   <div className="mb-4">
 
