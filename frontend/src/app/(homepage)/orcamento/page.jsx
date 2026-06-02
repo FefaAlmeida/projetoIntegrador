@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { criarOrcamento } from "../../../api";
+import { criarOrcamento, aceitarOrcamento } from "../../../api";
 import { toast } from "sonner";
 import './orcamento.css';
 
@@ -73,6 +73,11 @@ export default function OrcamentoPage() {
       return;
     }
 
+    if (Number(formData.quantidade_placas) > 500) {
+      toast.error("Quantidade máxima permitida de 500 placas.");
+      return;
+    }
+
       setLoading(true);
 
       try {
@@ -91,7 +96,7 @@ export default function OrcamentoPage() {
         setTimeout(() => {
           setResultado(response.dados);
           setModalLoading(false);
-        }, 2000);
+        }, 5000);
 
           toast.success("Orçamento gerado com sucesso.");
 
@@ -130,6 +135,29 @@ export default function OrcamentoPage() {
     setShowPlacaModal(false);
 
     toast.success("Modelo selecionado!");
+  }
+
+  async function handleAceitarOrcamento() {
+    try {
+
+      const response = await aceitarOrcamento(resultado.id);
+
+      if (response.sucesso) {
+
+        window.location.href =
+          `/cadastrar?id_solicitacao=${resultado.id}`;
+
+      } else {
+
+        toast.error(response.erro || "Erro ao aceitar orçamento.");
+
+      }
+
+    } catch (error) {
+
+      toast.error("Erro ao conectar com o servidor.");
+
+    }
   }
 
   return (
@@ -467,16 +495,31 @@ export default function OrcamentoPage() {
                                 R$ {Number(resultado?.valor_total || 0).toFixed(2)}
                               </h3>
 
-                              <button
-                                className="btn mt-3"
-                                style={{ backgroundColor: "#febd17", color: "#221f20" }}
-                                onClick={() => {
-                                  setShowModal(false);
-                                  setResultado(null);
-                                }}
-                              >
-                                Fechar
-                              </button>
+                              <div className="d-flex gap-2 mt-3">
+
+                                <button
+                                  className="btn flex-fill"
+                                  style={{
+                                    backgroundColor: "#febd17",
+                                    color: "#221f20"
+                                  }}
+                                  onClick={handleAceitarOrcamento}
+                                >
+                                  Aceitar e criar conta
+                                </button>
+
+                                <button
+                                  className="btn btn-outline-secondary flex-fill"
+                                  onClick={() => {
+                                    setShowModal(false);
+                                    setResultado(null);
+                                  }}
+                                >
+                                  Fechar
+                                </button>
+
+                              </div>
+
                             </>
                           )}
 

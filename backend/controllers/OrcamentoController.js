@@ -174,6 +174,13 @@ class OrcamentoController {
                 });
             }
 
+            if (Number(quantidade_placas) > 500) {
+                erros.push({
+                    campo: 'quantidade_placas',
+                    mensagem: 'Quantidade máxima permitida de 500 placas.'
+                });
+            }
+
             if (!modelo_placa) {
                 erros.push({
                     campo: 'modelo_placa',
@@ -354,18 +361,9 @@ class OrcamentoController {
     // PATCH /orcamentos/:id/aceitar
     static async aceitar(req, res) {
         try {
-
             const { id } = req.params;
 
-            if (!id || isNaN(id)) {
-                return res.status(400).json({
-                    sucesso: false,
-                    erro: 'ID inválido'
-                });
-            }
-
-            const orcamento =
-                await OrcamentoModel.buscarPorId(id);
+            const orcamento = await OrcamentoModel.buscarPorId(id);
 
             if (!orcamento) {
                 return res.status(404).json({
@@ -374,17 +372,10 @@ class OrcamentoController {
                 });
             }
 
-            if (orcamento.status_solicitacao === 'ACEITA') {
+            if (orcamento.status_solicitacao !== 'PENDENTE') {
                 return res.status(400).json({
                     sucesso: false,
-                    erro: 'Este orçamento já foi aceito'
-                });
-            }
-
-            if (orcamento.status_solicitacao === 'RECUSADA') {
-                return res.status(400).json({
-                    sucesso: false,
-                    erro: 'Este orçamento já foi recusado'
+                    erro: 'Orçamento já foi processado'
                 });
             }
 
@@ -392,17 +383,18 @@ class OrcamentoController {
                 status_solicitacao: 'ACEITA'
             });
 
-            res.status(200).json({
+            return res.status(200).json({
                 sucesso: true,
                 mensagem: 'Orçamento aceito com sucesso',
-                proximoPasso: 'Realizar cadastro do usuário'
+                dados: {
+                    id_solicitacao: id,
+                    proximo_passo: 'CRIAR_USUARIO'
+                }
             });
 
         } catch (error) {
-
             console.error(error);
-
-            res.status(500).json({
+            return res.status(500).json({
                 sucesso: false,
                 erro: 'Erro interno do servidor'
             });
@@ -465,6 +457,7 @@ class OrcamentoController {
             });
         }
     }
+
 }
 
 export default OrcamentoController;

@@ -47,3 +47,15 @@ export async function criarOrcamento(data) {
 
   return res.json();
 }
+
+export async function aceitarOrcamento(id_solicitacao) {
+  const res = await fetch(`${BASE_URL}/orcamentos/${id_solicitacao}/aceitar`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  return res.json();
+}

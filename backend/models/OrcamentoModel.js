@@ -160,6 +160,26 @@ class OrcamentoModel {
         }
     }
 
+    static async buscarAceitoPorId(id) {
+        const connection = await getConnection();
+
+        try {
+            const sql = `
+                SELECT *
+                FROM solicitacoes_orcamentos
+                WHERE id_solicitacao = ?
+                AND status_solicitacao = 'ACEITA'
+                LIMIT 1
+            `;
+
+            const [rows] = await connection.execute(sql, [id]);
+            return rows[0] || null;
+
+        } finally {
+            connection.release();
+        }
+    }
+
 }
 
 export default OrcamentoModel;

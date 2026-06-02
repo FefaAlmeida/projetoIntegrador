@@ -1,15 +1,15 @@
 import express from 'express';
 import AuthController from '../controllers/AuthController.js';
 import { authMiddleware, adminMiddleware } from '../middlewares/authMiddleware.js';
+import UsuarioController from "../controllers/UsuarioController.js";
 
 const router = express.Router();
 
 // Rotas públicas de autenticação
 router.post('/login', AuthController.login);
-router.post('/registrar', AuthController.registrar);
+router.post('/registrar', UsuarioController.criarUsuario);
 
 // Rotas protegidas (precisam de autenticação)
-router.post('/refresh', authMiddleware, AuthController.refresh);
 router.post('/logout', authMiddleware, AuthController.logout);
 router.get('/perfil', authMiddleware, AuthController.obterPerfil);
 router.put('/perfil', authMiddleware, AuthController.atualizarPerfil);
