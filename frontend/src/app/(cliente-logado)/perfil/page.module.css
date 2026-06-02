@@ -1,0 +1,153 @@
+.background {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background:
+    radial-gradient(circle at top left, #ffe7a3, transparent 25%),
+    radial-gradient(circle at bottom right, #ffd24d, transparent 20%),
+    #f4f5f7;
+
+  padding: 40px;
+}
+
+.containerPerfil {
+  max-width: 1250px;
+
+  background: rgba(255, 255, 255, 0.85);
+
+  backdrop-filter: blur(20px);
+
+  border:1px solid rgba(#14151b);
+
+  border-radius: 50px;
+
+overflow: hidden;
+
+  box-shadow:
+    0 25px 50px rgba(0,0,0,.08),
+    0 25px 15px rgba(0,0,0,.04);
+}
+
+.sidebar {
+  background:
+    linear-gradient(
+      155deg,
+      #14151b,
+      #242733
+    );
+flex-grow: 1;
+  color: white;
+
+  padding: 50px 50px;
+
+  position:relative
+}
+
+.sidebar::before {
+  content: "";
+
+  position: absolute;
+
+  width: 250px;
+  height: 250px;
+
+  background: #febd17;
+
+  border-radius: 50%;
+
+  bottom: -120px;
+  right: -120px;
+
+  opacity: .15;
+}
+
+.avatar {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: #febd17;
+  color: #221f20;
+  font-size: 50px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+}
+
+.nome {
+  margin-top: 25px;
+  font-weight: 700;
+}
+
+.descricao {
+  color: #d0d0d0;
+}
+
+.infoCard {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 15px;
+  border-radius: 15px;
+  text-align: left;
+  margin-top: 15px;
+}
+
+.infoCard h6 {
+  margin: 0;
+  font-weight: 600;
+}
+
+.infoCard p {
+  margin: 0;
+  color: #d0d0d0;
+}
+
+.titulo {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+  margin-bottom: 40px;
+}
+
+.linha {
+  width: 6px;
+  height: 60px;
+  border-radius: 10px;
+  background: #febd17;
+}
+
+.titulo h1 {
+  font-weight: 700;
+  margin: 0;
+}
+
+.titulo p {
+  color: #777;
+}
+
+.input {
+  border-radius: 15px !important;
+  padding: 14px !important;
+  border: 1px solid #ddd !important;
+}
+
+.input:focus {
+  border-color: #febd17 !important;
+  box-shadow: 0 0 0 0.2rem rgba(254, 189, 23, 0.2) !important;
+}
+
+.botaoSalvar {
+  background: #febd17 !important;
+  color: #221f20 !important;
+  border: none !important;
+  border-radius: 15px !important;
+  padding: 14px 30px !important;
+  font-weight: 600 !important;
+}
+
+.botaoSalvar:hover {
+  transform: translateY(-2px);
+  transition: 0.3s;
+}
