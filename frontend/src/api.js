@@ -48,14 +48,28 @@ export async function criarOrcamento(data) {
   return res.json();
 }
 
+// ACEITAR ORÇAMENTO (Corrigido aqui)
 export async function aceitarOrcamento(id_solicitacao) {
   const res = await fetch(`${BASE_URL}/orcamentos/${id_solicitacao}/aceitar`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
   return res.json();
+}
+
+export async function criarFaleConosco(data) {
+  // Adicionado o /api/ antes de faleConosco
+  const res = await fetch(`${BASE_URL}/faleConosco`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  // NÃO ESQUEÇA DE RETORNAR O JSON AQUI!
+  return await res.json(); 
 }

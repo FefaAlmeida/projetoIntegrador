@@ -12,6 +12,7 @@ import authRotas from './routes/authRotas.js';
 import criptografiaRotas from './routes/criptografiaRotas.js';
 import usuarioRotas from './routes/usuarioRotas.js';
 import orcamentoRotas from './routes/orcamentoRotas.js';
+import faleConoscoRotas from './routes/faleConoscoRotas.js';
 
 // Importar middlewares
 import { logMiddleware } from './middlewares/logMiddleware.js';
@@ -57,6 +58,7 @@ app.use('/api/produtos', produtoRotas);
 app.use('/api/criptografia', criptografiaRotas);
 app.use('/api/usuarios', usuarioRotas);
 app.use('/api/orcamentos', orcamentoRotas);
+app.use('/api/faleConosco', faleConoscoRotas);
 
 // Rota raiz
 app.get('/', (req, res) => {
@@ -90,7 +92,10 @@ app.get('/', (req, res) => {
             atualizarOrcamento: 'PUT /api/orcamentos/:id',
             aceitarOrcamento: 'PATCH /api/orcamentos/:id/aceitar',
             recusarOrcamento: 'PATCH /api/orcamentos/:id/recusar',
-            excluirOrcamento: 'DELETE /api/orcamentos/:id'
+            excluirOrcamento: 'DELETE /api/orcamentos/:id',
+            criarFaleConosco: 'POST /api/faleConosco',
+            listarFaleConosco: 'GET /api/faleConosco', // Opcional, caso queira listar no admin depois
+            excluirFaleConosco: 'DELETE /api/faleConosco/:id' // Opcional
         }
     });
 });
