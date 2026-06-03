@@ -176,6 +176,29 @@ class FaleConoscoModel {
             throw error;
         }
     }
+
+    // 7. RESPONDER (Atualiza com a resposta do ADM e muda status)
+    static async responder(id, resposta) {
+        try {
+            const connection = await getConnection();
+            try {
+                const sql = `
+                UPDATE fale_conosco 
+                SET resposta_adm = ?, 
+                    data_resposta = NOW(), 
+                    status_contato = 'RESPONDIDO'
+                WHERE id_contato = ?
+                `;
+                const [result] = await connection.query(sql, [resposta, id]);
+                return result.affectedRows > 0;
+            } finally {
+                connection.release();
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar resposta no banco:', error);
+            throw error;
+        }
+    }
 }
 
 export default FaleConoscoModel;

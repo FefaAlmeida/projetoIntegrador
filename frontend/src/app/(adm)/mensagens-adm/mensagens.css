@@ -1,0 +1,149 @@
+/* Estilos personalizados para a tela de mensagens do ADM */
+
+.mensagens-container {
+    background-color: #f7f7f7;
+    min-height: 100vh;
+    padding: 40px;
+    font-family: 'Inter', sans-serif;
+}
+
+.mensagens-header h1 {
+    font-size: 54px;
+    font-weight: 800;
+    color: #221f20;
+}
+
+.mensagens-header p {
+    color: #7a7a7a;
+    font-size: 17px;
+}
+
+.stats-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 26px;
+    border: 1px solid #ececec;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    margin-bottom: 24px;
+}
+
+.stats-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: #fff6d8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #febd17;
+}
+
+.mensagem-item {
+    background: #fff;
+    border-radius: 18px;
+    padding: 20px 22px;
+    border: 1px solid #ececec;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.mensagem-item.respondido {
+    opacity: 0.8;
+}
+
+.mensagem-item-pendente-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background: #febd17;
+}
+
+.avatar-mensagens {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 20px;
+}
+
+.avatar-pendente {
+    background: #fff5d6;
+    color: #febd17;
+}
+
+.avatar-respondido {
+    background: #f3f3f3;
+    color: #221f20;
+}
+
+.resposta-box {
+    margin-top: 10px;
+    padding: 10px;
+    background: #f0fdf4;
+    border-radius: 10px;
+    border-left: 3px solid #22c55e;
+}
+
+/* Modal Customizado */
+.custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+    padding: 20px;
+}
+
+.custom-modal-content {
+    background: #fff;
+    border-radius: 28px;
+    width: 100%;
+    max-width: 600px;
+    padding: 40px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+}
+
+.modal-mensagem-original {
+    margin-bottom: 25px;
+    padding: 15px;
+    background: #f8f8f8;
+    borderRadius: 14px;
+}
+
+.btn-luminar {
+    background-color: #febd17;
+    color: #221f20;
+    font-weight: 700;
+    border: none;
+    border-radius: 12px;
+    transition: all 0.2s;
+}
+
+.btn-luminar:hover {
+    background-color: #e5a915;
+    transform: translateY(-2px);
+}
+
+.btn-outline-luminar {
+    border: 1px solid #febd17;
+    color: #febd17;
+    background: transparent;
+    font-weight: 600;
+    border-radius: 12px;
+}
+
+.btn-outline-luminar:hover {
+    background: #fff6d8;
+    color: #e5a915;
+}

@@ -94,3 +94,28 @@ export async function criarFaleConosco(data) {
 
   return await res.json(); 
 }
+
+// BUSCAR TODAS AS MENSAGENS (ADMIN)
+export async function getFaleConosco(pagina = 1, limite = 10) {
+  const res = await fetch(`${BASE_URL}/faleConosco?pagina=${pagina}&limite=${limite}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include", // Importante para o authMiddleware
+  });
+  return res.json();
+}
+
+// RESPONDER MENSAGEM (ADMIN)
+export async function responderFaleConosco(id, resposta) {
+  const res = await fetch(`${BASE_URL}/faleConosco/${id}/responder`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({ resposta }),
+  });
+  return res.json();
+}

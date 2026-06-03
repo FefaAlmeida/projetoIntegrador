@@ -1,6 +1,79 @@
 import FaleConoscoModel from '../models/FaleConoscoModel.js';
+import nodemailer from 'nodemailer';
 
 class FaleConoscoController {
+
+    static async responder(req, res) {
+        try {
+            const { id } = req.params;
+            const { resposta } = req.body;
+
+            if (!resposta || resposta.trim() === '') {
+                return res.status(400).json({
+                    sucesso: false,
+                    erro: 'A resposta não pode estar vazia.'
+                });
+            }
+
+            // 1. Buscar a mensagem original para pegar o e-mail do cliente
+            const mensagemOriginal = await FaleConoscoModel.buscarPorId(id);
+
+            if (!mensagemOriginal) {
+                return res.status(404).json({
+                    sucesso: false,
+                    erro: 'Mensagem não encontrada.'
+                });
+            }
+
+            // 2. Configurar o transportador do e-mail (Nodemailer)
+            const transporter = nodemailer.createTransport({
+                host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+                port: process.env.EMAIL_PORT || 587,
+                secure: false, 
+                auth: {
+                    user: process.env.EMAIL_USER,
+                    pass: process.env.EMAIL_PASS,
+                },
+            });
+
+            // 3. Enviar o e-mail
+            await transporter.sendMail({
+                from: `"Luminar Energia Solar" <${process.env.EMAIL_USER}>`,
+                to: mensagemOriginal.email,
+                subject: `Resposta ao seu contato - Luminar`,
+                text: `Olá ${mensagemOriginal.nome_completo},\n\nRecebemos sua mensagem: "${mensagemOriginal.mensagem}"\n\nResposta da nossa equipe:\n${resposta}\n\nAtenciosamente,\nEquipe Luminar`,
+                html: `
+                    <div style="font-family: Arial, sans-serif; color: #221f20;">
+                        <h2 style="color: #febd17;">Olá ${mensagemOriginal.nome_completo},</h2>
+                        <p>Recebemos sua mensagem:</p>
+                        <blockquote style="background: #f9f9f9; padding: 10px; border-left: 5px solid #febd17;">
+                            ${mensagemOriginal.mensagem}
+                        </blockquote>
+                        <p><strong>Resposta da nossa equipe:</strong></p>
+                        <p>${resposta.replace(/\n/g, '<br>')}</p>
+                        <br>
+                        <p>Atenciosamente,<br><strong>Equipe Luminar</strong></p>
+                    </div>
+                `,
+            });
+
+            // 4. Salvar a resposta no banco de dados
+            await FaleConoscoModel.responder(id, resposta);
+
+            res.status(200).json({
+                sucesso: true,
+                mensagem: 'Resposta enviada com sucesso para o cliente e registrada no sistema.'
+            });
+
+        } catch (error) {
+            console.error('Erro ao responder mensagem:', error);
+            res.status(500).json({
+                sucesso: false,
+                erro: 'Erro ao processar a resposta.',
+                mensagem: 'O e-mail pode não ter sido enviado. Verifique as configurações de SMTP.'
+            });
+        }
+    }
 
     static async listarTodos(req, res) {
         try {
@@ -268,7 +341,7 @@ class FaleConoscoController {
             if (erros.length > 0) {
                 return res.status(400).json({
                     sucesso: false,
-                    erros: erros
+                    erro: erros[0].mensagem
                 });
             }
 

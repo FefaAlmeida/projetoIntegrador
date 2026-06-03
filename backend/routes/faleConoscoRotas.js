@@ -8,6 +8,7 @@ const router = express.Router();
 router.post('/', FaleConoscoController.criar);
 
 // Rotas protegidas (somente admin)
+router.post('/:id/responder', authMiddleware, FaleConoscoController.responder);
 router.get('/pendentes', authMiddleware, FaleConoscoController.listarPendentes);
 router.get('/respondidos', authMiddleware, FaleConoscoController.listarRespondidos);
 router.get('/por-data', authMiddleware, FaleConoscoController.listarPorData);
