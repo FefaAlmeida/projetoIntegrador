@@ -35,7 +35,7 @@ class UsuarioController {
             if (existe) {
                 return res.status(409).json({
                     sucesso: false,
-                    erro: 'Usuário já existe.'
+                    erro: 'Esse e-mail já está em uso.'
                 });
             }
 

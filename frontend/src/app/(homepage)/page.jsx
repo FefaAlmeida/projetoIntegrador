@@ -73,13 +73,11 @@ export default function Home() {
                   PROJETADO PARA EMPRESAS
                 </span>
                 <h1 className="display-3 fw-bolder text-white mb-4 lh-1">
-                  Energia inteligente para <br />
-                  <span className="text-warning">reduzir sua conta de luz</span>
+                  Energia inteligente <br /> e sustentável <br />
+                  <span className="text-warning">para a sua empresa</span>
                 </h1>
                 <p className="lead text-light mb-5 px-md-5 fw-light fs-4">
-                  Projetamos e instalamos sistemas de energia solar fotovoltaica
-                  com alta eficiência e economia garantida. Consiga tudo o que
-                  quiser com a Luminar.
+                  Projetamos, instalamos e monitoramos sistemas de energia solar fotovoltaica com foco em alta eficiência, economia e segurança. Tenha o controle total da sua geração energética com a Luminar. 
                 </p>
                 <div className="d-flex flex-wrap justify-content-center gap-3">
                   <a
@@ -89,10 +87,10 @@ export default function Home() {
                     Solicitar orçamento
                   </a>
                   <a
-                    href="#simulacao"
+                    href="/faleConosco"
                     className="btn btn-outline-light btn-lg fw-bold px-5 py-3 rounded-pill customBtnOutline"
                   >
-                    Simular economia
+                    Entrar em contato
                   </a>
                 </div>
               </div>
@@ -109,23 +107,20 @@ export default function Home() {
                   Faça a transição para o futuro da energia
                 </h2>
                 <p className="text-secondary fs-5 mb-4 aboutText">
-                  Ajudamos residências, comércios e indústrias a se libertarem
-                  das altas tarifas de energia. Nossa equipe cuida de tudo:
-                  desde o projeto de engenharia até a homologação na
-                  concessionária.
+                  Ajudamos indústrias e empresas a migrarem para uma matriz energética limpa, eliminando a dependência de fontes poluentes. Nossa equipe cuida de absolutamente tudo: desde o projeto de instalação até o monitoramento contínuo e a manutenção.
                 </p>
                 <ul className="list-unstyled mt-4">
                   <li className="d-flex align-items-center mb-3 text-secondary">
                     <i className="bi bi-check-circle-fill text-warning fs-4 me-3"></i>
-                    Instalação rápida e sem dor de cabeça
+                    Instalação rápida mediante solicitação
                   </li>
                   <li className="d-flex align-items-center mb-3 text-secondary">
                     <i className="bi bi-check-circle-fill text-warning fs-4 me-3"></i>
-                    Retorno do investimento em poucos anos
+                    Monitoramento inteligente do sistema
                   </li>
                   <li className="d-flex align-items-center text-secondary">
                     <i className="bi bi-check-circle-fill text-warning fs-4 me-3"></i>
-                    Valorização imediata do seu imóvel
+                    Retorno do investimento em até 2 anos
                   </li>
                 </ul>
               </div>

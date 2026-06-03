@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { criarOrcamento, aceitarOrcamento } from "../../../api";
+import { criarOrcamento, aceitarOrcamento, recusarOrcamento } from "../../../api";
 import { toast } from "sonner";
 import './orcamento.css';
 
@@ -150,6 +150,28 @@ export default function OrcamentoPage() {
       } else {
 
         toast.error(response.erro || "Erro ao aceitar orçamento.");
+
+      }
+
+    } catch (error) {
+
+      toast.error("Erro ao conectar com o servidor.");
+
+    }
+  }
+
+  async function handleRecusarOrcamento() {
+    try {
+
+      const response = await recusarOrcamento(resultado.id);
+
+      if (response.sucesso) {
+
+        setShowModal(false)
+
+      } else {
+
+        toast.error(response.erro || "Erro ao recusar orçamento.");
 
       }
 
@@ -512,13 +534,11 @@ export default function OrcamentoPage() {
                                 <button
                                 type="button"
                                   className="btn btn-outline-secondary flex-fill"
-                                  onClick={() => {
-                                    setShowModal(false);
-                                    setResultado(null);
-                                  }}
+                                  onClick={handleRecusarOrcamento}
                                 >
-                                  Fechar
+                                  Recusar
                                 </button>
+
 
                               </div>
 

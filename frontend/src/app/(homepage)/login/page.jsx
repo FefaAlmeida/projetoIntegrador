@@ -1,4 +1,69 @@
+"use client";
+
+import { useState } from "react";
+import { loginUsuario } from "../../../api";
+import { toast } from "sonner";
+
 export default function LoginPage() {
+  
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleLogin() {
+
+    if (!email || !senha) {
+      toast.error("Preencha todos os campos.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      toast.error("Formato de email inválido.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+
+      const response = await loginUsuario({
+        email: email.trim().toLowerCase(),
+        senha
+      });
+
+      if (response?.sucesso) {
+
+        toast.success("Login realizado com sucesso!");
+
+        setTimeout(() => {
+          window.location.href = "/dashboard";
+        }, 2000);
+
+      } else {
+
+        toast.error(
+          response?.erro ||
+          response?.mensagem ||
+          "Erro ao realizar login."
+        );
+
+      }
+
+    } catch (error) {
+
+      console.error(error);
+      toast.error("Erro de conexão com o servidor.");
+
+    } finally {
+
+      setLoading(false);
+
+    }
+
+  }
+
   return (
     <main
       className="container-fluid min-vh-100 d-flex align-items-center position-relative overflow-hidden p-0 bg-white"
@@ -94,7 +159,7 @@ export default function LoginPage() {
                 Entrar na sua conta
               </h2>
 
-              <form>
+              <form onSubmit={(e) => e.preventDefault()}>
                 <div className="mb-4">
                   <label className="form-label small fw-bold text-secondary mb-2">
                     E-mail
@@ -108,6 +173,8 @@ export default function LoginPage() {
                       fontSize: "1.05rem",
                       paddingBottom: "12px",
                     }}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
 
@@ -124,6 +191,8 @@ export default function LoginPage() {
                       fontSize: "1.05rem",
                       paddingBottom: "12px",
                     }}
+                    value={senha}
+                    onChange={(e) => setSenha(e.target.value)}
                   />
                 </div>
 
@@ -131,8 +200,10 @@ export default function LoginPage() {
                   type="button"
                   className="btn btn-warning w-100 py-3 rounded-pill fw-bold shadow-sm mb-3"
                   style={{ color: "#221f20" }}
+                  onClick={handleLogin}
+                  disabled={loading}
                 >
-                  Entrar
+                  {loading ? "Entrando..." : "Entrar"}
                 </button>
 
                 <div className="text-center mb-2">
@@ -144,17 +215,6 @@ export default function LoginPage() {
                     Esqueceu a senha?
                   </a>
                 </div>
-
-                <p className="text-center small mb-0">
-                  Não tem uma conta?{" "}
-                  <a
-                    href="/cadastrar"
-                    className="text-decoration-none fw-bold"
-                    style={{ color: "#f5bd31" }}
-                  >
-                    Crie uma!
-                  </a>
-                </p>
               </form>
             </div>
           </section>

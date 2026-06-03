@@ -85,10 +85,9 @@ export default function Header() {
               </li>
             </ul>
 
-            {/* CTA BUTTONS */}
             <div className="d-flex align-items-center gap-2 mt-3 mt-lg-0">
               <a
-                href="/cadastrar"
+                href="/login"
                 className="btn fw-bold px-4 py-2"
                 style={{
                   backgroundColor: "#febd17",

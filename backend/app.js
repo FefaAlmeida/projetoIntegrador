@@ -94,8 +94,8 @@ app.get('/', (req, res) => {
             recusarOrcamento: 'PATCH /api/orcamentos/:id/recusar',
             excluirOrcamento: 'DELETE /api/orcamentos/:id',
             criarFaleConosco: 'POST /api/faleConosco',
-            listarFaleConosco: 'GET /api/faleConosco', // Opcional, caso queira listar no admin depois
-            excluirFaleConosco: 'DELETE /api/faleConosco/:id' // Opcional
+            listarFaleConosco: 'GET /api/faleConosco', 
+            excluirFaleConosco: 'DELETE /api/faleConosco/:id' 
         }
     });
 });

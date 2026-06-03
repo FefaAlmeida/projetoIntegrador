@@ -1,6 +1,25 @@
 "use client";
+import { useEffect, useState } from "react";
+import { getPerfil } from "@/api";
 
 export default function Page() {
+
+  const [usuario, setUsuario] = useState(null);
+
+  useEffect(() => {
+    async function carregarPerfil() {
+      const response = await getPerfil();
+
+      console.log(response);
+
+      if (response?.sucesso) {
+        setUsuario(response.dados);
+      }
+    }
+
+    carregarPerfil();
+  }, []);
+
   return (
     <>
       {/* HERO */}
@@ -37,7 +56,7 @@ export default function Page() {
                   fontSize: "1rem",
                 }}
               >
-                Bem-vinda,
+                Bem-vindo(a),
               </p>
 
               <h1
@@ -50,7 +69,7 @@ export default function Page() {
                   lineHeight: "1",
                 }}
               >
-                Natalia.
+                {usuario?.nome}
               </h1>
             </div>
 
