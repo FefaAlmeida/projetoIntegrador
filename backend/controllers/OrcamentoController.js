@@ -387,12 +387,15 @@ class OrcamentoController {
                 token_cadastro: token
             });
 
+            const dadosCliente = await OrcamentoModel.prepararDadosCliente(id);
+
             return res.status(200).json({
                 sucesso: true,
                 mensagem: 'Orçamento aceito com sucesso',
                 dados: {
                     token,
-                    id_solicitacao: id
+                    id_solicitacao: id,
+                    ...dadosCliente
                 }
             });
 

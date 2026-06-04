@@ -13,6 +13,8 @@ import criptografiaRotas from './routes/criptografiaRotas.js';
 import usuarioRotas from './routes/usuarioRotas.js';
 import orcamentoRotas from './routes/orcamentoRotas.js';
 import faleConoscoRotas from './routes/faleConoscoRotas.js';
+import dashboardRotas from './routes/dashboardRotas.js';
+import pagamentoRotas from './routes/pagamentoRotas.js';
 
 // Importar middlewares
 import { logMiddleware } from './middlewares/logMiddleware.js';
@@ -59,6 +61,8 @@ app.use('/api/criptografia', criptografiaRotas);
 app.use('/api/usuarios', usuarioRotas);
 app.use('/api/orcamentos', orcamentoRotas);
 app.use('/api/faleConosco', faleConoscoRotas);
+app.use('/api/dashboard', dashboardRotas);
+app.use('/api/pagamentos', pagamentoRotas);
 
 // Rota raiz
 app.get('/', (req, res) => {

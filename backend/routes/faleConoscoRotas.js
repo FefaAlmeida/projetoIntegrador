@@ -1,6 +1,7 @@
 import express from 'express';
 import FaleConoscoController from '../controllers/FaleConoscoController.js';
-import { authMiddleware } from '../middlewares/authMiddleware.js';
+// Alterado apenas aqui para importar o adminMiddleware que estava faltando
+import { authMiddleware, adminMiddleware } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
@@ -8,15 +9,16 @@ const router = express.Router();
 router.post('/', FaleConoscoController.criar);
 
 // Rotas protegidas (somente admin)
-router.post('/:id/responder', authMiddleware, FaleConoscoController.responder);
-router.get('/pendentes', authMiddleware, FaleConoscoController.listarPendentes);
-router.get('/respondidos', authMiddleware, FaleConoscoController.listarRespondidos);
-router.get('/por-data', authMiddleware, FaleConoscoController.listarPorData);
+router.post('/:id/responder', authMiddleware, adminMiddleware, FaleConoscoController.responder);
+router.get('/pendentes', authMiddleware, adminMiddleware, FaleConoscoController.listarPendentes);
+router.get('/respondidos', authMiddleware, adminMiddleware, FaleConoscoController.listarRespondidos);
+router.get('/por-data', authMiddleware, adminMiddleware, FaleConoscoController.listarPorData);
 
-router.get('/:id', authMiddleware, FaleConoscoController.buscarPorId);
-router.get('/', authMiddleware, FaleConoscoController.listarTodos);
+// Alterado aqui para incluir o adminMiddleware que faltava nessas duas
+router.get('/:id', authMiddleware, adminMiddleware, FaleConoscoController.buscarPorId);
+router.get('/', authMiddleware, adminMiddleware, FaleConoscoController.listarTodos);
 
-// OPTIONS para CORS
+// OPTIONS para CORS (Mantidos exatamente iguais)
 router.options('/', (req, res) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');

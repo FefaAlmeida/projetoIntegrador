@@ -8,6 +8,8 @@ const router = express.Router();
 // Rotas públicas de autenticação
 router.post('/login', AuthController.login);
 router.post('/criarUsuario', UsuarioController.criarUsuario);
+router.post('/solicitar-redefinicao-senha', AuthController.solicitarRedefinicaoSenha);
+router.post('/redefinir-senha', AuthController.redefinirSenha);
 
 // Rotas protegidas (precisam de autenticação)
 router.post('/logout', authMiddleware, AuthController.logout);
@@ -23,6 +25,20 @@ router.options('/login', (req, res) => {
 });
 
 router.options('/criarUsuario', (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    res.sendStatus(200);
+});
+
+router.options('/solicitar-redefinicao-senha', (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    res.sendStatus(200);
+});
+
+router.options('/redefinir-senha', (req, res) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type');

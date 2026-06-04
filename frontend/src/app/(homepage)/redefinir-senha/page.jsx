@@ -1,0 +1,143 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { redefinirSenha } from "../../../api";
+import { toast } from "sonner";
+
+export default function RedefinirSenhaPage() {
+  const [token, setToken] = useState("");
+  const [senha, setSenha] = useState("");
+  const [confirmarSenha, setConfirmarSenha] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setToken(params.get("token") || "");
+  }, []);
+
+  async function handleRedefinirSenha() {
+    if (!token) {
+      toast.error("Link de redefinição inválido.");
+      return;
+    }
+
+    if (!senha || !confirmarSenha) {
+      toast.error("Preencha a nova senha e a confirmação.");
+      return;
+    }
+
+    if (senha.length < 6) {
+      toast.error("A senha deve ter pelo menos 6 caracteres.");
+      return;
+    }
+
+    if (senha !== confirmarSenha) {
+      toast.error("As senhas não coincidem.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await redefinirSenha(token, senha);
+
+      if (response?.sucesso) {
+        toast.success("Senha redefinida com sucesso!");
+        window.location.href = "/login";
+      } else {
+        toast.error(
+          response?.erro ||
+          response?.mensagem ||
+          "Erro ao redefinir senha."
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Erro de conexão com o servidor.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <main
+      className="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-white px-4"
+      style={{ fontFamily: "'Poppins', sans-serif" }}
+    >
+      <section
+        className="bg-white rounded-4 p-4 p-md-5 w-100"
+        style={{
+          maxWidth: "460px",
+          border: "1px solid #221f20",
+          boxShadow: "0 24px 48px rgba(34, 31, 32, 0.22)",
+        }}
+      >
+        <h1 className="fw-bold mb-3" style={{ color: "#221f20" }}>
+          Redefinir senha
+        </h1>
+
+        <p className="text-secondary mb-4">
+          Digite sua nova senha para acessar sua conta Luminar.
+        </p>
+
+        <form onSubmit={(e) => e.preventDefault()}>
+          <div className="mb-4">
+            <label className="form-label small fw-bold text-secondary mb-2">
+              Nova senha
+            </label>
+            <input
+              type="password"
+              className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
+              style={{
+                borderColor: "#d8d8d8",
+                borderBottomWidth: "2px",
+                fontSize: "1.05rem",
+                paddingBottom: "12px",
+              }}
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="form-label small fw-bold text-secondary mb-2">
+              Confirmar nova senha
+            </label>
+            <input
+              type="password"
+              className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
+              style={{
+                borderColor: "#d8d8d8",
+                borderBottomWidth: "2px",
+                fontSize: "1.05rem",
+                paddingBottom: "12px",
+              }}
+              value={confirmarSenha}
+              onChange={(e) => setConfirmarSenha(e.target.value)}
+            />
+          </div>
+
+          <button
+            type="button"
+            className="btn btn-warning w-100 py-3 rounded-pill fw-bold shadow-sm mb-3"
+            style={{ color: "#221f20" }}
+            onClick={handleRedefinirSenha}
+            disabled={loading}
+          >
+            {loading ? "Salvando..." : "Salvar nova senha"}
+          </button>
+
+          <div className="text-center">
+            <a
+              href="/login"
+              className="text-decoration-none small fw-bold"
+              style={{ color: "#f5bd31" }}
+            >
+              Voltar para o login
+            </a>
+          </div>
+        </form>
+      </section>
+    </main>
+  );
+}

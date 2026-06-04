@@ -8,14 +8,16 @@ export default function ManutencaoPage() {
 
   {/* HERO */}
   <section
-    className="d-flex align-items-center"
+    className="d-flex align-items-center py-5"
     style={{
       minHeight: "90vh",
       background:
         "linear-gradient(180deg, #ffffff 0%, #fff8df 100%)",
+      paddingTop: "120px",
+      paddingBottom: "80px",
     }}
   >
-    <div className="container">
+    <div className="container px-4 px-lg-5">
 
       <div className="row align-items-center g-5">
 
@@ -128,7 +130,7 @@ export default function ManutencaoPage() {
       color: "#ffffff",
     }}
   >
-    <div className="container py-5">
+    <div className="container px-4 px-lg-5 py-5">
 
       <div className="text-center mb-5">
         <h2 className="display-4 fw-bold mb-3">

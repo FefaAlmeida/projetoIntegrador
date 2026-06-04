@@ -5,10 +5,11 @@ import "../home.css";
 import BootstrapClient from "../bootstrap-client";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import ProtectedRouteAdm from "./components/ProtectedRouteAdm";
 
 export const metadata = {
-  title: "Painel do Cliente",
-  description: "Sistema do cliente Luminar",
+  title: "Painel Administrativo",
+  description: "Sistema administrativo Luminar",
 };
 
 export default function SistemaLayout({ children }) {
@@ -16,21 +17,23 @@ export default function SistemaLayout({ children }) {
     <>
       <BootstrapClient />
 
-      <Header />
+      <ProtectedRouteAdm>
+        <Header />
 
-      <main
-        style={{
-          minHeight: "100vh",
-          paddingTop: "90px",
-          backgroundColor: "#f5f7fb",
-          flex: 1,
-          padding: "40px",
-        }}
-      >
-        {children}
-      </main>
+        <main
+          style={{
+            minHeight: "100vh",
+            paddingTop: "90px",
+            backgroundColor: "#f5f7fb",
+            flex: 1,
+            padding: "40px",
+          }}
+        >
+          {children}
+        </main>
 
-      <Footer />
+        <Footer />
+      </ProtectedRouteAdm>
     </>
   );
 }

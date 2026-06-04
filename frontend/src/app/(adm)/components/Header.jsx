@@ -1,10 +1,40 @@
 "use client";
 
+import { getPerfil, logoutUsuario } from "@/api";
 import React, { useEffect, useState } from "react";
 
 export default function Header() {
 
+  const [usuario, setUsuario] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    async function carregarUsuario() {
+      try {
+        const response = await getPerfil();
+
+        if (response?.sucesso) {
+          setUsuario(response.dados);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    carregarUsuario();
+  }, []);
+
+  async function handleLogout() {
+    try {
+      const response = await logoutUsuario();
+
+      if (response?.sucesso) {
+        window.location.href = "/login";
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   useEffect(() => {
     if (sidebarOpen) {
@@ -201,7 +231,7 @@ export default function Header() {
                     fontSize: "0.95rem",
                   }}
                 >
-                  Natalia
+                  {usuario?.nome}
                 </strong>
 
                 <small
@@ -209,7 +239,7 @@ export default function Header() {
                     color: "#b5b5b5",
                   }}
                 >
-                  Cliente
+                  {usuario?.tipo_usuario === "ADMIN" ? "Administrador" : "Cliente"}
                 </small>
               </div>
             </a>
@@ -217,7 +247,7 @@ export default function Header() {
             <ul className="dropdown-menu dropdown-menu-dark text-small shadow">
 
               <li>
-                <a className="dropdown-item" href="#">
+                <a className="dropdown-item" href="/mensagens-adm">
                   Meu painel
                 </a>
               </li>
@@ -239,9 +269,14 @@ export default function Header() {
               </li>
 
               <li>
-                <a className="dropdown-item" href="#">
+                <button
+                  type="button"
+                  className="dropdown-item text-danger"
+                  onClick={handleLogout}
+                >
+                  <i className="bi bi-box-arrow-right me-2"></i>
                   Sair
-                </a>
+                </button>
               </li>
             </ul>
           </div>

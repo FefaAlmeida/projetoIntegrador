@@ -114,7 +114,7 @@ class UsuarioModel {
                     status_usuario,
                     id_empresa
                 )
-                VALUES (?, ?, ?, ?, ?, 'ATIVO', NULL)
+                VALUES (?, ?, ?, ?, ?, 'ATIVO', ?)
             `;
 
             const [result] = await connection.execute(sql, [
@@ -122,7 +122,8 @@ class UsuarioModel {
                 dados.nome,
                 dados.email,
                 senhaHash,
-                dados.tipo_usuario || 'CLIENTE'
+                dados.tipo_usuario || 'CLIENTE',
+                dados.id_empresa || null
             ]);
 
             return result.insertId;

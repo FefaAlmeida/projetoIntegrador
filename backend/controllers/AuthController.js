@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import nodemailer from 'nodemailer';
 import UsuarioModel from '../models/UsuarioModel.js';
 import { JWT_CONFIG } from '../config/jwt.js';
 import { comparePassword } from '../config/database.js';
@@ -76,6 +77,157 @@ class AuthController {
 
         } catch (error) {
             console.error('Erro no logout:', error);
+            return res.status(500).json({
+                sucesso: false,
+                erro: 'Erro interno no servidor'
+            });
+        }
+    }
+
+    // SOLICITAR REDEFINIÇÃO DE SENHA
+    static async solicitarRedefinicaoSenha(req, res) {
+        try {
+            const { email } = req.body;
+
+            if (!email || email.trim() === '') {
+                return res.status(400).json({
+                    sucesso: false,
+                    erro: 'Email é obrigatório'
+                });
+            }
+
+            const emailNormalizado = email.trim().toLowerCase();
+            const usuario = await UsuarioModel.buscarPorEmail(emailNormalizado);
+
+            if (!usuario || usuario.status_usuario !== 'ATIVO') {
+                return res.status(404).json({
+                    sucesso: false,
+                    erro: 'Usuário não encontrado'
+                });
+            }
+
+            const token = jwt.sign(
+                {
+                    id: usuario.id,
+                    email: usuario.email,
+                    finalidade: 'redefinir-senha'
+                },
+                JWT_CONFIG.secret,
+                { expiresIn: '15m' }
+            );
+
+            const frontendUrl = process.env.FRONTEND_ORIGIN || 'http://localhost:3000';
+            const linkRedefinicao = `${frontendUrl}/redefinir-senha?token=${token}`;
+
+            const transporter = nodemailer.createTransport({
+                host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+                port: process.env.EMAIL_PORT || 587,
+                secure: false,
+                auth: {
+                    user: process.env.EMAIL_USER,
+                    pass: process.env.EMAIL_PASS,
+                },
+            });
+
+            await transporter.sendMail({
+                from: `"Luminar Energia Solar" <${process.env.EMAIL_USER}>`,
+                to: usuario.email,
+                subject: 'Redefinição de senha - Luminar',
+                text: `Olá ${usuario.nome},\n\nRecebemos uma solicitação para redefinir sua senha.\n\nAcesse o link abaixo para criar uma nova senha:\n${linkRedefinicao}\n\nEste link expira em 15 minutos.\n\nSe você não solicitou isso, ignore este e-mail.\n\nAtenciosamente,\nEquipe Luminar`,
+                html: `
+                    <div style="font-family: Arial, sans-serif; color: #221f20;">
+                        <h2 style="color: #febd17;">Olá ${usuario.nome},</h2>
+                        <p>Recebemos uma solicitação para redefinir sua senha.</p>
+                        <p>Clique no botão abaixo para criar uma nova senha:</p>
+                        <p>
+                            <a href="${linkRedefinicao}" style="display: inline-block; background: #febd17; color: #221f20; padding: 14px 22px; border-radius: 10px; text-decoration: none; font-weight: bold;">
+                                Redefinir senha
+                            </a>
+                        </p>
+                        <p>Este link expira em 15 minutos.</p>
+                        <p>Se você não solicitou isso, ignore este e-mail.</p>
+                        <br>
+                        <p>Atenciosamente,<br><strong>Equipe Luminar</strong></p>
+                    </div>
+                `,
+            });
+
+            return res.status(200).json({
+                sucesso: true,
+                mensagem: 'Enviamos um link de redefinição para o seu e-mail.'
+            });
+
+        } catch (error) {
+            console.error('Erro ao solicitar redefinição de senha:', error);
+            return res.status(500).json({
+                sucesso: false,
+                erro: 'Erro ao enviar e-mail de redefinição',
+                mensagem: 'Verifique as configurações de SMTP.'
+            });
+        }
+    }
+
+    // REDEFINIR SENHA COM TOKEN
+    static async redefinirSenha(req, res) {
+        try {
+            const { token, senha } = req.body;
+
+            if (!token || !senha) {
+                return res.status(400).json({
+                    sucesso: false,
+                    erro: 'Token e nova senha são obrigatórios'
+                });
+            }
+
+            if (senha.length < 6) {
+                return res.status(400).json({
+                    sucesso: false,
+                    erro: 'A senha deve ter pelo menos 6 caracteres'
+                });
+            }
+
+            const decoded = jwt.verify(token, JWT_CONFIG.secret);
+
+            if (decoded.finalidade !== 'redefinir-senha') {
+                return res.status(401).json({
+                    sucesso: false,
+                    erro: 'Token inválido'
+                });
+            }
+
+            const usuario = await UsuarioModel.buscarPorId(decoded.id);
+
+            if (!usuario || usuario.email !== decoded.email) {
+                return res.status(404).json({
+                    sucesso: false,
+                    erro: 'Usuário não encontrado'
+                });
+            }
+
+            await UsuarioModel.atualizar(usuario.id, { senha });
+
+            return res.status(200).json({
+                sucesso: true,
+                mensagem: 'Senha redefinida com sucesso'
+            });
+
+        } catch (error) {
+            if (error.name === 'TokenExpiredError') {
+                return res.status(401).json({
+                    sucesso: false,
+                    erro: 'Link expirado',
+                    mensagem: 'Solicite uma nova redefinição de senha.'
+                });
+            }
+
+            if (error.name === 'JsonWebTokenError') {
+                return res.status(401).json({
+                    sucesso: false,
+                    erro: 'Token inválido'
+                });
+            }
+
+            console.error('Erro ao redefinir senha:', error);
             return res.status(500).json({
                 sucesso: false,
                 erro: 'Erro interno no servidor'

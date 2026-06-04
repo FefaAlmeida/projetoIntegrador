@@ -1,22 +1,51 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
+import {
+  getDashboardAlertas,
+  getDashboardGrafico,
+  getDashboardResumo,
+} from "@/api";
 import "./dashboard.css";
 
-export default function DashboardPage() {
-  useEffect(() => {
-    const canvas = document.getElementById("myChart");
-    if (!canvas) return;
+function formatarMoeda(valor) {
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(valor);
+}
 
-    const chart = new Chart(canvas, {
+function criarDadosDashboardVazios() {
+  return {
+    energiaGerada: 0,
+    consumoMensal: 0,
+    economiaGerada: 0,
+    economiaMensal: 0,
+    eficiencia: 0,
+    totalAlertas: 0,
+    statusOperacional: "Sem dados",
+  };
+}
+
+export default function DashboardPage() {
+  const canvasRef = useRef(null);
+  const chartRef = useRef(null);
+  const [dadosDashboard, setDadosDashboard] = useState(() => criarDadosDashboardVazios());
+  const [dadosGrafico, setDadosGrafico] = useState([]);
+  const [alertasReais, setAlertasReais] = useState([]);
+
+  useEffect(() => {
+    if (!canvasRef.current) return;
+
+    chartRef.current = new Chart(canvasRef.current, {
       type: "line",
       data: {
         labels: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"],
         datasets: [
           {
             label: "Energia",
-            data: [120, 190, 300, 250, 280, 350],
+            data: dadosGrafico,
             borderColor: "#febd17",
             backgroundColor: "rgba(254, 189, 23, 0.2)",
             tension: 0.4,
@@ -31,8 +60,61 @@ export default function DashboardPage() {
     });
 
     return () => {
-      chart.destroy();
+      chartRef.current?.destroy();
     };
+  }, []);
+
+  useEffect(() => {
+    if (!chartRef.current) return;
+
+    chartRef.current.data.datasets[0].data = dadosGrafico;
+    chartRef.current.update();
+  }, [dadosGrafico]);
+
+  async function carregarDashboardReal() {
+    try {
+      const [resumoResponse, graficoResponse, alertasResponse] = await Promise.all([
+        getDashboardResumo(),
+        getDashboardGrafico(),
+        getDashboardAlertas(),
+      ]);
+
+      if (!resumoResponse?.sucesso) return;
+
+      const resumo = resumoResponse.dados;
+
+      setDadosDashboard({
+        energiaGerada: Math.round(resumo.energiaGeradaMes || 0),
+        consumoMensal: Math.round(resumo.consumoMensal || 0),
+        economiaGerada: Math.round(resumo.economiaGerada || 0),
+        economiaMensal: Math.round(resumo.economiaMensal || 0),
+        eficiencia: Math.round(resumo.eficienciaMedia || 0),
+        totalAlertas: resumo.totalAlertas || 0,
+        statusOperacional: resumo.statusOperacional || "Tudo em dia",
+      });
+
+      if (graficoResponse?.sucesso && graficoResponse.dados?.valores?.length > 0) {
+        setDadosGrafico(graficoResponse.dados.valores);
+      }
+
+      if (alertasResponse?.sucesso) {
+        setAlertasReais(alertasResponse.dados || []);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    carregarDashboardReal();
+  }, []);
+
+  useEffect(() => {
+    const intervalo = setInterval(async () => {
+      await carregarDashboardReal();
+    }, 30000);
+
+    return () => clearInterval(intervalo);
   }, []);
 
   const [abrirMenu, setAbrirMenu] = useState(false);
@@ -43,7 +125,7 @@ export default function DashboardPage() {
       iconBg: "bg-warning bg-opacity-25",
       iconColor: "text-warning",
       titulo: "Energia gerada",
-      valor: "358",
+      valor: dadosDashboard.energiaGerada,
       unidade: "kWh",
       descricao: "Produção total do mês",
       botao: "Ver detalhes",
@@ -52,7 +134,7 @@ export default function DashboardPage() {
       icon: "bi-battery-charging",
       iconBg: "bg-light",
       titulo: "Consumo mensal",
-      valor: "210",
+      valor: dadosDashboard.consumoMensal,
       unidade: "kWh",
       descricao: "Consumo energético atual",
       botao: "Ver consumo",
@@ -62,7 +144,7 @@ export default function DashboardPage() {
       iconBg: "bg-warning bg-opacity-25",
       iconColor: "text-warning",
       titulo: "Economia gerada",
-      valor: "R$ 1.240",
+      valor: formatarMoeda(dadosDashboard.economiaGerada),
       descricao: "Economia acumulada",
       botao: "Ver economia",
     },
@@ -71,34 +153,33 @@ export default function DashboardPage() {
       iconBg: "bg-danger bg-opacity-10",
       iconColor: "text-danger",
       titulo: "Alertas das placas",
-      valor: "2",
-      descricao: "1 placa com baixa eficiência",
+      valor: dadosDashboard.totalAlertas,
+      descricao:
+        dadosDashboard.totalAlertas > 0
+          ? "Verifique placas com baixa eficiência"
+          : "Nenhum alerta ativo",
       descricaoClass: "text-danger fw-semibold",
       botao: "Ver alertas",
       btnClass: "btn-dark",
     },
   ];
 
-  const alertas = [
-    {
-      icon: "bi-exclamation-circle",
-      color: "danger",
-      title: "Placa com baixa eficiência",
-      desc: "Produção abaixo do esperado",
-    },
-    {
-      icon: "bi-tools",
-      color: "warning",
-      title: "Manutenção preventiva",
-      desc: "Verificação recomendada",
-    },
-    {
-      icon: "bi-check-circle",
-      color: "success",
-      title: "Sistema operacional",
-      desc: "Todas as conexões ativas",
-    },
-  ];
+  const alertas =
+    alertasReais.length > 0
+      ? alertasReais.map((alerta) => ({
+          icon: alerta.tipo === "BAIXA_EFICIENCIA" ? "bi-exclamation-circle" : "bi-tools",
+          color: alerta.tipo === "BAIXA_EFICIENCIA" ? "danger" : "warning",
+          title: alerta.titulo,
+          desc: alerta.descricao,
+        }))
+      : [
+          {
+            icon: "bi-check-circle",
+            color: "success",
+            title: "Nenhum alerta encontrado",
+            desc: "Quando houver dados do backend, eles aparecerão aqui.",
+          },
+        ];
 
   return (
     <div className="dashboard-layout-container">
@@ -169,26 +250,36 @@ export default function DashboardPage() {
               </div>
 
               <div className="chart-area">
-                <canvas className="monitoring-chart" id="myChart" />
+                <canvas className="monitoring-chart" ref={canvasRef} />
               </div>
 
               <div className="dashboard-info-boxes-grid mt-4">
                 <div className="info-box">
                   <p className="text-muted mb-1">Eficiência</p>
-                  <h3 className="fw-bold">94%</h3>
-                  <small className="text-muted">Alto desempenho</small>
+                  <h3 className="fw-bold">{dadosDashboard.eficiencia}%</h3>
+                  <small className="text-muted">
+                    {dadosDashboard.eficiencia >= 90 ? "Alto desempenho" : "Abaixo do esperado"}
+                  </small>
                 </div>
 
                 <div className="info-box">
                   <p className="text-muted mb-1">Economia mensal</p>
-                  <h3 className="fw-bold">R$ 240</h3>
+                  <h3 className="fw-bold">{formatarMoeda(dadosDashboard.economiaMensal)}</h3>
                   <small className="text-muted">Últimos 30 dias</small>
                 </div>
 
                 <div className="info-box">
                   <p className="text-muted mb-1">Status operacional</p>
-                  <h3 className="fw-bold">Tudo em dia</h3>
-                  <small className="text-success fw-bold">Sistema funcionando</small>
+                  <h3 className="fw-bold">{dadosDashboard.statusOperacional}</h3>
+                  <small
+                    className={`fw-bold ${
+                      dadosDashboard.totalAlertas > 0 ? "text-warning" : "text-success"
+                    }`}
+                  >
+                    {dadosDashboard.totalAlertas > 0
+                      ? "Sistema precisa de atenção"
+                      : "Sistema funcionando"}
+                  </small>
                 </div>
               </div>
             </div>

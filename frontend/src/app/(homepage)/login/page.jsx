@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { loginUsuario } from "../../../api";
+import { loginUsuario, solicitarRedefinicaoSenha } from "../../../api";
 import { toast } from "sonner";
 
 export default function LoginPage() {
@@ -9,6 +9,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingRedefinicao, setLoadingRedefinicao] = useState(false);
 
   async function handleLogin() {
 
@@ -37,9 +38,12 @@ export default function LoginPage() {
 
         toast.success("Login realizado com sucesso!");
 
-        setTimeout(() => {
-          window.location.href = "/dashboard";
-        }, 2000);
+        const destino =
+          response.dados?.usuario?.tipo_usuario === "ADMIN"
+            ? "/mensagens-adm"
+            : "/dashboard";
+
+        window.location.href = destino;
 
       } else {
 
@@ -62,6 +66,41 @@ export default function LoginPage() {
 
     }
 
+  }
+
+  async function handleSolicitarRedefinicaoSenha() {
+    if (!email) {
+      toast.error("Digite seu e-mail para redefinir a senha.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      toast.error("Formato de email inválido.");
+      return;
+    }
+
+    setLoadingRedefinicao(true);
+
+    try {
+      const response = await solicitarRedefinicaoSenha(email.trim().toLowerCase());
+
+      if (response?.sucesso) {
+        toast.success(response.mensagem || "Enviamos o link de redefinição para seu e-mail.");
+      } else {
+        toast.error(
+          response?.erro ||
+          response?.mensagem ||
+          "Erro ao solicitar redefinição de senha."
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Erro de conexão com o servidor.");
+    } finally {
+      setLoadingRedefinicao(false);
+    }
   }
 
   return (
@@ -207,13 +246,15 @@ export default function LoginPage() {
                 </button>
 
                 <div className="text-center mb-2">
-                  <a
-                    href="#forgot"
-                    className="text-decoration-none small fw-bold"
+                  <button
+                    type="button"
+                    className="border-0 bg-transparent text-decoration-none small fw-bold"
                     style={{ color: "#f5bd31" }}
+                    onClick={handleSolicitarRedefinicaoSenha}
+                    disabled={loadingRedefinicao}
                   >
-                    Esqueceu a senha?
-                  </a>
+                    {loadingRedefinicao ? "Enviando link..." : "Esqueceu a senha?"}
+                  </button>
                 </div>
               </form>
             </div>
