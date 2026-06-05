@@ -1,5 +1,5 @@
 export const metadata = {
- title: "Instalação de painéis solares — Luminar",
+ title: "Manutenção de painéis solares — Luminar",
 };
 
 export default function ManutencaoPage() {
@@ -24,25 +24,15 @@ export default function ManutencaoPage() {
         {/* TEXTO */}
         <div className="col-lg-6">
 
-          <span
-            className="badge px-4 py-3 rounded-pill fw-bold mb-4 fs-6"
-            style={{
-              backgroundColor: "#febd17",
-              color: "#221f20",
-            }}
-          >
-            MANUTENÇÃO • SEGURANÇA • PERFORMANCE
-          </span>
-
           <h1
-            className="display-1 fw-black mb-4"
+            className="display-3 fw-black mb-4"
             style={{
               fontWeight: "900",
               lineHeight: "1.05",
               letterSpacing: "-2px",
             }}
           >
-            Manutenção profissional de{" "}
+            Manutenção profissional dos{" "}
             <span style={{ color: "#febd17" }}>
               sistemas solares
             </span>
@@ -71,7 +61,7 @@ export default function ManutencaoPage() {
                 border: "none",
               }}
             >
-              Solicitar Orcamento
+              Solicitar Orçamento
             </a>
 
             
@@ -126,7 +116,7 @@ export default function ManutencaoPage() {
   <section
     className="py-5"
     style={{
-      backgroundColor: "#221f20",
+      backgroundColor: "#2e2e2e",
       color: "#ffffff",
     }}
   >
@@ -147,27 +137,27 @@ export default function ManutencaoPage() {
 
         {[
           {
-            titulo: "Inspeção inicial",
+            titulo: "Chamado em 1 clique",
             descricao:
-              "Analisamos todo o sistema fotovoltaico.",
-            icone: "bi-search",
+              "Solicite manutenção ou limpeza de forma fácil e rápida direto pelo painel online da Luminar.",
+            icone: "bi-cursor-fill",
           },
           {
-            titulo: "Diagnóstico técnico",
+            titulo: "Envio ágil",
             descricao:
-              "Identificamos falhas e perda de eficiência.",
-            icone: "bi-clipboard-data",
+              "Nossa equipe técnica é acionada imediatamente para agendar e realizar o atendimento sem enrolação.",
+            icone: "bi-lightning-charge-fill",
           },
           {
-            titulo: "Execução",
+            titulo: "Manutenção e Limpeza",
             descricao:
-              "Realizamos limpeza e manutenção técnica.",
+              "Técnicos especializados realizam a limpeza das placas e a revisão completa dos inversores.",
             icone: "bi-tools",
           },
           {
-            titulo: "Teste final",
+            titulo: "Garantia assegurada",
             descricao:
-              "Garantimos máxima performance do sistema.",
+              "Nosso suporte técnico garante máxima performance do seu sistema.",
             icone: "bi-check-circle",
           },
         ].map((item, index) => (
@@ -215,13 +205,6 @@ export default function ManutencaoPage() {
 
     </div>
   </section>
-  <div
-  style={{
-    backgroundColor:"2e2e2e"
-  }}
-  >
-    <h6 style={{color:"#2e2e2e"}}>₢feito por @46maarcelo</h6>
-  </div>
 
 </div>
  );

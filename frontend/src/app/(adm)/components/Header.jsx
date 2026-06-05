@@ -46,7 +46,6 @@ export default function Header() {
 
   return (
     <>
-      {/* NAVBAR */}
       <nav
         className="navbar fixed-top px-3"
         style={{
@@ -58,7 +57,6 @@ export default function Header() {
       >
         <div className="container-fluid">
 
-          {/* BOTÃO SIDEBAR */}
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="border-0 bg-transparent shadow-none"
@@ -77,34 +75,53 @@ export default function Header() {
             />
           </button>
 
-        {/* LOGO DIREITA */}
-        <a
-        className="navbar-brand d-flex align-items-center gap-2 text-decoration-none m-0"
-        href="#"
-        >
-        <span
-            style={{
-            color: "#fff",
-            fontWeight: "700",
-            fontSize: "1.8rem",
-            letterSpacing: "-1px",
-            }}
-        >
-            Luminar
-        </span>
 
-        <img
-            src="/logo-semEscrita.png"
-            alt="Logo Luminar"
-            style={{
-            width: "40px",
-            height: "40px",
-            borderRadius: "14px",
-            objectFit: "cover",
-            padding: "4px",
-            }}
-        />
-        </a>
+          <div className="dropdown">
+                      <a
+                        href="#"
+                        className="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        <img
+                          src="perfil-foto.png"
+                          alt="Foto de perfil"
+                          width="40"
+                          height="40"
+                          className="rounded-circle me-2"
+                        />
+                        <div className="d-none d-sm-block text-start me-1">
+                          <strong style={{ display: "block", fontSize: "0.95rem" }}>
+                            {usuario?.nome}
+                          </strong>
+                          <small style={{ color: "#b5b5b5", display: "block", marginTop: "-2px" }}>
+                            Administrador
+                          </small>
+                        </div>
+                      </a>
+
+                      <ul className="dropdown-menu dropdown-menu-dark text-small shadow dropdown-menu-end">
+                        <li>
+                          <a className="dropdown-item" href="/perfil">
+                            Perfil
+                          </a>
+                        </li>
+                        <li>
+                          <hr className="dropdown-divider" />
+                        </li>
+                        <li>
+                          <button
+                            type="button"
+                            className="dropdown-item text-danger"
+                            onClick={handleLogout}
+                          >
+                            <i className="bi bi-box-arrow-right me-2"></i>
+                            Sair
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+      
         </div>
       </nav>
 
@@ -126,8 +143,8 @@ export default function Header() {
         {/* CONTAINER */}
         <div className="d-flex flex-column flex-shrink-0 p-3 h-100">
         <a
-        href="/"
-        className="d-flex align-items-center text-white text-decoration-none gap-2"
+        href="/inicio-adm"
+        className="d-flex align-items-center text-white text-decoration-none gap-2 mb-4 mt-2"
         >
         <img
             src="/logo-semEscrita.png"
@@ -152,17 +169,17 @@ export default function Header() {
 
         <li className="nav-item">
             <a
-            href="#"
+            href="/inicio-adm"
             className="nav-link sidebar-link text-white d-flex align-items-center gap-3"
             >
             <i className="bi bi-house-door-fill"></i>
-            Home
+            Início
             </a>
         </li>
 
         <li>
             <a
-            href="#"
+            href="/dashboard-adm"
             className="nav-link sidebar-link text-white d-flex align-items-center gap-3"
             >
             <i className="bi bi-speedometer2"></i>
@@ -172,31 +189,31 @@ export default function Header() {
 
         <li>
             <a
-            href="#"
+            href="/financeiro"
             className="nav-link sidebar-link text-white d-flex align-items-center gap-3"
             >
             <i className="bi bi-table"></i>
-            Orders
+            Financeiro
             </a>
         </li>
 
         <li>
             <a
-            href="#"
+            href="/instalacoes"
             className="nav-link sidebar-link text-white d-flex align-items-center gap-3"
             >
             <i className="bi bi-grid-fill"></i>
-            Products
+            Instalações
             </a>
         </li>
 
         <li>
             <a
-            href="#"
+            href="/mensagens-adm"
             className="nav-link sidebar-link text-white d-flex align-items-center gap-3"
             >
             <i className="bi bi-people-fill"></i>
-            Customers
+            Chamados
             </a>
         </li>
 
@@ -207,79 +224,6 @@ export default function Header() {
               borderColor: "rgba(255, 255, 255, 0.08)",
             }}
           />
-
-          {/* PROFILE */}
-          <div className="dropdown">
-            <a
-              href="#"
-              className="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <img
-                src="https://github.com/mdo.png"
-                alt=""
-                width="40"
-                height="40"
-                className="rounded-circle me-3"
-              />
-
-              <div>
-                <strong
-                  style={{
-                    display: "block",
-                    fontSize: "0.95rem",
-                  }}
-                >
-                  {usuario?.nome}
-                </strong>
-
-                <small
-                  style={{
-                    color: "#b5b5b5",
-                  }}
-                >
-                  {usuario?.tipo_usuario === "ADMIN" ? "Administrador" : "Cliente"}
-                </small>
-              </div>
-            </a>
-
-            <ul className="dropdown-menu dropdown-menu-dark text-small shadow">
-
-              <li>
-                <a className="dropdown-item" href="/mensagens-adm">
-                  Meu painel
-                </a>
-              </li>
-
-              <li>
-                <a className="dropdown-item" href="#">
-                  Configurações
-                </a>
-              </li>
-
-              <li>
-                <a className="dropdown-item" href="#">
-                  Perfil
-                </a>
-              </li>
-
-              <li>
-                <hr className="dropdown-divider" />
-              </li>
-
-              <li>
-                <button
-                  type="button"
-                  className="dropdown-item text-danger"
-                  onClick={handleLogout}
-                >
-                  <i className="bi bi-box-arrow-right me-2"></i>
-                  Sair
-                </button>
-              </li>
-            </ul>
-          </div>
 
         </div>
       </aside>

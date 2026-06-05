@@ -11,13 +11,14 @@ import produtoRotas from './routes/produtoRotas.js';
 import authRotas from './routes/authRotas.js';
 import criptografiaRotas from './routes/criptografiaRotas.js';
 import usuarioRotas from './routes/usuarioRotas.js';
+import empresaRotas from './routes/empresaRotas.js';
 import orcamentoRotas from './routes/orcamentoRotas.js';
 import faleConoscoRotas from './routes/faleConoscoRotas.js';
 import dashboardRotas from './routes/dashboardRotas.js';
 import pagamentoRotas from './routes/pagamentoRotas.js';
+import instalacaoRotas from './routes/instalacaoRotas.js';
 
 // Importar middlewares
-import { logMiddleware } from './middlewares/logMiddleware.js';
 import { errorMiddleware } from './middlewares/errorMiddleware.js';
 
 // Carregar variáveis do arquivo .env
@@ -51,18 +52,17 @@ app.use(cookieParser());
 //  Servir arquivos estáticos
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Middleware para log de requisições (salva no banco de dados)
-app.use(logMiddleware);
-
 // Rotas da API
 app.use('/api/auth', authRotas);
 app.use('/api/produtos', produtoRotas);
 app.use('/api/criptografia', criptografiaRotas);
 app.use('/api/usuarios', usuarioRotas);
+app.use('/api/empresas', empresaRotas);
 app.use('/api/orcamentos', orcamentoRotas);
 app.use('/api/faleConosco', faleConoscoRotas);
 app.use('/api/dashboard', dashboardRotas);
 app.use('/api/pagamentos', pagamentoRotas);
+app.use('/api/instalacoes', instalacaoRotas);
 
 // Rota raiz
 app.get('/', (req, res) => {

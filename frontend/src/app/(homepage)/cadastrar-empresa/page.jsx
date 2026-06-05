@@ -1,40 +1,47 @@
 "use client";
 
-import { useState } from "react";
-import { criarUsuario, loginUsuario } from "../../../api";
+import { useState, useEffect } from "react";
+import { criarEmpresa } from "../../../api";
 import { toast } from "sonner";
-import { useSearchParams } from "next/navigation";
 
-export default function RegisterPage() {
+export default function CadastroEmpresaPage() {
 
-  const searchParams = useSearchParams();
 
-  const token = searchParams.get("token");
 
-  const [nome, setNome] = useState("");
+  const [nomeEmpresa, setNomeEmpresa] = useState("");
+  const [cnpj, setCnpj] = useState("");
+  const [telefone, setTelefone] = useState("");
   const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [confirmarSenha, setConfirmarSenha] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function handleSubimit() {
 
-    if (!nome || !email || !senha || !confirmarSenha) {
+    if (!nomeEmpresa || !cnpj || !telefone || !email) {
       toast.error("Preencha todos os campos.");
       return;
     }
 
-    const nomeTrim = nome.trim();
+    const nomeEmpresaTrim = nomeEmpresa.trim();
 
-    if (nomeTrim.length < 2) {
+    if (nomeEmpresaTrim.length < 2) {
       toast.error("O nome deve ter pelo menos 2 caracteres.");
       return;
     }
 
-    if (nomeTrim.length > 255) {
+    if (nomeEmpresaTrim.length > 255) {
       toast.error("O nome deve ter no máximo 255 caracteres.");
       return;
     }
+
+    if (!/^\d{14}$/.test(cnpj)) {
+    toast.error("CNPJ deve conter 14 números.");
+    return;
+    }
+
+    if (!/^\d{10,11}$/.test(telefone)) {
+    toast.error("Telefone deve conter 10 ou 11 números.");
+    return;
+}
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -43,50 +50,23 @@ export default function RegisterPage() {
       return;
     }
 
-    if (senha.length < 6) {
-      toast.error("A senha deve ter pelo menos 6 caracteres.");
-      return;
-    }
-
-    if (senha !== confirmarSenha) {
-      toast.error("As senhas não coincidem.");
-      return;
-    }
-
-    if (!token) {
-      toast.error("Orçamento inválido. Solicite um orçamento antes de cadastrar-se.");
-      return;
-    }
-
     setLoading(true);
 
     try {
 
-      const data = {
-        nome: nomeTrim,
-        email: email.trim().toLowerCase(),
-        senha,
-        token: token
-      };
-
-      const response = await criarUsuario(data);
+      const response = await criarEmpresa({
+        nome_empresa: nomeEmpresa.trim(),
+        cnpj: cnpj.trim(),
+        telefone_principal: telefone.trim(),
+        email_principal: email.trim().toLowerCase()
+      });
 
       if (response && response.sucesso) {
 
-        const loginResponse = await loginUsuario({
-          email: email.trim().toLowerCase(),
-          senha
-        });
-
-        if (!loginResponse?.sucesso) {
-          toast.error("Erro ao realizar login automático.");
-          return;
-        }
-
-        toast.success("Cadastro realizado com sucesso.");
+        toast.success("Empresa cadastrada com sucesso.");
 
         setTimeout(() => {
-          window.location.href = "/cadastrar-empresa";
+          window.location.href = "/inicio-dashboard";
         }, 1000);
 
       } else {
@@ -94,7 +74,7 @@ export default function RegisterPage() {
         toast.error(
           response?.erro ||
           response?.mensagem ||
-          "Erro ao cadastrar usuário."
+          "Erro ao cadastrar empresa."
         );
 
       }
@@ -103,15 +83,9 @@ export default function RegisterPage() {
 
       console.error(error);
 
-      if (error.response && error.response.data) {
-        const apiError = error.response.data.erro || error.response.data.mensage;
-        toast.error(apiError || "Erro de conexão com o servidor");
-      
-      } else {
-        toast.error("Erro de conexão com o servidor.");
-      } 
-    
-    }  finally {
+      toast.error("Erro de conexão com o servidor.");
+
+    } finally {
 
       setLoading(false);
 
@@ -180,7 +154,7 @@ export default function RegisterPage() {
                 }}
               >
                 <img
-                  src="/conta-luminar.avif"
+                  src="https://img.freepik.com/fotos-gratis/equipe-de-negocios-alegre-assistindo-apresentacao-no-laptop-sentado-no-local-de-trabalho-olhando-para-o-visor-e-sorrindo-copie-o-espaco-conceito-de-reuniao-de-negocios_74855-11583.jpg?semt=ais_rp_progressive&w=740&q=80"
                   alt="Painéis solares"
                   className="w-100 h-100"
                   style={{ objectFit: "cover" }}
@@ -198,7 +172,7 @@ export default function RegisterPage() {
                     lineHeight: 1,
                   }}
                 >
-                  Conta <span style={{ color: "#f5bd31" }}>Luminar</span>
+                  Empresa <span style={{ color: "#f5bd31" }}>Cliente</span>
                 </h1>
 
                 <p
@@ -210,7 +184,7 @@ export default function RegisterPage() {
                     lineHeight: 1.15,
                   }}
                 >
-                  Preencha seus dados de usuário para tornar-se um cliente.
+                  Informe os dados da sua empresa para finalizar seu cadastro.
                 </p>
 
               </div>
@@ -232,7 +206,7 @@ export default function RegisterPage() {
                   className="fw-bold mb-5"
                   style={{ color: "#221f20" }}
                 >
-                  Criar conta
+                  Cadastrar empresa
                 </h2>
 
                 <form onSubmit={(e) => e.preventDefault()}>
@@ -240,7 +214,7 @@ export default function RegisterPage() {
                   <div className="mb-4">
 
                     <label className="form-label small fw-bold text-secondary mb-2">
-                      Nome Completo
+                      Nome da Empresa
                     </label>
 
                     <input
@@ -252,8 +226,8 @@ export default function RegisterPage() {
                         fontSize: "1.05rem",
                         paddingBottom: "12px",
                       }}
-                      value={nome}
-                      onChange={(e) => setNome(e.target.value)}
+                      value={nomeEmpresa}
+                      onChange={(e) => setNomeEmpresa(e.target.value)}
                     />
 
                   </div>
@@ -261,11 +235,53 @@ export default function RegisterPage() {
                   <div className="mb-4">
 
                     <label className="form-label small fw-bold text-secondary mb-2">
-                      E-mail
+                      CNPJ
                     </label>
 
                     <input
-                      type="email"
+                      type="text"
+                      className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
+                      style={{
+                        borderColor: "#d8d8d8",
+                        borderBottomWidth: "2px",
+                        fontSize: "1.05rem",
+                        paddingBottom: "12px",
+                      }}
+                      value={cnpj}
+                      onChange={(e) => setCnpj(e.target.value.replace(/\D/g, ""))}
+                    />
+
+                  </div>
+
+                  <div className="mb-4">
+
+                    <label className="form-label small fw-bold text-secondary mb-2">
+                      Telefone principal
+                    </label>
+
+                    <input
+                      type="text"
+                      className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
+                      style={{
+                        borderColor: "#d8d8d8",
+                        borderBottomWidth: "2px",
+                        fontSize: "1.05rem",
+                        paddingBottom: "12px",
+                      }}
+                      value={telefone}
+                      onChange={(e) => setTelefone(e.target.value.replace(/\D/g, ""))}
+                    />
+
+                  </div>
+
+                  <div className="mb-5">
+
+                    <label className="form-label small fw-bold text-secondary mb-2">
+                      E-mail principal
+                    </label>
+
+                    <input
+                      type="text"
                       className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
                       style={{
                         borderColor: "#d8d8d8",
@@ -279,48 +295,6 @@ export default function RegisterPage() {
 
                   </div>
 
-                  <div className="mb-4">
-
-                    <label className="form-label small fw-bold text-secondary mb-2">
-                      Senha (mínimo de 6 dígitos)
-                    </label>
-
-                    <input
-                      type="password"
-                      className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
-                      style={{
-                        borderColor: "#d8d8d8",
-                        borderBottomWidth: "2px",
-                        fontSize: "1.05rem",
-                        paddingBottom: "12px",
-                      }}
-                      value={senha}
-                      onChange={(e) => setSenha(e.target.value)}
-                    />
-
-                  </div>
-
-                  <div className="mb-5">
-
-                    <label className="form-label small fw-bold text-secondary mb-2">
-                      Confirmar Senha
-                    </label>
-
-                    <input
-                      type="password"
-                      className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
-                      style={{
-                        borderColor: "#d8d8d8",
-                        borderBottomWidth: "2px",
-                        fontSize: "1.05rem",
-                        paddingBottom: "12px",
-                      }}
-                      value={confirmarSenha}
-                      onChange={(e) => setConfirmarSenha(e.target.value)}
-                    />
-
-                  </div>
-
                   <button
                     type="button"
                     className="btn btn-warning w-100 py-3 rounded-pill fw-bold shadow-sm mb-4"
@@ -328,7 +302,7 @@ export default function RegisterPage() {
                     onClick={handleSubimit}
                     disabled={loading}
                   >
-                    {loading ? "Cadastrando..." : "Cadastrar"}
+                    {loading ? "Salvando..." : "Finalizar cadastro"}
                   </button>
 
                 </form>

@@ -297,7 +297,6 @@ export default function ChamadosPage() {
       <div style={{
     backgroundColor:"#ececec"
       }}>
-        <h6>₢feito por marcelo₢</h6>
 
       </div>
     </>

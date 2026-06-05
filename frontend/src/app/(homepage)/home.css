@@ -1,0 +1,446 @@
+
+
+.main {
+  background-color: #f8f9fa;
+}
+
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 85vh;
+  background-image: linear-gradient(
+      to right,
+      rgba(15, 23, 42, 0.9),
+      rgba(15, 23, 42, 0.7)
+    ),
+    url("https://sanida.com.br/blog/wp-content/uploads/2026/06/seguro-placas-solares-imovel-comercial.png");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.heroInner {
+  position: relative;
+  z-index: 2;
+}
+
+.heroBadge {
+  letter-spacing: 2px;
+}
+
+.section {
+  padding: 100px 0;
+}
+
+.sectionDark {
+  background-color: #0f172a;
+  padding: 100px 0;
+}
+
+.sectionTitle {
+  letter-spacing: -1px;
+}
+
+.titleBar,
+.titleBarLeft {
+  width: 60px;
+  height: 4px;
+  background-color: #ffc107;
+  border-radius: 10px;
+}
+
+.titleBar {
+  margin: 0.75rem auto 0;
+}
+
+.aboutText {
+  line-height: 1.8;
+}
+
+.aboutImageWrap {
+  position: relative;
+}
+
+.aboutImageOffset {
+  position: absolute;
+  top: 20px;
+  left: -20px;
+  right: 20px;
+  bottom: -20px;
+  background-color: #ffc107;
+  z-index: 0;
+  border-radius: 1rem;
+}
+
+.aboutImageBox {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 450px;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+}
+
+.aboutImage {
+  object-fit: cover;
+}
+
+.featureIconBox {
+  width: 70px;
+  height: 70px;
+}
+
+.hoverLift {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s ease;
+}
+
+.hoverLift:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1) !important;
+}
+
+.serviceCard {
+  cursor: pointer;
+  min-height: 400px;
+}
+
+.serviceBg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.6s ease;
+}
+
+.serviceCard:hover .serviceBg {
+  transform: scale(1.1);
+}
+
+.serviceOverlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 0.2) 50%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.serviceBody {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.5rem;
+  height: 100%;
+}
+
+.serviceTitle {
+  transition: transform 0.4s ease;
+  transform: translateY(10px);
+  margin: 0;
+}
+
+.serviceCard:hover .serviceTitle {
+  transform: translateY(0);
+}
+
+.serviceLine {
+  width: 0;
+  height: 3px;
+  background-color: #ffc107;
+  transition: width 0.4s ease;
+  margin-top: 0.75rem;
+}
+
+.serviceCard:hover .serviceLine {
+  width: 50px;
+}
+
+.simulationSection {
+  position: relative;
+  overflow: hidden;
+  padding: 90px 0 70px;
+  background: #f2b632;
+}
+
+.simulationGlow {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  top: -250px;
+  right: -180px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.07);
+  filter: blur(20px);
+}
+
+.simulationCard {
+  min-height: 360px;
+  overflow: hidden;
+  border-radius: 28px;
+  background: linear-gradient(
+    90deg,
+    rgba(1, 12, 22, 1) 0%,
+    rgba(2, 23, 40, 1) 45%,
+    rgba(6, 31, 49, 0.92) 70%
+  );
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.22);
+}
+
+.simulationBg {
+  position: absolute;
+  inset: 0;
+  background-image: url("/painelsolar.jpg");
+  background-size: cover;
+  background-position: right center;
+  opacity: 0.95;
+}
+
+.simulationOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 10, 18, 0.98) 0%,
+    rgba(0, 18, 32, 0.95) 35%,
+    rgba(0, 0, 0, 0.15) 100%
+  );
+}
+
+.simulationContent {
+  padding: 55px 40px;
+}
+
+.simulationTitle {
+  color: #fff;
+  font-size: 2.8rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -1px;
+  margin-bottom: 18px;
+}
+
+.simulationText {
+  max-width: 450px;
+  text-align: justify;
+  margin-bottom: 35px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.simulationInput {
+  max-width: 260px;
+  height: 54px;
+  margin-bottom: 18px;
+  padding-left: 18px;
+  border: 0;
+  border-radius: 14px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+}
+
+.simulationPrimaryBtn {
+  width: 260px;
+  padding: 18px;
+  color: #fff;
+  font-weight: 700;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(90deg, #f5b400 0%, #ffc933 100%);
+  box-shadow: 0 10px 30px rgba(245, 180, 0, 0.35);
+  transition: all 0.3s ease;
+}
+
+.simulationPrimaryBtn:hover {
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 35px rgba(245, 180, 0, 0.5);
+}
+
+.simulationSecondaryBtn {
+  min-height: 54px;
+  padding: 14px 24px;
+  color: #111;
+  font-weight: 800;
+  white-space: nowrap;
+  border: 2px solid #ffc933;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 8px 25px rgba(255, 201, 51, 0.28);
+}
+
+.simulationSecondaryBtn:hover {
+  color: #111;
+  background: #fff8df;
+  transform: translateY(-2px);
+}
+
+.simulationResultCard {
+  width: 100%;
+  max-width: 360px;
+  padding: 32px;
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.18);
+}
+
+.simulationAmount {
+  color: #221f20;
+  font-size: 3.2rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -2px;
+  margin-bottom: 10px;
+}
+
+.simulationAmount span {
+  color: #111;
+  font-size: 1.2rem;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.statsRow {
+  max-width: 1200px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.statItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 80px;
+  border-right: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.statItem i {
+  color: #fff;
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.statItem h4 {
+  color: #000;
+  font-size: 2.5rem;
+  font-weight: 900;
+  line-height: 1;
+  white-space: nowrap;
+  margin-bottom: 2px;
+}
+
+.statItem p {
+  color: #111;
+  font-size: 1rem;
+  font-weight: 500;
+  white-space: nowrap;
+  margin: 0;
+}
+
+.customBtn,
+.customBtnOutline {
+  transition: all 0.3s ease;
+}
+
+.customBtn {
+  border: none;
+}
+
+.customBtn:hover,
+.customBtnOutline:hover {
+  transform: translateY(-3px);
+}
+
+.customBtnOutline {
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.customBtnOutline:hover {
+  background-color: #fff;
+  color: #0f172a;
+}
+
+.shadowGlow {
+  box-shadow: 0 10px 25px -5px rgba(255, 193, 7, 0.4);
+}
+
+.faqContainer {
+  max-width: 850px;
+}
+
+.faqItem {
+  border: 0;
+  margin-bottom: 1.5rem;
+  border-left: 0 solid #ffc107 !important;
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: border-left 0.2s ease, box-shadow 0.2s ease;
+}
+
+.faqItem:has(.accordion-button:not(.collapsed)) {
+  border-left: 5px solid #ffc107 !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05) !important;
+}
+
+.faqButton {
+  color: #0f172a !important;
+  background-color: #fff !important;
+  box-shadow: none !important;
+  font-size: 1.15rem;
+  transition: all 0.2s ease;
+}
+
+.faqButton:not(.collapsed) {
+  color: #0f172a !important;
+  background-color: #fff !important;
+}
+
+.faqButton:not(.collapsed)::after {
+  filter: invert(76%) sepia(85%) saturate(1243%) hue-rotate(359deg)
+    brightness(107%) contrast(104%);
+}
+
+.faqBody {
+  line-height: 1.8;
+  border-top: 1px solid #f1f5f9;
+}
+
+@media (max-width: 991.98px) {
+  .section,
+  .sectionDark {
+    padding: 72px 0;
+  }
+
+  .simulationContent {
+    padding: 42px 28px;
+  }
+
+  .simulationResultCard {
+    margin: 0 28px 42px;
+  }
+
+  .statItem {
+    border-right: 0;
+  }
+}
+
+/* Correção para o fundo branco no preenchimento automático (Autofill) */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #221f20 inset !important;
+    -webkit-text-fill-color: white !important;
+    transition: background-color 5000s ease-in-out 0s;
+}

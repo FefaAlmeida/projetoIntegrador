@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { loginUsuario, solicitarRedefinicaoSenha } from "../../../api";
+import { loginUsuario, getPerfil, solicitarRedefinicaoSenha } from "../../../api";
 import { toast } from "sonner";
 
 export default function LoginPage() {
@@ -41,7 +41,7 @@ export default function LoginPage() {
         const destino =
           response.dados?.usuario?.tipo_usuario === "ADMIN"
             ? "/mensagens-adm"
-            : "/dashboard";
+            : "/inicio-dashboard";
 
         window.location.href = destino;
 
@@ -152,7 +152,7 @@ export default function LoginPage() {
               }}
             >
               <img
-                src="/painelsolar.jpg"
+                src="/dashboard.png"
                 alt="Painéis solares"
                 className="w-100 h-100"
                 style={{ objectFit: "cover" }}
@@ -164,23 +164,23 @@ export default function LoginPage() {
                 className="fw-black mb-3"
                 style={{
                   color: "#221f20",
-                  fontSize: "clamp(3.2rem, 6vw, 5rem)",
+                  fontSize: "clamp(3.2rem, 6vw, 3.8rem)",
                   fontWeight: 900,
                   lineHeight: 1,
                 }}
               >
-                Energia <span style={{ color: "#f5bd31" }}>Solar</span>
+                Painel <span style={{ color: "#f5bd31" }}>Luminar</span>
               </h1>
               <p
                 className="m-0"
                 style={{
                   maxWidth: "620px",
                   color: "#221f20",
-                  fontSize: "clamp(1.5rem, 3vw, 2.25rem)",
+                  fontSize: "clamp(1.45rem, 2.6vw, 2.0rem)",
                   lineHeight: 1.15,
                 }}
               >
-                Reduza sua conta de luz com tecnologia limpa e sustentável
+                Faça login para acessar seu painel de monitoramento energético inteligente.
               </p>
             </div>
           </section>

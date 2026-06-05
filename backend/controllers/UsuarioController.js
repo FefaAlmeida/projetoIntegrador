@@ -39,15 +39,13 @@ class UsuarioController {
                 });
             }
 
-            const empresa = await OrcamentoModel.buscarEmpresaPorEmail(orcamento.email_contato);
-
             const id = await UsuarioModel.criar({
                 nome: nome.trim(),
                 email: email.trim().toLowerCase(),
                 senha,
                 tipo_usuario: 'CLIENTE',
                 id_solicitacao: orcamento.id_solicitacao,
-                id_empresa: empresa?.id_empresa || null
+                id_empresa: null
             });
 
             await OrcamentoModel.invalidarToken(token);

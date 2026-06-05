@@ -44,6 +44,7 @@ export default function Page() {
               justifyContent: "space-between",
               alignItems: "center",
               marginBottom: "45px",
+              marginTop: "30px"
             }}
           >
 

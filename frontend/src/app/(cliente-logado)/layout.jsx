@@ -1,7 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "../globals.css";
-import "../home.css";
+import "../(homepage)/home.css";
 import BootstrapClient from "../bootstrap-client";
 import Header from "./components/Header";
 import Footer from "./components/Footer";

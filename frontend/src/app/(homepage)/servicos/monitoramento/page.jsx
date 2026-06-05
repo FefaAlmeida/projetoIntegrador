@@ -26,18 +26,8 @@ export default function MonitoramentoPage() {
         {/* TEXTO */}
         <div className="col-lg-6">
 
-          <span
-            className="badge px-4 py-3 rounded-pill fw-bold mb-4 fs-6"
-            style={{
-              backgroundColor: "#febd17",
-              color: "#221f20",
-            }}
-          >
-            MONITORAMENTO • PERFORMANCE • TECNOLOGIA
-          </span>
-
           <h1
-            className="display-1 fw-black mb-4"
+            className="display-3 fw-black mb-4"
             style={{
               fontWeight: "900",
               lineHeight: "1.05",
@@ -73,7 +63,7 @@ export default function MonitoramentoPage() {
                 border: "none",
               }}
             >
-              Solicitar Orcamento
+              Solicitar Orçamento
             </a>
 
             
@@ -139,7 +129,7 @@ export default function MonitoramentoPage() {
           Como funciona
         </h2>
 
-        <p className="fs-4 opacity-75 col-lg-8 mx-auto">
+        <p className="fs-3 opacity-75 col-lg-8 mx-auto">
           Tecnologia inteligente para acompanhar sua geração
           de energia em tempo real.
         </p>
@@ -149,27 +139,27 @@ export default function MonitoramentoPage() {
 
         {[
           {
-            titulo: "Conexão do sistema",
+            titulo: "Conexão do Sistema",
             descricao:
-              "Integramos os equipamentos ao sistema de monitoramento.",
+              "Integramos sensores inteligentes diretamente aos inversores da sua usina solar.",
             icone: "bi-wifi",
           },
           {
-            titulo: "Coleta de dados",
+            titulo: "Coleta Automatizada",
             descricao:
-              "Os dados de geração são enviados automaticamente.",
+              "Os dados de geração e eficiência são enviados em tempo real para a nuvem.",
             icone: "bi-cloud-arrow-up",
           },
           {
-            titulo: "Análise inteligente",
+            titulo: "Análise Inteligente",
             descricao:
-              "Identificamos falhas e perda de performance.",
+              "Algoritmos detectam instantaneamente qualquer anomalia ou perda de performance.",
             icone: "bi-cpu",
           },
           {
             titulo: "Relatórios completos",
             descricao:
-              "Você acompanha tudo pelo painel online.",
+              "Você acompanha todos os dados através de um dashboard completo.",
             icone: "bi-file-earmark-bar-graph",
           },
         ].map((item, index) => (
@@ -220,9 +210,6 @@ export default function MonitoramentoPage() {
 <div style={{
   backgroundColor:"#2e2e2e"
 }}>
-  <h6 style={{color:"#2e2e2e"}}>
-    ₢feito por @46maarcelo
-  </h6>
 </div>
 </div>
  );

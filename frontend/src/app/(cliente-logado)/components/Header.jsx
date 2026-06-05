@@ -88,7 +88,7 @@ export default function Header() {
                         aria-expanded="false"
                       >
                         <img
-                          src="https://github.com/mdo.png"
+                          src="perfil-foto.png"
                           alt="Foto de perfil"
                           width="40"
                           height="40"
@@ -105,16 +105,6 @@ export default function Header() {
                       </a>
 
                       <ul className="dropdown-menu dropdown-menu-dark text-small shadow dropdown-menu-end">
-                        <li>
-                          <a className="dropdown-item" href="#">
-                            Meu painel
-                          </a>
-                        </li>
-                        <li>
-                          <a className="dropdown-item" href="#">
-                            Configurações
-                          </a>
-                        </li>
                         <li>
                           <a className="dropdown-item" href="/perfil">
                             Perfil
@@ -213,11 +203,11 @@ export default function Header() {
 
         <li>
             <a
-            href="/instalacoes"
+            href="/solicitar-instalacao"
             className="nav-link sidebar-link text-white d-flex align-items-center gap-3"
             >
             <i className="bi bi-grid-fill"></i>
-            Instalações
+            Solicitar instalação
             </a>
         </li>
 

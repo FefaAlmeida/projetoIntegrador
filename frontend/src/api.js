@@ -73,6 +73,127 @@ export async function getPerfil() {
   return res.json();
 }
 
+
+// EMPRESA
+export async function criarEmpresa(data) {
+  const res = await fetch(`${BASE_URL}/empresas`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+
+  return res.json();
+}
+
+export async function getMinhaEmpresa() {
+  const res = await fetch(`${BASE_URL}/empresas/minha`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  return res.json();
+}
+
+export async function atualizarEmpresa(id, data) {
+  const res = await fetch(`${BASE_URL}/empresas/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+
+  return res.json();
+}
+
+
+// INSTALAÇÃO
+export async function solicitarInstalacao(data) {
+  const res = await fetch(`${BASE_URL}/instalacoes/solicitar`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+
+  return res.json();
+}
+
+export async function getMinhaInstalacao() {
+  const res = await fetch(`${BASE_URL}/instalacoes/minhas`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  return res.json();
+}
+
+
+// ADMIN
+export async function getEmpresas(pagina = 1, limite = 10) {
+  const res = await fetch(
+    `${BASE_URL}/empresas?pagina=${pagina}&limite=${limite}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  return res.json();
+}
+
+export async function getEmpresa(id) {
+  const res = await fetch(`${BASE_URL}/empresas/${id}`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  return res.json();
+}
+
+export async function inativarEmpresa(id) {
+  const res = await fetch(`${BASE_URL}/empresas/${id}/inativar`, {
+    method: "PATCH",
+    credentials: "include",
+  });
+
+  return res.json();
+}
+
+// BUSCAR TODAS AS INSTALAÇÕES (ADMIN) - Versão única corrigida e sem duplicidade
+export async function getTodasInstalacoes(pagina = 1, limite = 10) {
+  const res = await fetch(
+    `${BASE_URL}/instalacoes?pagina=${pagina}&limite=${limite}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  return res.json();
+}
+
+// ATUALIZAR INSTALAÇÃO (ADMIN)
+export async function atualizarInstalacao(id, dados) {
+  const res = await fetch(`${BASE_URL}/instalacoes/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(dados),
+  });
+
+  return res.json();
+}
+
+
 // DASHBOARD CLIENTE
 export async function getDashboardResumo() {
   const res = await fetch(`${BASE_URL}/dashboard/resumo`, {
@@ -119,6 +240,7 @@ export async function pagarParcela(idPagamento) {
   return res.json();
 }
 
+
 // ORÇAMENTO
 export async function criarOrcamento(data) {
   const res = await fetch(`${BASE_URL}/orcamentos`, {
@@ -155,6 +277,8 @@ export async function recusarOrcamento(id_solicitacao) {
   return res.json();
 }
 
+
+// FALE CONOSCO
 export async function criarFaleConosco(data) {
   const res = await fetch(`${BASE_URL}/faleConosco`, {
     method: "POST",
@@ -164,7 +288,7 @@ export async function criarFaleConosco(data) {
     body: JSON.stringify(data),
   });
 
-  return await res.json(); 
+  return res.json(); 
 }
 
 // BUSCAR TODAS AS MENSAGENS (ADMIN)
@@ -174,7 +298,7 @@ export async function getFaleConosco(pagina = 1, limite = 10) {
     headers: {
       "Content-Type": "application/json",
     },
-    credentials: "include", // Importante para o authMiddleware
+    credentials: "include",
   });
   return res.json();
 }

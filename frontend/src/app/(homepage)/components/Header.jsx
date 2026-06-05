@@ -79,7 +79,7 @@ export default function Header() {
               </li>
 
               <li className="nav-item">
-                <a className="nav-link text-white fw-medium px-3" href="/faleConosco">
+                <a className="nav-link text-white fw-medium px-3" href="/fale-conosco">
                   Fale Conosco
                 </a>
               </li>

@@ -29,7 +29,7 @@ export default function Footer() {
                   className="bi bi-telephone-fill me-2"
                   style={{ color: "#febd17" }}
                 ></i>
-                (11) 99999-9999
+                (11) 94002-8922
               </div>
             </div>
 
@@ -40,7 +40,7 @@ export default function Footer() {
                   className="bi bi-envelope-fill me-2"
                   style={{ color: "#febd17" }}
                 ></i>
-                contato@luminar.com
+                luminar.energia.solar14@gmail.com
               </div>
             </div>
 
