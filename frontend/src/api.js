@@ -160,7 +160,7 @@ export async function solicitarInstalacao(data) {
   return res.json();
 }
 
-export async function getMinhaInstalacao() {
+export async function getMinhasInstalacoes() {
   const res = await fetch(`${BASE_URL}/instalacoes/minhas`, {
     method: "GET",
     credentials: "include",
@@ -348,5 +348,67 @@ export async function responderFaleConosco(id, resposta) {
     credentials: "include",
     body: JSON.stringify({ resposta }),
   });
+  return res.json();
+}
+
+// TÉCNICOS (ADM)
+// LISTAR TÉCNICOS (PAGINADO)
+export async function getTecnicos(pagina = 1, limite = 10) {
+  const res = await fetch(
+    `${BASE_URL}/tecnicos?pagina=${pagina}&limite=${limite}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  return res.json();
+}
+
+// BUSCAR TÉCNICO POR ID
+export async function getTecnico(id) {
+  const res = await fetch(`${BASE_URL}/tecnicos/${id}`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  return res.json();
+}
+
+// CADASTRAR NOVO TÉCNICO
+export async function criarTecnico(data) {
+  const res = await fetch(`${BASE_URL}/tecnicos`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+
+  return res.json();
+}
+
+// ATUALIZAR DADOS DO TÉCNICO
+export async function atualizarTecnico(id, data) {
+  const res = await fetch(`${BASE_URL}/tecnicos/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+
+  return res.json();
+}
+
+// INATIVAR TÉCNICO 
+export async function inativarTecnico(id) {
+  const res = await fetch(`${BASE_URL}/tecnicos/${id}/inativar`, {
+    method: "PATCH",
+    credentials: "include",
+  });
+
   return res.json();
 }

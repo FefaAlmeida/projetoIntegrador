@@ -2,336 +2,382 @@
 
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { getTodasInstalacoes, atualizarInstalacao } from "../../../api"; 
+import { getTodasInstalacoes, atualizarInstalacao, getTecnicos } from "../../../api"; 
 import styles from "./page.module.css";
 
 export default function GerenciarInstalacoesPage() {
   const [instalacoes, setInstalacoes] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [filtroStatus, setFiltroStatus] = useState("TODOS");
-
-  // Estados de Paginação
-  const [paginaAtual, setPaginaAtual] = useState(1);
-  const [totalPaginas, setTotalPaginas] = useState(1);
-  const [limite] = useState(10);
-
-  // Estados do Modal de Edição
+  const [listaTecnicos, setListaTecnicos] = useState([]); 
+  const [buscaEmpresa, setBuscaEmpresa] = useState(""); 
+  const [filtroStatus, setFiltroStatus] = useState(""); 
+  const [filtroData, setFiltroData] = useState(""); 
+  const [loading, setLoading] = useState(false);
   const [itemSelecionado, setItemSelecionado] = useState(null);
-  const [statusEdicao, setStatusEdicao] = useState("");
-  const [dataVisitaEdicao, setDataVisitaEdicao] = useState("");
-  const [tecnicoEdicao, setTecnicoEdicao] = useState("");
-  const [loadingSalvar, setLoadingSalvar] = useState(false);
+  
+  const [statusEdicao, setStatusEdicao] = useState("PENDENTE");
+  const [tecnicoEdicao, setTecnicoEdicao] = useState(""); 
+  const [dataVisitaEdicao, setDataVisitaEdicao] = useState(""); 
 
-  // 1. BUSCAR DADOS DO SEU CONTROLLER
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      require("bootstrap/dist/js/bootstrap.bundle.min.js");
+    }
+    carregarInstalacoes();
+    carregarTecnicos(); 
+  }, []);
+
   async function carregarInstalacoes() {
+    setLoading(true);
     try {
-      setLoading(true);
-      const response = await getTodasInstalacoes(paginaAtual, limite);
+      const response = await getTodasInstalacoes();
+      const dadosTratados = response?.dados || response?.data || response;
       
-      if (response && response.sucesso) {
-        setInstalacoes(response.dados || []);
-        if (response.paginacao) {
-          setTotalPaginas(response.paginacao.totalPaginas || 1);
-        }
+      if (response && (response.sucesso || Array.isArray(dadosTratados))) {
+        setInstalacoes(Array.isArray(dadosTratados) ? dadosTratados : []);
       } else {
-        toast.error(response?.erro || "Erro ao carregar instalações.");
+        toast.error(response?.erro || response?.mensagem || "Erro ao carregar instalações.");
       }
     } catch (error) {
-      console.error("Erro na requisição:", error);
-      toast.error("Erro de conexão com o servidor.");
+      console.error(error);
+      tratarErroServidor(error);
     } finally {
       setLoading(false);
     }
   }
 
-  useEffect(() => {
-    carregarInstalacoes();
-  }, [paginaAtual]);
+  async function carregarTecnicos() {
+    try {
+      const response = await getTecnicos(1, 100); 
+      const dadosTratados = response?.dados || response?.tecnicos || response;
+      if (Array.isArray(dadosTratados)) {
+        const ativos = dadosTratados.filter(t => (t.status_tecnico || t.status || "").toUpperCase() === "ATIVO");
+        setListaTecnicos(ativos);
+      }
+    } catch (error) {
+      console.error("Erro ao carregar lista de técnicos:", error);
+    }
+  }
 
-  // 2. FILTRAGEM LOCAL POR STATUS
-  const instalacoesFiltradas = instalacoes.filter((item) => {
-    if (filtroStatus === "TODOS") return true;
-    const statusItem = item.status?.toUpperCase() || "ANÁLISE";
-    return statusItem === filtroStatus.toUpperCase();
+  const instalacoesFiltradas = instalacoes.filter((inst) => {
+    const empresa = inst.nome_empresa || inst.id_empresa || "";
+    const bateEmpresa = String(empresa).toLowerCase().includes(buscaEmpresa.toLowerCase());
+
+    const statusItem = (inst.status || inst.STATUS || "PENDENTE").toUpperCase();
+    const bateStatus = filtroStatus === "" || statusItem === filtroStatus.toUpperCase();
+
+    const dataBruta = inst.dataVisita || inst.data_visita || "";
+    const dataItemFormatada = dataBruta.substring(0, 10); 
+    const bateData = filtroData === "" || dataItemFormatada === filtroData;
+
+    return bateEmpresa && bateStatus && bateData;
   });
 
-    // 3. ABRIR MODAL (Busca os dados atualizados e garante compatibilidade do Bootstrap)
-    async function abrirModalEdicao(item) {
-        // Define um estado inicial rápido usando o que já temos na linha da tabela
-        setItemSelecionado(item);
-        setStatusEdicao(item.status || "Análise");
-        setDataVisitaEdicao(item.dataVisita ? item.dataVisita.split("T")[0] : "");
-        setTecnicoEdicao(item.tecnico || "");
+  function fecharModal() {
+    if (typeof window !== "undefined") {
+      const modalElement = document.getElementById("modalGerenciarInstalacao");
+      const bootstrap = require("bootstrap/dist/js/bootstrap.bundle.min.js");
+      if (modalElement && bootstrap) {
+        const instance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+        instance.hide();
+      }
+    }
+  }
 
-        // Dispara a abertura visual do Modal imediatamente
-        const modalElement = document.getElementById("modalEditarInstalacao");
-        if (modalElement && typeof window !== "undefined" && window.bootstrap) {
-        let bootstrapModal = window.bootstrap.Modal.getInstance(modalElement);
-        if (!bootstrapModal) {
-            bootstrapModal = new window.bootstrap.Modal(modalElement);
-        }
-        bootstrapModal.show();
-        }
+  function abrirModalEditar(instalacao) {
+    setItemSelecionado(instalacao);
+    const statusBanco = (instalacao.status || instalacao.STATUS || "PENDENTE").toUpperCase();
+    setStatusEdicao(statusBanco);
+    setTecnicoEdicao(instalacao.id_tecnico || instalacao.id_prof || "");
 
-        // [Bônus de Estabilidade]: Busca o objeto completo da API por ID para garantir 
-        // que o modal possua o 'id_endereco' correto caso seja necessária uma atualização profunda.
-        try {
-        const URL_BUSCA = `http://localhost:3002/api/instalacoes/${item.id_instalacao}`;
-        const res = await fetch(URL_BUSCA, { method: "GET", credentials: "include" });
-        const dadosCompletos = await res.json();
-        
-        if (dadosCompletos && dadosCompletos.sucesso) {
-            setItemSelecionado(dadosCompletos.dados);
-        }
-        } catch (err) {
-        console.error("Não foi possível sincronizar detalhes adicionais do item:", err);
-        }
+    let dataFormatada = "";
+    const dataBruta = instalacao.dataVisita || instalacao.data_visita;
+    if (dataBruta) {
+      dataFormatada = dataBruta.substring(0, 10);
+    }
+    setDataVisitaEdicao(dataFormatada);
+  }
+
+  async function handleSalvarInstalacao(e) {
+    e.preventDefault();
+
+    if (!statusEdicao || statusEdicao.trim() === "") {
+      toast.warning("Por favor, selecione um Status Técnico.");
+      return;
+    }
+    if (!tecnicoEdicao) {
+      toast.warning("Por favor, selecione o Técnico Responsável.");
+      return;
+    }
+    if (!dataVisitaEdicao) {
+      toast.warning("Por favor, selecione a Data de instalação.");
+      return;
     }
 
-  // 4. SALVAR ALTERAÇÕES
-  async function handleSalvarAlteracoes(e) {
-    e.preventDefault();
-    if (!itemSelecionado) return;
-
-    setLoadingSalvar(true);
-
-    const payload = {
-      status: statusEdicao,
-      dataVisita: dataVisitaEdicao || null,
-      tecnico: tecnicoEdicao.trim() || null
-    };
+    setLoading(true);
 
     try {
-      const response = await atualizarInstalacao(itemSelecionado.id_instalacao, payload);
+      const dadosForm = {
+        ...itemSelecionado,
+        status: statusEdicao, 
+        tecnico: tecnicoEdicao, 
+        dataVisita: dataVisitaEdicao 
+      };
 
-      if (response && response.sucesso) {
-        toast.success("Solicitação despachada com sucesso!");
-        
-        const modalElement = document.getElementById("modalEditarInstalacao");
-        if (modalElement && window.bootstrap) {
-          const instance = window.bootstrap.Modal.getInstance(modalElement);
-          if (instance) instance.hide();
-        }
+      const idInstalacao = itemSelecionado.id_instalacao || itemSelecionado.id || itemSelecionado.ID_INSTALACAO;
+      const response = await atualizarInstalacao(idInstalacao, dadosForm);
 
+      if (response && (response.sucesso || response.status === 200 || response.data)) {
+        toast.success("Instalação atualizada com sucesso.");
+        fecharModal();
         carregarInstalacoes();
       } else {
-        toast.error(response?.erro || "Erro ao atualizar dados.");
+        toast.error(response?.erro || response?.mensagem || "Erro ao atualizar instalação.");
       }
     } catch (error) {
       console.error(error);
-      toast.error("Erro ao salvar alterações no servidor.");
+      tratarErroServidor(error);
     } finally {
-      setLoadingSalvar(false);
+      setLoading(false);
+    }
+  }
+
+  function tratarErroServidor(error) {
+    if (error.response && error.response.data) {
+      const apiError = error.response.data.erro || error.response.data.mensagem;
+      toast.error(apiError || "Erro de conexão com o servidor.");
+    } else {
+      toast.error("Erro de conexão com o servidor.");
     }
   }
 
   function renderBadgeStatus(status) {
-    const st = status?.toLowerCase();
-    if (st === "concluido" || st === "concluída") return <span className="badge bg-success px-3 py-2 rounded-pill">Concluída</span>;
-    if (st === "analise" || st === "análise" || !st) return <span className="badge bg-warning text-dark px-3 py-2 rounded-pill">Em Análise</span>;
-    if (st === "agendado") return <span className="badge bg-primary px-3 py-2 rounded-pill">Agendada</span>;
-    return <span className="badge bg-secondary px-3 py-2 rounded-pill">{status}</span>;
+    const st = status?.toUpperCase();
+    if (st === "FINALIZADA") {
+      return <span className="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill fw-bold">Finalizada</span>;
+    }
+    if (st === "PENDENTE" || !st) {
+      return <span className="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-3 py-2 rounded-pill fw-bold">Pendente</span>;
+    }
+    if (st === "EM_ANDAMENTO") {
+      return <span className="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fw-bold">Em Andamento</span>;
+    }
+    if (st === "CANCELADA") {
+      return <span className="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 rounded-pill fw-bold">Cancelada</span>;
+    }
+    return <span className="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-3 py-2 rounded-pill fw-bold">{status}</span>;
   }
 
   return (
     <div className={`min-vh-100 py-5 px-4 ${styles.page}`}>
       <div className={`container-fluid bg-white p-5 shadow-lg ${styles.shell}`}>
         
-        {/* TOPO E FILTROS */}
-        <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 border-bottom pb-4">
-          <div>
-            <h1 className={`fw-bold m-0 ${styles.title}`}>
-              Gerenciar <span className={styles.highlight}>Instalações</span>
-            </h1>
-            <p className="text-muted m-0 mt-1">Painel do Administrador para triagem e agendamentos.</p>
+        {/* BLOCO SUPERIOR: APENAS TÍTULO E SUBTÍTULO */}
+        <div className="mb-4 border-bottom pb-4">
+          <h1 className={`fw-bold m-0 ${styles.title}`}>
+            Gerenciar <span className={styles.highlight}>Instalações</span>
+          </h1>
+          <p className="text-muted m-0 mt-1">Acompanhamento de solicitações e atribuição técnica da Luminar.</p>
+        </div>
+
+        {/* BARRA ÚNICA DE FILTROS (STATUS + DATA + PESQUISA ALINHADA À DIREITA) */}
+        <div className="d-flex flex-column flex-md-row gap-3 mb-4 align-items-md-center justify-content-start">
+          {/* Filtro de Status */}
+          <div style={{ minWidth: "180px" }}>
+            <select
+              className={`form-select shadow-sm ${styles.selectFilter}`}
+              value={filtroStatus}
+              onChange={(e) => setFiltroStatus(e.target.value)}
+              disabled={loading}
+            >
+              <option value="">Todos os status</option>
+              <option value="PENDENTE">Pendente</option>
+              <option value="EM_ANDAMENTO">Em Andamento</option>
+              <option value="FINALIZADA">Finalizada</option>
+              <option value="CANCELADA">Cancelada</option>
+            </select>
           </div>
-          
-          <div className={`btn-group mt-3 mt-md-0 shadow-sm ${styles.filterGroup}`} role="group">
-            {[
-              { id: "TODOS", label: "Todos" },
-              { id: "ANÁLISE", label: "Em Análise" },
-              { id: "AGENDADO", label: "Agendados" },
-              { id: "CONCLUIDO", label: "Concluídos" }
-            ].map((btn) => (
-              <button
-                key={btn.id}
-                type="button"
-                className={`btn fw-semibold px-3 py-2 ${filtroStatus === btn.id ? "btn-dark" : "btn-light border"}`}
-                onClick={() => setFiltroStatus(btn.id)}
+
+          {/* Filtro de Data */}
+          <div className="input-group shadow-sm" style={{ maxWidth: "260px" }}>
+            <span className="input-group-text bg-white text-muted small fw-medium border-end-0">Data:</span>
+            <input
+              type="date"
+              className={`form-control border-start-0 ${styles.dateFilter}`}
+              value={filtroData}
+              onChange={(e) => setFiltroData(e.target.value)}
+              disabled={loading}
+            />
+            {filtroData && (
+              <button 
+                className="btn btn-outline-secondary border-start-0 bg-white text-muted" 
+                onClick={() => setFiltroData("")}
+                title="Limpar data"
               >
-                {btn.label}
+                <i className="bi bi-x-circle"></i>
               </button>
-            ))}
+            )}
+          </div>
+
+          {/* BARRA DE PESQUISA (Empurrada para a direita usando ms-md-auto) */}
+          <div className={`input-group shadow-sm ms-md-auto ${styles.filterGroup}`} style={{ maxWidth: "340px" }}>
+            <span className="input-group-text bg-white border-end-0 text-muted">
+              <i className="bi bi-search"></i>
+            </span>
+            <input
+              type="text"
+              className="form-control border-start-0 ps-1"
+              placeholder="Pesquisar por empresa..."
+              value={buscaEmpresa}
+              onChange={(e) => setBuscaEmpresa(e.target.value)}
+              disabled={loading}
+            />
           </div>
         </div>
 
-        {/* LISTAGEM */}
-        {loading ? (
-          <div className="d-flex justify-content-center align-items-center py-5">
+        {/* TABELA DE LISTAGEM */}
+        {loading && instalacoes.length === 0 ? (
+          <div className="text-center py-5">
             <div className="spinner-border text-warning" role="status">
               <span className="visually-hidden">Carregando...</span>
             </div>
+            <p className="text-muted mt-2">Buscando informações no servidor...</p>
           </div>
         ) : instalacoesFiltradas.length === 0 ? (
           <div className="text-center py-5 rounded-3 border border-dashed bg-light">
-            <i className="bi bi-folder-x fs-1 text-muted"></i>
-            <p className="text-secondary fw-semibold mt-3">Nenhuma solicitação encontrada.</p>
+            <i className="bi bi-funnel fs-1 text-muted"></i>
+            <p className="text-secondary fw-semibold mt-3">Nenhum resultado corresponde aos filtros aplicados.</p>
+            <button 
+              className="btn btn-sm btn-secondary mt-2 px-3"
+              onClick={() => { setBuscaEmpresa(""); setFiltroStatus(""); setFiltroData(""); }}
+            >
+              Limpar Filtros
+            </button>
           </div>
         ) : (
-          <>
-            <div className="table-responsive">
-              <table className="table table-hover align-middle">
-                <thead className="table-light">
-                  <tr className="text-secondary small fw-bold text-uppercase tracking-wider">
-                    <th className="ps-4 py-3">ID Solicitação</th>
-                    <th className="py-3">Endereço Solicitado</th>
-                    <th className="py-3">Status</th>
-                    <th className="py-3">Data de Visita</th>
-                    <th className="py-3">Profissional</th>
-                    <th className="py-3 text-end pe-4">Ação</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {instalacoesFiltradas.map((item) => {
-                    // Fallback inteligente para garantir mapeamento correto do endereço vindo da API
-                    const ruaLogradouro = item.logradouro || item.rua || "Endereço não informado";
-                    const numeroPredial = item.numero ? `, ${item.numero}` : "";
-                    const bairroInformado = item.bairro || "Bairro não informado";
-                    const cidadeEstado = item.cidade && item.estado ? `${item.cidade}/${item.estado}` : (item.cidade || item.estado || "");
+          <div className="table-responsive">
+            <table className="table table-hover align-middle">
+              <thead className="table-light">
+                <tr className="text-secondary small fw-bold text-uppercase tracking-wider">
+                  <th className="ps-4 py-3">ID</th>
+                  <th className="py-3">Cidade / UF</th>
+                  <th className="py-3">Logradouro</th>
+                  <th className="py-3">Empresa</th>
+                  <th className="py-3">Técnico</th>
+                  <th className="py-3">Status</th>
+                  <th className="py-3 text-end pe-4">Alterações</th>
+                </tr>
+              </thead>
+              <tbody>
+                {instalacoesFiltradas.map((inst) => {
+                  const idItem = inst.id_instalacao || inst.id || inst.ID_INSTALACAO;
+                  const cidadeItem = inst.cidade || inst.CIDADE || "—";
+                  const estadoItem = inst.estado || inst.uf || inst.ESTADO || "";
+                  const ruaItem = inst.logradouro || inst.rua || inst.LOGRADOURO || "—";
+                  const numeroItem = inst.numero || inst.NUMERO || "";
+                  const empresaItem = inst.nome_empresa || inst.id_empresa || "—";
+                  const tecnicoItem = inst.nome_tecnico || inst.tecnico || "Não atribuído";
+                  const statusItem = inst.status || inst.STATUS || "PENDENTE";
 
-                    return (
-                      <tr key={item.id_instalacao}>
-                        <td className="ps-4 py-3">
-                          <div className="fw-bold text-dark">#{item.id_instalacao}</div>
-                          <span className="text-muted small">Empresa: ID {item.id_empresa}</span>
-                        </td>
-
-                        <td className="py-3">
-                          <div className="text-dark fw-semibold">{ruaLogradouro}{numeroPredial}</div>
-                          <span className="text-muted small">{bairroInformado} {cidadeEstado ? `— ${cidadeEstado}` : ""}</span>
-                        </td>
-
-                        <td className="py-3">{renderBadgeStatus(item.status)}</td>
-
-                        <td className="py-3">
-                          {item.dataVisita ? (
-                            <span className="fw-medium text-dark">
-                              <i className="bi bi-calendar3 me-2 text-primary"></i>
-                              {new Date(item.dataVisita).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}
-                            </span>
-                          ) : (
-                            <span className="text-muted small italic">Não definida</span>
-                          )}
-                        </td>
-
-                        <td className="py-3">
-                          <span className={item.tecnico ? "fw-medium text-dark" : "text-muted small"}>
-                            <i className="bi bi-person me-1"></i>
-                            {item.tecnico || "Não alocado"}
-                          </span>
-                        </td>
-
-                        <td className="py-3 text-end pe-4">
-                          {/* Adicionado propriedades nativas data-bs como garantia adicional para abrir o modal */}
-                          <button
-                            data-bs-toggle="modal"
-                            data-bs-target="#modalEditarInstalacao"
-                            className={`btn btn-sm fw-bold px-3 py-2 btn-warning ${styles.dispatchButton}`}
-                            onClick={() => abrirModalEdicao(item)}
-                          >
-                            <i className="bi bi-gear-fill me-2"></i> Despachar
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-
-            {/* CONTROLES DE PAGINAÇÃO */}
-            {totalPaginas > 1 && (
-              <div className="d-flex justify-content-center align-items-center gap-3 mt-4 border-top pt-4">
-                <button
-                  className={`btn btn-sm btn-outline-dark fw-bold px-3 py-2 ${styles.paginationButton}`}
-                  disabled={paginaAtual === 1}
-                  onClick={() => setPaginaAtual(prev => prev - 1)}
-                >
-                  Anterior
-                </button>
-                <span className="fw-semibold text-secondary">
-                  Página {paginaAtual} de {totalPaginas}
-                </span>
-                <button
-                  className={`btn btn-sm btn-outline-dark fw-bold px-3 py-2 ${styles.paginationButton}`}
-                  disabled={paginaAtual === totalPaginas}
-                  onClick={() => setPaginaAtual(prev => prev + 1)}
-                >
-                  Próxima
-                </button>
-              </div>
-            )}
-          </>
+                  return (
+                    <tr key={idItem} className={styles.tableRow}>
+                      <td className="ps-4 py-3 fw-bold text-dark">#{idItem}</td>
+                      <td className="py-3 fw-semibold text-dark">{cidadeItem} {estadoItem ? `— ${estadoItem}` : ""}</td>
+                      <td className="py-3 text-secondary">{ruaItem}{numeroItem ? `, ${numeroItem}` : ""}</td>
+                      <td className="py-3 text-dark fw-medium">{empresaItem}</td>
+                      <td className="py-3 text-secondary small">{tecnicoItem}</td>
+                      <td className="py-3">{renderBadgeStatus(statusItem)}</td>
+                      <td className="py-3 text-end pe-4">
+                        <button
+                          data-bs-toggle="modal"
+                          data-bs-target="#modalGerenciarInstalacao"
+                          className={`btn btn-sm btn-light border fw-bold px-3 py-2 ${styles.btnActionEdit}`}
+                          onClick={() => abrirModalEditar(inst)}
+                          disabled={loading}
+                        >
+                          <i className="bi bi-gear-fill me-1"></i> Despachar / Editar
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 
-      {/* MODAL BOOTSTRAP */}
-      <div className="modal fade" id="modalEditarInstalacao" tabIndex="-1" aria-hidden="true">
-        <div className="modal-dialog modal-dialog-centered">
-          <div className={`modal-content shadow-lg ${styles.modalContent}`}>
-            <div className="modal-header border-bottom-0 pt-4 px-4">
-              <h5 className="modal-title fw-bold text-dark fs-4">Gerenciar Instalação</h5>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      {/* MODAL DE ATUALIZAÇÃO / GERENCIAMENTO */}
+      <div className="modal fade" id="modalGerenciarInstalacao" tabIndex="-1" aria-hidden="true">
+        <div className="modal-dialog modal-dialog-centered modal-lg">
+          <div className={`modal-content ${styles.modalContent}`}>
+            <div className="modal-header border-bottom-0 pt-4 px-4 pb-2">
+              <h5 className="modal-title fw-bold text-dark fs-4">Despachar Solicitação</h5>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" disabled={loading}></button>
             </div>
             
-            <form onSubmit={handleSalvarAlteracoes}>
+            <form onSubmit={handleSalvarInstalacao}>
               <div className="modal-body px-4 pb-4">
                 {itemSelecionado && (
-                  <p className="text-muted small mb-4">
-                    Editando a ordem <strong>#{itemSelecionado.id_instalacao}</strong> vinculada à empresa <strong>{itemSelecionado.id_empresa}</strong>.
-                  </p>
+                  <div className="p-3 bg-light rounded-3 mb-4 border border-dashed text-start">
+                    <p className="m-0 small text-secondary">
+                      <i className="bi bi-geo-alt-fill text-warning me-1"></i> 
+                      <strong>Local da Montagem:</strong> {itemSelecionado.logradouro || itemSelecionado.rua || itemSelecionado.LOGRADOURO}, {itemSelecionado.numero || itemSelecionado.NUMERO} — {itemSelecionado.bairro || ""}, {itemSelecionado.cidade || itemSelecionado.CIDADE}/{itemSelecionado.estado || itemSelecionado.uf}
+                    </p>
+                  </div>
                 )}
 
                 <div className="mb-3">
-                  <label className="form-label fw-bold small text-secondary">Alterar Status</label>
+                  <label className="form-label fw-bold small text-secondary">Status Técnico *</label>
                   <select
                     className={`form-select p-3 ${styles.modalField}`}
                     value={statusEdicao}
                     onChange={(e) => setStatusEdicao(e.target.value)}
+                    disabled={loading}
                   >
-                    <option value="Análise">Em Análise Técnica</option>
-                    <option value="Agendado">Visita Agendada</option>
-                    <option value="Concluido">Instalação Concluída</option>
+                    <option value="">Selecione o status...</option>
+                    <option value="PENDENTE">Pendente</option>
+                    <option value="EM_ANDAMENTO">Em Andamento</option>
+                    <option value="FINALIZADA">Finalizada</option>
+                    <option value="CANCELADA">Cancelada</option>
                   </select>
                 </div>
 
-                <div className="mb-3">
-                  <label className="form-label fw-bold small text-secondary">Data do Agendamento</label>
-                  <input
-                    type="date"
-                    className={`form-control p-3 ${styles.modalField}`}
-                    value={dataVisitaEdicao}
-                    onChange={(e) => setDataVisitaEdicao(e.target.value)}
-                  />
+                <div className="row g-3 mb-4">
+                  <div className="col-md-7 col-12">
+                    <label className="form-label fw-bold small text-secondary">Selecionar Técnico Responsável *</label>
+                    <select
+                      className={`form-select p-3 ${styles.modalField}`}
+                      value={tecnicoEdicao}
+                      onChange={(e) => setTecnicoEdicao(e.target.value)}
+                      disabled={loading}
+                    >
+                      <option value="">Selecione um profissional...</option>
+                      {listaTecnicos.map((tec) => {
+                        const idTecnico = tec.id_tecnico || tec.id;
+                        const nomeTecnico = tec.nome_completo || tec.nome || tec.Nome;
+                        return (
+                          <option key={idTecnico} value={idTecnico}>
+                            {nomeTecnico}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+
+                  <div className="col-md-5 col-12">
+                    <label className="form-label fw-bold small text-secondary">Data de instalação *</label>
+                    <input
+                      type="date"
+                      className={`form-control p-3 ${styles.modalField}`}
+                      value={dataVisitaEdicao}
+                      onChange={(e) => setDataVisitaEdicao(e.target.value)}
+                      disabled={loading}
+                    />
+                  </div>
                 </div>
 
-                <div className="mb-4">
-                  <label className="form-label fw-bold small text-secondary">Técnico Encarregado</label>
-                  <input
-                    type="text"
-                    className={`form-control p-3 ${styles.modalField}`}
-                    placeholder="Insira o nome do operador"
-                    value={tecnicoEdicao}
-                    onChange={(e) => setTecnicoEdicao(e.target.value)}
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className={`btn fw-bold w-100 py-3 mt-2 ${styles.submitButton}`}
-                  disabled={loadingSalvar}
-                >
-                  {loadingSalvar ? "Salvando..." : "Confirmar Atualização"}
+                <button type="submit" className={`btn fw-bold w-100 py-3 mt-2 ${styles.submitButton}`} disabled={loading}>
+                  {loading ? "Processando..." : "Salvar Alterações na Instalação"}
                 </button>
               </div>
             </form>

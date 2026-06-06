@@ -183,6 +183,16 @@ export default function Header() {
 
         <li>
             <a
+            href="/tecnicos"
+            className={`nav-link text-white d-flex align-items-center gap-3 ${styles.sidebarLink}`}
+            >
+            <i className="bi-person-badge-fill"></i>
+            Técnicos
+            </a>
+        </li>
+
+        <li>
+            <a
             href="/mensagens-adm"
             className={`nav-link text-white d-flex align-items-center gap-3 ${styles.sidebarLink}`}
             >

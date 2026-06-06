@@ -1,5 +1,4 @@
 .page {
-  background-color: #ececec;
   font-family: "Poppins", sans-serif;
 }
 
@@ -19,6 +18,25 @@
 .filterGroup {
   overflow: hidden;
   border-radius: 12px;
+  height: 45px;
+}
+
+.filterGroup input {
+  height: 100%;
+}
+
+.selectFilter {
+  border-radius: 12px;
+  height: 45px;
+  border: 1px solid #dee2e6;
+  color: #5c636a;
+}
+
+.dateFilter {
+  border-radius: 0 12px 12px 0 !important;
+  height: 45px;
+  border: 1px solid #dee2e6;
+  color: #5c636a;
 }
 
 .dispatchButton {

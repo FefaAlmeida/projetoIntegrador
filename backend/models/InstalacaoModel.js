@@ -8,13 +8,13 @@ class InstalacaoModel {
         const connection = await getConnection();
 
         try {
-            // INNER JOIN para trazer os dados reais do endereço
-            // ALIAS (AS) para traduzir as colunas para o que o Front-end lê na tabela
             const sql = `
                 SELECT
                     i.id_instalacao,
                     i.id_empresa,
+                    emp.nome_empresa AS nome_empresa,
                     i.id_tecnico AS tecnico,
+                    tec.nome AS nome_tecnico,
                     i.id_endereco,
                     i.data_instalacao AS dataVisita,
                     i.status_instalacao AS status,
@@ -22,14 +22,18 @@ class InstalacaoModel {
                     e.numero,
                     e.bairro,
                     e.cidade,
-                    e.estado
+                    e.estado,
+                    e.cep
                 FROM instalacoes i
-                INNER JOIN enderecos e ON i.id_endereco = e.id_endereco
+                LEFT JOIN enderecos e ON i.id_endereco = e.id_endereco
+                LEFT JOIN empresa_clientes emp ON i.id_empresa = emp.id_empresa
+                LEFT JOIN tecnicos tec ON i.id_tecnico = tec.id_tecnico
                 ORDER BY i.id_instalacao DESC
                 LIMIT ? OFFSET ?
             `;
 
-            const [instalacoes] = await connection.execute(sql, [limite, offset]);
+            // Garante o casting para número inteiro no driver do MySQL
+            const [instalacoes] = await connection.execute(sql, [Number(limite), Number(offset)]);
 
             const [totalResult] = await connection.execute(
                 `SELECT COUNT(*) AS total FROM instalacoes`
@@ -43,6 +47,9 @@ class InstalacaoModel {
                 totalPaginas: Math.ceil(totalResult[0].total / limite)
             };
 
+        } catch (error) {
+            console.error("Erro na query listarTodas:", error);
+            throw error;
         } finally {
             connection.release();
         }
@@ -65,9 +72,10 @@ class InstalacaoModel {
                     e.numero,
                     e.bairro,
                     e.cidade,
-                    e.estado
+                    e.estado,
+                    e.cep
                 FROM instalacoes i
-                INNER JOIN enderecos e ON i.id_endereco = e.id_endereco
+                LEFT JOIN enderecos e ON i.id_endereco = e.id_endereco
                 WHERE i.id_empresa = ?
                 ORDER BY i.id_instalacao DESC
             `;
@@ -75,12 +83,15 @@ class InstalacaoModel {
             const [rows] = await connection.execute(sql, [id_empresa]);
             return rows;
 
+        } catch (error) {
+            console.error("Erro na query listarPorEmpresa:", error);
+            throw error;
         } finally {
             connection.release();
         }
     }
 
-    // BUSCAR POR ID
+    // BUSCAR POR ID (CLIENTE OU ADMIN)
     static async buscarPorId(id) {
         const connection = await getConnection();
 
@@ -89,7 +100,9 @@ class InstalacaoModel {
                 SELECT
                     i.id_instalacao,
                     i.id_empresa,
+                    emp.nome_empresa AS nome_empresa,
                     i.id_tecnico AS tecnico,
+                    tec.nome AS nome_tecnico,
                     i.id_endereco,
                     i.data_instalacao AS dataVisita,
                     i.status_instalacao AS status,
@@ -97,9 +110,12 @@ class InstalacaoModel {
                     e.numero,
                     e.bairro,
                     e.cidade,
-                    e.estado
+                    e.estado,
+                    e.cep
                 FROM instalacoes i
-                INNER JOIN enderecos e ON i.id_endereco = e.id_endereco
+                LEFT JOIN enderecos e ON i.id_endereco = e.id_endereco
+                LEFT JOIN empresa_clientes emp ON i.id_empresa = emp.id_empresa
+                LEFT JOIN tecnicos tec ON i.id_tecnico = tec.id_tecnico
                 WHERE i.id_instalacao = ?
                 LIMIT 1
             `;
@@ -107,6 +123,9 @@ class InstalacaoModel {
             const [rows] = await connection.execute(sql, [id]);
             return rows[0] || null;
 
+        } catch (error) {
+            console.error("Erro na query buscarPorId:", error);
+            throw error;
         } finally {
             connection.release();
         }
@@ -137,12 +156,16 @@ class InstalacaoModel {
 
             return result.insertId;
 
+        } catch (error) {
+            console.error("Erro na query criar instalacao:", error);
+            throw error;
         } finally {
             if (!conexaoTransacao) {
                 connection.release();
             }
         }
     }
+
 
     // ATUALIZAR INSTALAÇÃO (BLINDADO CONTRA ERRO 500)
     static async atualizar(id, dados, conexaoTransacao = null) {

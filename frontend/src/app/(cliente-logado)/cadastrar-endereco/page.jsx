@@ -107,9 +107,6 @@ export default function CadastrarEnderecoPage() {
         <aside className="col-lg-4">
           <div className="card border-0 shadow-lg rounded-4 overflow-hidden h-100">
             <div className={`card-body p-4 p-lg-5 text-white d-flex flex-column ${styles.sidebarCard}`}>
-              <span className={`badge rounded-pill text-dark fw-bold align-self-start mb-4 ${styles.badgeHighlight}`}>
-                Endereço da empresa
-              </span>
 
               <h1 className="display-6 fw-bold mb-3">
                 Cadastrar novo endereço
@@ -142,7 +139,6 @@ export default function CadastrarEnderecoPage() {
           <div className="card border-0 shadow-sm rounded-4">
             <div className="card-body p-4 p-lg-5">
               <div className="mb-4">
-                <span className="text-uppercase small fw-bold text-warning">Cadastro</span>
                 <h2 className={`h3 fw-bold mb-2 ${styles.title}`}>
                   Dados do endereço
                 </h2>

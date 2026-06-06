@@ -7,7 +7,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 // Importar rotas
-import produtoRotas from './routes/produtoRotas.js';
 import authRotas from './routes/authRotas.js';
 import criptografiaRotas from './routes/criptografiaRotas.js';
 import usuarioRotas from './routes/usuarioRotas.js';
@@ -17,6 +16,7 @@ import faleConoscoRotas from './routes/faleConoscoRotas.js';
 import dashboardRotas from './routes/dashboardRotas.js';
 import pagamentoRotas from './routes/pagamentoRotas.js';
 import instalacaoRotas from './routes/instalacaoRotas.js';
+import tecnicoRotas from './routes/tecnicoRotas.js';
 
 // Importar middlewares
 import { errorMiddleware } from './middlewares/errorMiddleware.js';
@@ -54,7 +54,6 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Rotas da API
 app.use('/api/auth', authRotas);
-app.use('/api/produtos', produtoRotas);
 app.use('/api/criptografia', criptografiaRotas);
 app.use('/api/usuarios', usuarioRotas);
 app.use('/api/empresas', empresaRotas);
@@ -63,16 +62,16 @@ app.use('/api/faleConosco', faleConoscoRotas);
 app.use('/api/dashboard', dashboardRotas);
 app.use('/api/pagamentos', pagamentoRotas);
 app.use('/api/instalacoes', instalacaoRotas);
+app.use('/api/tecnicos', tecnicoRotas);
 
 // Rota raiz
 app.get('/', (req, res) => {
     res.json({
         sucesso: true,
-        mensagem: 'API de Produtos - Sistema de Gestão',
+        mensagem: 'API da Luminar - Sistema de Gestão de Energia Solar',
         versao: '1.0.0',
         rotas: {
             autenticacao: '/api/auth',
-            produtos: '/api/produtos',
             criptografia: '/api/criptografia',
             orcamentos: '/api/orcamentos'
         },
@@ -80,12 +79,6 @@ app.get('/', (req, res) => {
             login: 'POST /api/auth/login',
             registrar: 'POST /api/criarUsuario',
             perfil: 'GET /api/auth/perfil', 
-
-            listarProdutos: 'GET /api/produtos',
-            buscarProduto: 'GET /api/produtos/:id',
-            criarProduto: 'POST /api/produtos',
-            atualizarProduto: 'PUT /api/produtos/:id',
-            excluirProduto: 'DELETE /api/produtos/:id',
 
             infoCriptografia: 'GET /api/criptografia/info',
             cadastrarUsuario: 'POST /api/criptografia/cadastrar-usuario',

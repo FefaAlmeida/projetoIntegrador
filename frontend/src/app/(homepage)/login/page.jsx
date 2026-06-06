@@ -41,7 +41,7 @@ export default function LoginPage() {
 
         const destino =
           response.dados?.usuario?.tipo_usuario === "ADMIN"
-            ? "/mensagens-adm"
+            ? "/inicio-adm"
             : "/inicio-dashboard";
 
         window.location.href = destino;

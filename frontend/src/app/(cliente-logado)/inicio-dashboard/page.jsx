@@ -87,12 +87,8 @@ export default function Page() {
             <div className={styles.performanceCard}>
               <div className="d-flex justify-content-between mb-4">
                 <div>
-                  <p className={`mb-2 ${styles.performanceLabel}`}>Desempenho</p>
+                  <p className={`mb-2 ${styles.performanceLabel}`}>Desempenho das placas</p>
                   <h3 className={`m-0 ${styles.performanceValue}`}>82%</h3>
-                </div>
-
-                <div className={`d-flex align-items-center justify-content-center ${styles.performanceIconBox}`}>
-                  <i className={`bi bi-lightning-charge-fill ${styles.performanceIcon}`} />
                 </div>
               </div>
 

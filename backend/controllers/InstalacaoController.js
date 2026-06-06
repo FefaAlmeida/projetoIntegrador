@@ -7,26 +7,11 @@ class InstalacaoController {
 
     // SOLICITAR INSTALAÇÃO (Cria Endereço e Instalação na mesma ação)
     static async solicitarInstalacao(req, res) {
-
         const connection = await getConnection();
-
         try {
+            const { logradouro, numero, bairro, cidade, estado, cep, complemento } = req.body;
 
-            const {
-                logradouro,
-                numero,
-                bairro,
-                cidade,
-                estado,
-                cep,
-                complemento
-            } = req.body;
-
-            if (
-                !logradouro ||
-                !cidade ||
-                !estado
-            ) {
+            if (!logradouro || !cidade || !estado) {
                 return res.status(400).json({
                     sucesso: false,
                     erro: 'Os campos Logradouro, Cidade e Estado são obrigatórios'
@@ -51,7 +36,6 @@ class InstalacaoController {
 
             const idEmpresa = usuario.id_empresa;
 
-            // INICIA A TRANSAÇÃO UNIFICADA
             await connection.beginTransaction();
 
             const idEndereco = await EnderecoModel.criar({
@@ -70,28 +54,18 @@ class InstalacaoController {
                 id_endereco: idEndereco
             }, connection);
 
-            // CONSOLIDA TUDO NO BANCO DE DADOS
             await connection.commit();
 
             return res.status(201).json({
                 sucesso: true,
-                mensagem: 'Solicitação de instalação registrada com sucesso',
-                dados: {
-                    id_instalacao: idInstalacao
-                }
+                mensagem: 'Solicitação de instalação registered com sucesso',
+                dados: { id_instalacao: idInstalacao }
             });
 
         } catch (error) {
-
             await connection.rollback();
-
             console.error(error);
-
-            return res.status(500).json({
-                sucesso: false,
-                erro: 'Erro interno'
-            });
-
+            return res.status(500).json({ sucesso: false, erro: 'Erro interno' });
         } finally {
             connection.release();
         }
@@ -100,43 +74,30 @@ class InstalacaoController {
     // LISTAR INSTALAÇÕES (GERAL PAGINADO - VISÃO ADMIN)
     static async listarInstalacoes(req, res) {
         try {
-
             const pagina = parseInt(req.query.pagina) || 1;
             const limite = parseInt(req.query.limite) || 10;
 
-            const resultado = await InstalacaoModel.listarTodas(
-                pagina,
-                limite
-            );
+            const resultado = await InstalacaoModel.listarTodas(pagina, limite);
 
             return res.status(200).json({
                 sucesso: true,
                 dados: resultado.instalacoes,
                 paginacao: resultado
             });
-
         } catch (error) {
-
             console.error(error);
-
-            return res.status(500).json({
-                sucesso: false,
-                erro: 'Erro interno'
-            });
+            return res.status(500).json({ sucesso: false, erro: 'Erro interno' });
         }
     }
 
-    // LISTAR MINHAS INSTALAÇÕES (VISÃO CLIENTE LOGADO)
+// LISTAR MINHAS INSTALAÇÕES (VISÃO CLIENTE LOGADO)
     static async minhasInstalacoes(req, res) {
+        const connection = await getConnection();
         try {
-
             const usuario = await UsuarioModel.buscarPorId(req.usuario.id);
 
             if (!usuario) {
-                return res.status(404).json({
-                    sucesso: false,
-                    erro: 'Usuário não encontrado'
-                });
+                return res.status(404).json({ sucesso: false, erro: 'Usuário não encontrado' });
             }
 
             if (!usuario.id_empresa) {
@@ -146,61 +107,93 @@ class InstalacaoController {
                 });
             }
 
-            const instalacoes = await InstalacaoModel.listarPorEmpresa(
-                usuario.id_empresa
-            );
+            // 1. Busca as instalações normais através do seu Model original
+            const instalacoes = await InstalacaoModel.listarPorEmpresa(usuario.id_empresa);
 
-            return res.status(200).json({
-                sucesso: true,
-                dados: instalacoes
-            });
+            // 2. Percorre o array para injetar as strings corretas de nome
+            if (instalacoes && instalacoes.length > 0) {
+                for (let inst of instalacoes) {
+                    
+                    // BUSCA O NOME DO TÉCNICO (Baseado em image_d7031f.png)
+                    if (inst.tecnico) {
+                        const [tecResult] = await connection.execute(
+                            `SELECT nome FROM tecnicos WHERE id_tecnico = ? LIMIT 1`, 
+                            [inst.tecnico]
+                        );
+                        if (tecResult.length > 0) {
+                            inst.nome_tecnico = tecResult[0].nome;
+                        }
+                    }
 
+                    // BUSCA O NOME DA EMPRESA (Baseado em image_d70360.png)
+                    if (inst.id_empresa) {
+                        const [empResult] = await connection.execute(
+                            `SELECT nome_empresa FROM empresa_clientes WHERE id_empresa = ? LIMIT 1`,
+                            [inst.id_empresa]
+                        );
+                        if (empResult.length > 0) {
+                            inst.nome_empresa = empResult[0].nome_empresa;
+                        }
+                    }
+                }
+            }
+
+            return res.status(200).json({ sucesso: true, dados: instalacoes });
         } catch (error) {
-
             console.error(error);
-
-            return res.status(500).json({
-                sucesso: false,
-                erro: 'Erro interno'
-            });
+            return res.status(500).json({ sucesso: false, erro: 'Erro interno' });
+        } finally {
+            connection.release();
         }
     }
 
     // BUSCAR INSTALAÇÃO POR ID
     static async buscarInstalacao(req, res) {
+        const connection = await getConnection();
         try {
-
             const { id } = req.params;
-
             const instalacao = await InstalacaoModel.buscarPorId(id);
 
             if (!instalacao) {
-                return res.status(404).json({
-                    sucesso: false,
-                    erro: 'Instalação não encontrada'
-                });
+                return res.status(404).json({ sucesso: false, erro: 'Instalação não encontrada' });
             }
 
-            return res.status(200).json({
-                sucesso: true,
-                dados: instalacao
-            });
+            // BUSCA O NOME DO TÉCNICO (Baseado em image_d7031f.png)
+            if (instalacao.tecnico) {
+                const [tecResult] = await connection.execute(
+                    `SELECT nome FROM tecnicos WHERE id_tecnico = ? LIMIT 1`,
+                    [instalacao.tecnico]
+                );
+                if (tecResult.length > 0) {
+                    instalacao.nome_tecnico = tecResult[0].nome;
+                }
+            }
 
+            // BUSCA O NOME DA EMPRESA (Baseado em image_d70360.png)
+            if (instalacao.id_empresa) {
+                const [empResult] = await connection.execute(
+                    `SELECT nome_empresa FROM empresa_clientes WHERE id_empresa = ? LIMIT 1`,
+                    [instalacao.id_empresa]
+                );
+                if (empResult.length > 0) {
+                    instalacao.nome_empresa = empResult[0].nome_empresa;
+                }
+            }
+
+            return res.status(200).json({ sucesso: true, dados: instalacao });
         } catch (error) {
-
             console.error(error);
-
-            return res.status(500).json({
-                sucesso: false,
-                erro: 'Erro interno'
-            });
+            return res.status(500).json({ sucesso: false, erro: 'Erro interno' });
+        } finally {
+            connection.release();
         }
     }
 
-// ATUALIZAR INSTALAÇÃO E ENDEREÇO (FORMULÁRIO UNIFICADO)
+    // ATUALIZAR INSTALAÇÃO E ENDEREÇO (FORMULÁRIO UNIFICADO)
     static async atualizarInstalacao(req, res) {
         try {
             const { id } = req.params;
+            const { tecnico, status } = req.body;
 
             const instalacao = await InstalacaoModel.buscarPorId(id);
 
@@ -211,24 +204,43 @@ class InstalacaoController {
                 });
             }
 
-            // 1. Atualiza os dados pertencentes à tabela de Instalações
+            if (tecnico !== undefined && tecnico !== null && tecnico !== "") {
+                const connection = await getConnection();
+                try {
+                    const [checaTecnico] = await connection.execute(
+                        `SELECT status_tecnico FROM tecnicos WHERE id_tecnico = ? LIMIT 1`,
+                        [tecnico]
+                    );
+
+                    if (checaTecnico.length === 0) {
+                        return res.status(400).json({
+                            sucesso: false,
+                            erro: 'O técnico selecionado não existe no sistema.'
+                        });
+                    }
+
+                    if (checaTecnico[0].status_tecnico?.toUpperCase() !== 'ATIVO') {
+                        return res.status(400).json({
+                            sucesso: false,
+                            erro: 'Não é possível atribuir este técnico. O profissional está INATIVO.'
+                        });
+                    }
+                } finally {
+                    connection.release();
+                }
+
+                // AJUSTADO: Alinhado estritamente com os termos ENUM ('PENDENTE' e 'EM_ANDAMENTO')
+                const statusAtual = (instalacao.status || "").toUpperCase();
+                if (statusAtual === 'PENDENTE' && !status) {
+                    req.body.status = 'EM_ANDAMENTO'; 
+                }
+            }
+
             await InstalacaoModel.atualizar(id, req.body);
 
-            // 2. Extrai e isola os campos de endereço enviados no mesmo formulário
-            const {
-                logradouro,
-                numero,
-                bairro,
-                cidade,
-                estado,
-                cep,
-                complemento
-            } = req.body;
+            const { logradouro, numero, bairro, cidade, estado, cep, complemento } = req.body;
+            const idEnderecoSeguro = instalacao.id_endereco;
 
-            // Identifica o ID do endereço de forma segura (tentando mapeamentos possíveis do banco)
-            const idEnderecoSeguro = instalacao.id_endereco || instalacao.id_endereco;
-
-            // Se pelo menos um campo de endereço foi enviado E temos um ID de endereço válido
             if (
                 idEnderecoSeguro && (
                     logradouro !== undefined ||
@@ -240,28 +252,20 @@ class InstalacaoController {
                     complemento !== undefined
                 )
             ) {
-                // Executa a atualização apenas se o EnderecoModel existir e o ID for válido
                 if (EnderecoModel && typeof EnderecoModel.atualizar === 'function') {
                     await EnderecoModel.atualizar(idEnderecoSeguro, {
-                        logradouro,
-                        numero,
-                        bairro,
-                        cidade,
-                        estado,
-                        cep,
-                        complemento
+                        logradouro, numero, bairro, cidade, estado, cep, complemento
                     });
                 }
             }
 
             return res.status(200).json({
                 sucesso: true,
-                mensagem: 'Instalação e endereço atualizados com sucesso'
+                mensagem: 'Instalação atualizada com sucesso'
             });
 
         } catch (error) {
             console.error("Erro detectado no Controller:", error);
-
             return res.status(500).json({
                 sucesso: false,
                 erro: 'Erro interno ao processar a atualização'
@@ -272,16 +276,11 @@ class InstalacaoController {
     // CANCELAR SOLICITAÇÃO DE INSTALAÇÃO
     static async cancelarInstalacao(req, res) {
         try {
-
             const { id } = req.params;
-
             const instalacao = await InstalacaoModel.buscarPorId(id);
 
             if (!instalacao) {
-                return res.status(404).json({
-                    sucesso: false,
-                    erro: 'Instalação não encontrada'
-                });
+                return res.status(404).json({ sucesso: false, erro: 'Instalação não encontrada' });
             }
 
             await InstalacaoModel.cancelar(id);
@@ -290,18 +289,11 @@ class InstalacaoController {
                 sucesso: true,
                 mensagem: 'Solicitação de instalação cancelada'
             });
-
         } catch (error) {
-
             console.error(error);
-
-            return res.status(500).json({
-                sucesso: false,
-                erro: 'Erro interno'
-            });
+            return res.status(500).json({ sucesso: false, erro: 'Erro interno' });
         }
     }
-
 }
 
 export default InstalacaoController;
