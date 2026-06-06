@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { redefinirSenha } from "../../../api";
 import { toast } from "sonner";
+import styles from "./page.module.css";
 
 export default function RedefinirSenhaPage() {
   const [token, setToken] = useState("");
@@ -61,18 +62,12 @@ export default function RedefinirSenhaPage() {
 
   return (
     <main
-      className="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-white px-4"
-      style={{ fontFamily: "'Poppins', sans-serif" }}
+      className={`container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-white px-4 ${styles.shell}`}
     >
       <section
-        className="bg-white rounded-4 p-4 p-md-5 w-100"
-        style={{
-          maxWidth: "460px",
-          border: "1px solid #221f20",
-          boxShadow: "0 24px 48px rgba(34, 31, 32, 0.22)",
-        }}
+        className={`bg-white rounded-4 p-4 p-md-5 w-100 ${styles.card}`}
       >
-        <h1 className="fw-bold mb-3" style={{ color: "#221f20" }}>
+        <h1 className={`fw-bold mb-3 ${styles.title}`}>
           Redefinir senha
         </h1>
 
@@ -87,13 +82,7 @@ export default function RedefinirSenhaPage() {
             </label>
             <input
               type="password"
-              className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
-              style={{
-                borderColor: "#d8d8d8",
-                borderBottomWidth: "2px",
-                fontSize: "1.05rem",
-                paddingBottom: "12px",
-              }}
+              className={`form-control border-0 border-bottom rounded-0 px-0 shadow-none ${styles.input}`}
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
             />
@@ -105,13 +94,7 @@ export default function RedefinirSenhaPage() {
             </label>
             <input
               type="password"
-              className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
-              style={{
-                borderColor: "#d8d8d8",
-                borderBottomWidth: "2px",
-                fontSize: "1.05rem",
-                paddingBottom: "12px",
-              }}
+              className={`form-control border-0 border-bottom rounded-0 px-0 shadow-none ${styles.input}`}
               value={confirmarSenha}
               onChange={(e) => setConfirmarSenha(e.target.value)}
             />
@@ -119,8 +102,7 @@ export default function RedefinirSenhaPage() {
 
           <button
             type="button"
-            className="btn btn-warning w-100 py-3 rounded-pill fw-bold shadow-sm mb-3"
-            style={{ color: "#221f20" }}
+            className={`btn btn-warning w-100 py-3 rounded-pill fw-bold shadow-sm mb-3 ${styles.primaryButton}`}
             onClick={handleRedefinirSenha}
             disabled={loading}
           >
@@ -130,8 +112,7 @@ export default function RedefinirSenhaPage() {
           <div className="text-center">
             <a
               href="/login"
-              className="text-decoration-none small fw-bold"
-              style={{ color: "#f5bd31" }}
+              className={`text-decoration-none small fw-bold ${styles.link}`}
             >
               Voltar para o login
             </a>

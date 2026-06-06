@@ -5,6 +5,7 @@ import BootstrapClient from "../bootstrap-client";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ProtectedRouteAdm from "./components/ProtectedRouteAdm";
+import styles from "./layout.module.css";
 
 export const metadata = {
   title: "Painel Administrativo",
@@ -19,15 +20,7 @@ export default function SistemaLayout({ children }) {
       <ProtectedRouteAdm>
         <Header />
 
-        <main
-          style={{
-            minHeight: "100vh",
-            paddingTop: "90px",
-            backgroundColor: "#f5f7fb",
-            flex: 1,
-            padding: "40px",
-          }}
-        >
+        <main className={styles.main}>
           {children}
         </main>
 

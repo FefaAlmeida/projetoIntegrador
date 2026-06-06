@@ -182,10 +182,11 @@ export default function Home() {
               {SERVICES.map((svc) => (
                 <div className="col-lg-4 col-md-6" key={svc.title}>
                   <article className="card border-0 rounded-4 overflow-hidden h-100 position-relative shadow-lg serviceCard">
-                    <div
+                    <img
                       className="serviceBg"
-                      style={{ backgroundImage: `url(${svc.img})` }}
-                    ></div>
+                      src={svc.img}
+                      alt=""
+                    />
                     <div className="serviceOverlay"></div>
                     <div className="card-body serviceBody">
                       <h3 className="fw-bold text-white serviceTitle">
@@ -237,7 +238,7 @@ export default function Home() {
               <div className="col-lg-4 position-relative z-2 d-flex justify-content-center">
                 <div className="simulationResultCard w-100">
                   <p className="text-secondary mb-2 fw-medium text-uppercase small tracking-wider">Investimento Inteligente</p>
-                  <h3 className="simulationAmount" style={{ fontSize: '3rem' }}>
+                  <h3 className="simulationAmount simulationAmountCompact">
                     Até 72x
                   </h3>
                   <p className="text-secondary mb-4 fw-semibold text-dark-emphasis">

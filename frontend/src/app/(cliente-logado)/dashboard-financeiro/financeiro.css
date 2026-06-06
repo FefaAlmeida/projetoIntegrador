@@ -187,6 +187,14 @@
   font-size: 18px;
 }
 
+.financeiro-history-icon-paid {
+  color: #48b96c;
+}
+
+.financeiro-history-icon-pending {
+  color: #febd17;
+}
+
 .financeiro-history-text {
   color: #221f20;
   font-size: 15px;

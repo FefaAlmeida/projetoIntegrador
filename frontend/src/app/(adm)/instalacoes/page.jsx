@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { getTodasInstalacoes, atualizarInstalacao } from "../../../api"; 
+import styles from "./page.module.css";
 
 export default function GerenciarInstalacoesPage() {
   const [instalacoes, setInstalacoes] = useState([]);
@@ -133,19 +134,19 @@ export default function GerenciarInstalacoesPage() {
   }
 
   return (
-    <div className="min-vh-100 py-5 px-4" style={{ backgroundColor: "#ececec", fontFamily: "'Poppins', sans-serif" }}>
-      <div className="container-fluid bg-white p-5 shadow-lg" style={{ borderRadius: "24px", maxWidth: "1300px" }}>
+    <div className={`min-vh-100 py-5 px-4 ${styles.page}`}>
+      <div className={`container-fluid bg-white p-5 shadow-lg ${styles.shell}`}>
         
         {/* TOPO E FILTROS */}
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 border-bottom pb-4">
           <div>
-            <h1 className="fw-bold m-0" style={{ color: "#221f20" }}>
-              Gerenciar <span style={{ color: "#febd17" }}>Instalações</span>
+            <h1 className={`fw-bold m-0 ${styles.title}`}>
+              Gerenciar <span className={styles.highlight}>Instalações</span>
             </h1>
             <p className="text-muted m-0 mt-1">Painel do Administrador para triagem e agendamentos.</p>
           </div>
           
-          <div className="btn-group mt-3 mt-md-0 shadow-sm" role="group" style={{ borderRadius: "12px", overflow: "hidden" }}>
+          <div className={`btn-group mt-3 mt-md-0 shadow-sm ${styles.filterGroup}`} role="group">
             {[
               { id: "TODOS", label: "Todos" },
               { id: "ANÁLISE", label: "Em Análise" },
@@ -233,10 +234,9 @@ export default function GerenciarInstalacoesPage() {
                         <td className="py-3 text-end pe-4">
                           {/* Adicionado propriedades nativas data-bs como garantia adicional para abrir o modal */}
                           <button
-                            className="btn btn-sm fw-bold px-3 py-2 btn-warning"
                             data-bs-toggle="modal"
                             data-bs-target="#modalEditarInstalacao"
-                            style={{ borderRadius: "10px", color: "#221f20", border: "none" }}
+                            className={`btn btn-sm fw-bold px-3 py-2 btn-warning ${styles.dispatchButton}`}
                             onClick={() => abrirModalEdicao(item)}
                           >
                             <i className="bi bi-gear-fill me-2"></i> Despachar
@@ -253,10 +253,9 @@ export default function GerenciarInstalacoesPage() {
             {totalPaginas > 1 && (
               <div className="d-flex justify-content-center align-items-center gap-3 mt-4 border-top pt-4">
                 <button
-                  className="btn btn-sm btn-outline-dark fw-bold px-3 py-2"
+                  className={`btn btn-sm btn-outline-dark fw-bold px-3 py-2 ${styles.paginationButton}`}
                   disabled={paginaAtual === 1}
                   onClick={() => setPaginaAtual(prev => prev - 1)}
-                  style={{ borderRadius: "8px" }}
                 >
                   Anterior
                 </button>
@@ -264,10 +263,9 @@ export default function GerenciarInstalacoesPage() {
                   Página {paginaAtual} de {totalPaginas}
                 </span>
                 <button
-                  className="btn btn-sm btn-outline-dark fw-bold px-3 py-2"
+                  className={`btn btn-sm btn-outline-dark fw-bold px-3 py-2 ${styles.paginationButton}`}
                   disabled={paginaAtual === totalPaginas}
                   onClick={() => setPaginaAtual(prev => prev + 1)}
-                  style={{ borderRadius: "8px" }}
                 >
                   Próxima
                 </button>
@@ -280,7 +278,7 @@ export default function GerenciarInstalacoesPage() {
       {/* MODAL BOOTSTRAP */}
       <div className="modal fade" id="modalEditarInstalacao" tabIndex="-1" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content shadow-lg" style={{ borderRadius: "20px", border: "none" }}>
+          <div className={`modal-content shadow-lg ${styles.modalContent}`}>
             <div className="modal-header border-bottom-0 pt-4 px-4">
               <h5 className="modal-title fw-bold text-dark fs-4">Gerenciar Instalação</h5>
               <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -297,8 +295,7 @@ export default function GerenciarInstalacoesPage() {
                 <div className="mb-3">
                   <label className="form-label fw-bold small text-secondary">Alterar Status</label>
                   <select
-                    className="form-select p-3"
-                    style={{ borderRadius: "10px" }}
+                    className={`form-select p-3 ${styles.modalField}`}
                     value={statusEdicao}
                     onChange={(e) => setStatusEdicao(e.target.value)}
                   >
@@ -312,8 +309,7 @@ export default function GerenciarInstalacoesPage() {
                   <label className="form-label fw-bold small text-secondary">Data do Agendamento</label>
                   <input
                     type="date"
-                    className="form-control p-3"
-                    style={{ borderRadius: "10px" }}
+                    className={`form-control p-3 ${styles.modalField}`}
                     value={dataVisitaEdicao}
                     onChange={(e) => setDataVisitaEdicao(e.target.value)}
                   />
@@ -323,9 +319,8 @@ export default function GerenciarInstalacoesPage() {
                   <label className="form-label fw-bold small text-secondary">Técnico Encarregado</label>
                   <input
                     type="text"
-                    className="form-control p-3"
+                    className={`form-control p-3 ${styles.modalField}`}
                     placeholder="Insira o nome do operador"
-                    style={{ borderRadius: "10px" }}
                     value={tecnicoEdicao}
                     onChange={(e) => setTecnicoEdicao(e.target.value)}
                   />
@@ -333,15 +328,8 @@ export default function GerenciarInstalacoesPage() {
 
                 <button
                   type="submit"
-                  className="btn fw-bold w-100 py-3 mt-2"
+                  className={`btn fw-bold w-100 py-3 mt-2 ${styles.submitButton}`}
                   disabled={loadingSalvar}
-                  style={{
-                    backgroundColor: "#febd17",
-                    color: "#221f20",
-                    borderRadius: "12px",
-                    border: "none",
-                    fontSize: "1rem"
-                  }}
                 >
                   {loadingSalvar ? "Salvando..." : "Confirmar Atualização"}
                 </button>

@@ -1,0 +1,49 @@
+.page {
+  background-color: #ececec;
+  font-family: "Poppins", sans-serif;
+}
+
+.shell {
+  max-width: 1300px;
+  border-radius: 24px;
+}
+
+.title {
+  color: #221f20;
+}
+
+.highlight {
+  color: #febd17;
+}
+
+.filterGroup {
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.dispatchButton {
+  color: #221f20 !important;
+  border: none;
+  border-radius: 10px;
+}
+
+.paginationButton {
+  border-radius: 8px;
+}
+
+.modalContent {
+  border: none;
+  border-radius: 20px;
+}
+
+.modalField {
+  border-radius: 10px;
+}
+
+.submitButton {
+  color: #221f20 !important;
+  font-size: 1rem;
+  background-color: #febd17 !important;
+  border: none;
+  border-radius: 12px;
+}

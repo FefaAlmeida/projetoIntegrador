@@ -1,0 +1,28 @@
+.shell {
+  font-family: "Poppins", sans-serif;
+}
+
+.card {
+  max-width: 460px;
+  border: 1px solid #221f20;
+  box-shadow: 0 24px 48px rgba(34, 31, 32, 0.22);
+}
+
+.title {
+  color: #221f20;
+}
+
+.input {
+  border-color: #d8d8d8 !important;
+  border-bottom-width: 2px !important;
+  font-size: 1.05rem;
+  padding-bottom: 12px;
+}
+
+.primaryButton {
+  color: #221f20 !important;
+}
+
+.link {
+  color: #f5bd31;
+}

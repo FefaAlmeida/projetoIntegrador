@@ -1,0 +1,26 @@
+.sidebarCard {
+  background: #221f20;
+}
+
+.badgeHighlight {
+  background: #febd17;
+}
+
+.description {
+  line-height: 1.7;
+}
+
+.iconCircle {
+  width: 44px;
+  height: 44px;
+  background: rgba(254, 189, 23, 0.18);
+  color: #febd17;
+}
+
+.title {
+  color: #221f20;
+}
+
+.primaryButton {
+  color: #221f20 !important;
+}

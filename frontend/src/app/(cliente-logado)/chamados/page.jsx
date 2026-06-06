@@ -1,3 +1,5 @@
+import styles from "./page.module.css";
+
 export const metadata = {
  title: "Instalação de painéis solares — Luminar",
 };
@@ -6,61 +8,35 @@ export default function ChamadosPage() {
  return (
     <>
       <div
-        className="d-flex flex-column min-vh-100"
-        style={{
-          backgroundColor: "#ececec",
-          overflowX: "hidden",
-          fontFamily: "'Poppins', sans-serif",
-        }}
+        className={`d-flex flex-column min-vh-100 ${styles.page}`}
       >
 
         {/* CONTEÚDO */}
         <main
-          className="flex-grow-1 py-5 px-3"
-          style={{
-            paddingTop: "100px",
-            paddingBottom: "100px",
-          }}
+          className={`flex-grow-1 py-5 px-3 ${styles.main}`}
         >
           <div
-            className="container shadow-lg p-0 overflow-hidden"
-            style={{
-              maxWidth: "1100px",
-              borderRadius: "28px",
-              backgroundColor: "#ffffff",
-            }}
+            className={`container shadow-lg p-0 overflow-hidden ${styles.shell}`}
           >
 
             <div className="row g-0">
 
               {/* LADO ESQUERDO */}
               <div
-                className="col-lg-5 text-white d-flex flex-column justify-content-center p-5"
-                style={{
-                  backgroundColor: "#221f20",
-                }}
+                className={`col-lg-5 text-white d-flex flex-column justify-content-center p-5 ${styles.sidebar}`}
               >
 
                 <h1
-                  className="fw-bold mb-4"
-                  style={{
-                    fontSize: "3rem",
-                    lineHeight: "1.1",
-                  }}
+                  className={`fw-bold mb-4 ${styles.title}`}
                 >
                   Abrir <br />
-                  <span style={{ color: "#febd17" }}>
+                  <span className={styles.highlight}>
                     Chamado Técnico
                   </span>
                 </h1>
 
                 <p
-                  className="mb-4"
-                  style={{
-                    color: "#d4d4d4",
-                    fontSize: "1.1rem",
-                    lineHeight: "1.7",
-                  }}
+                  className={`mb-4 ${styles.description}`}
                 >
                   Informe o problema encontrado no seu sistema
                   fotovoltaico. Nossa equipe técnica irá analisar
@@ -72,13 +48,7 @@ export default function ChamadosPage() {
 
                   <div className="d-flex align-items-center mb-3">
                     <div
-                      className="rounded-circle d-flex align-items-center justify-content-center me-3"
-                      style={{
-                        width: "45px",
-                        height: "45px",
-                        backgroundColor: "rgba(254, 189, 23, 0.2)",
-                        color: "#febd17",
-                      }}
+                      className={`rounded-circle d-flex align-items-center justify-content-center me-3 ${styles.iconCircle}`}
                     >
                       <i className="bi bi-lightning-charge fs-4"></i>
                     </div>
@@ -88,13 +58,7 @@ export default function ChamadosPage() {
 
                   <div className="d-flex align-items-center mb-3">
                     <div
-                      className="rounded-circle d-flex align-items-center justify-content-center me-3"
-                      style={{
-                        width: "45px",
-                        height: "45px",
-                        backgroundColor: "rgba(254, 189, 23, 0.2)",
-                        color: "#febd17",
-                      }}
+                      className={`rounded-circle d-flex align-items-center justify-content-center me-3 ${styles.iconCircle}`}
                     >
                       <i className="bi bi-tools fs-4"></i>
                     </div>
@@ -104,13 +68,7 @@ export default function ChamadosPage() {
 
                   <div className="d-flex align-items-center">
                     <div
-                      className="rounded-circle d-flex align-items-center justify-content-center me-3"
-                      style={{
-                        width: "45px",
-                        height: "45px",
-                        backgroundColor: "rgba(254, 189, 23, 0.2)",
-                        color: "#febd17",
-                      }}
+                      className={`rounded-circle d-flex align-items-center justify-content-center me-3 ${styles.iconCircle}`}
                     >
                       <i className="bi bi-shield-check fs-4"></i>
                     </div>
@@ -137,13 +95,8 @@ export default function ChamadosPage() {
 
                       <input
                         type="text"
-                        className="form-control"
+                        className={`form-control ${styles.field}`}
                         placeholder="Seu nome"
-                        style={{
-                          borderRadius: "10px",
-                          padding: "12px",
-                          border: "1px solid #ddd",
-                        }}
                       />
                     </div>
 
@@ -154,13 +107,8 @@ export default function ChamadosPage() {
 
                       <input
                         type="email"
-                        className="form-control"
+                        className={`form-control ${styles.field}`}
                         placeholder="seu@email.com"
-                        style={{
-                          borderRadius: "10px",
-                          padding: "12px",
-                          border: "1px solid #ddd",
-                        }}
                       />
                     </div>
 
@@ -176,13 +124,8 @@ export default function ChamadosPage() {
 
                       <input
                         type="text"
-                        className="form-control"
+                        className={`form-control ${styles.field}`}
                         placeholder="(00) 00000-0000"
-                        style={{
-                          borderRadius: "10px",
-                          padding: "12px",
-                          border: "1px solid #ddd",
-                        }}
                       />
                     </div>
 
@@ -192,12 +135,7 @@ export default function ChamadosPage() {
                       </label>
 
                       <select
-                        className="form-select"
-                        style={{
-                          borderRadius: "10px",
-                          padding: "12px",
-                          border: "1px solid #ddd",
-                        }}
+                        className={`form-select ${styles.field}`}
                       >
                         <option value="">
                           Selecione...
@@ -233,13 +171,8 @@ export default function ChamadosPage() {
 
                     <input
                       type="text"
-                      className="form-control"
+                      className={`form-control ${styles.field}`}
                       placeholder="Ex: Inversor desligado"
-                      style={{
-                        borderRadius: "10px",
-                        padding: "12px",
-                        border: "1px solid #ddd",
-                      }}
                     />
 
                   </div>
@@ -254,15 +187,9 @@ export default function ChamadosPage() {
                     </label>
 
                     <textarea
-                      className="form-control"
+                      className={`form-control ${styles.field} ${styles.textarea}`}
                       rows="5"
                       placeholder="Descreva o problema encontrado..."
-                      style={{
-                        borderRadius: "10px",
-                        padding: "12px",
-                        border: "1px solid #ddd",
-                        resize: "none",
-                      }}
                     ></textarea>
 
                   </div>
@@ -270,16 +197,7 @@ export default function ChamadosPage() {
                   {/* BOTÃO */}
                   <button
                     type="submit"
-                    className="btn fw-bold w-100 py-3 mt-2"
-                    style={{
-                      backgroundColor: "#febd17",
-                      color: "#221f20",
-                      borderRadius: "14px",
-                      fontSize: "1.1rem",
-                      border: "none",
-                      boxShadow:
-                        "0 4px 15px rgba(254, 189, 23, 0.3)",
-                    }}
+                    className={`btn fw-bold w-100 py-3 mt-2 ${styles.submitButton}`}
                   >
                     Abrir Chamado
                   </button>
@@ -292,11 +210,6 @@ export default function ChamadosPage() {
 
           </div>
         </main>
-
-      </div>
-      <div style={{
-    backgroundColor:"#ececec"
-      }}>
 
       </div>
     </>

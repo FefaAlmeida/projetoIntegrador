@@ -1,0 +1,73 @@
+.navbar {
+  height: 78px;
+  background: #221f20;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  z-index: 9999;
+}
+
+.menuButton {
+  outline: none;
+}
+
+.menuIcon {
+  color: #fff;
+  font-size: 2rem;
+}
+
+.userName {
+  display: block;
+  font-size: 0.95rem;
+}
+
+.userRole {
+  color: #b5b5b5;
+  display: block;
+  margin-top: -2px;
+}
+
+.sidebar {
+  position: fixed;
+  top: 78px;
+  width: 290px;
+  height: calc(100vh - 78px);
+  background: #221f20;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  transition: 0.35s ease;
+  z-index: 9998;
+}
+
+.sidebarOpen {
+  left: 0;
+}
+
+.sidebarClosed {
+  left: -290px;
+}
+
+.logoImage {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  object-fit: cover;
+  padding: 4px;
+}
+
+.sidebarLink {
+  border-radius: 14px;
+  padding: 14px 18px;
+  transition: all 0.3s ease;
+}
+
+.sidebarLink:hover {
+  background: linear-gradient(135deg, #febd17, #e5a900);
+  color: #221f20 !important;
+  transform: translateX(4px);
+}
+
+.sidebarLink:hover i {
+  color: #221f20 !important;
+}
+
+.divider {
+  border-color: rgba(255, 255, 255, 0.08);
+}

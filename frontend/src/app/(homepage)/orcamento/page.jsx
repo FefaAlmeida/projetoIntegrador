@@ -189,67 +189,45 @@ export default function OrcamentoPage() {
   return (
     <>
       <div
-        className="d-flex flex-column min-vh-100 "
-        style={{
-          backgroundColor: "#ececec",
-          overflowX: "hidden",
-          fontFamily: "'Poppins', sans-serif",
-        }}
+        className="d-flex flex-column min-vh-100 orcamento-page"
       >
         {/* CONTEÚDO PRINCIPAL */}
-        <main className="flex-grow-1 d-flex align-items-center justify-content-center py-5 px-3" style={{ paddingTop: "100px", paddingBottom: "100px" }}>
+        <main className="flex-grow-1 d-flex align-items-center justify-content-center py-5 px-3 orcamento-main">
           <div
-            className="container shadow-lg p-0 overflow-hidden"
-            style={{
-              maxWidth: "1000px",
-              borderRadius: "28px",
-              backgroundColor: "#ffffff",
-            }}
+            className="container shadow-lg p-0 overflow-hidden orcamento-shell"
           >
             <div className="row g-0">
               {/* LADO ESQUERDO: TEXTO E INFORMAÇÕES */}
               <div
-                className="col-lg-5 text-white d-flex flex-column justify-content-center p-5"
-                style={{
-                  backgroundColor: "#221f20",
-                }}
+                className="col-lg-5 text-white d-flex flex-column justify-content-center p-5 orcamento-sidebar"
               >
                 <h1
-                  className="fw-bold mb-4"
-                  style={{
-                    fontSize: "3rem",
-                    lineHeight: "1.1",
-                  }}
+                  className="fw-bold mb-4 orcamento-title"
                 >
                   Solicite seu <br />
-                  <span style={{ color: "#febd17" }}>Orçamento</span>
+                  <span className="orcamento-highlight">Orçamento</span>
                 </h1>
                 <p
-                  className="mb-4"
-                  style={{
-                    color: "#d4d4d4",
-                    fontSize: "1.1rem",
-                    lineHeight: "1.6",
-                  }}
+                  className="mb-4 orcamento-description"
                 >
                   Insira os dados da sua empresa e informe a quantidade e modelo das placas. Nossa plataforma vai calcular a sua economia e gerar uma proposta personalizada <strong>em poucos segundos</strong>.
                 </p>
                 
                 <div className="mt-4">
                     <div className="d-flex align-items-center mb-3">
-                        <div className="rounded-circle d-flex align-items-center justify-content-center me-3" style={{ width: "45px", height: "45px", backgroundColor: "rgba(254, 189, 23, 0.2)", color: "#febd17" }}>
+                        <div className="rounded-circle d-flex align-items-center justify-content-center me-3 orcamento-icon-circle">
                             <i className="bi bi-check2-circle fs-4"></i>
                         </div>
                         <span>Economia imediata</span>
                     </div>
                     <div className="d-flex align-items-center mb-3">
-                        <div className="rounded-circle d-flex align-items-center justify-content-center me-3" style={{ width: "45px", height: "45px", backgroundColor: "rgba(254, 189, 23, 0.2)", color: "#febd17" }}>
+                        <div className="rounded-circle d-flex align-items-center justify-content-center me-3 orcamento-icon-circle">
                             <i className="bi bi-sun fs-4"></i>
                         </div>
                         <span>Energia 100% limpa</span>
                     </div>
                     <div className="d-flex align-items-center">
-                        <div className="rounded-circle d-flex align-items-center justify-content-center me-3" style={{ width: "45px", height: "45px", backgroundColor: "rgba(254, 189, 23, 0.2)", color: "#febd17" }}>
+                        <div className="rounded-circle d-flex align-items-center justify-content-center me-3 orcamento-icon-circle">
                             <i className="bi bi-shield-check fs-4"></i>
                         </div>
                         <span>Garantia de performance</span>
@@ -443,14 +421,7 @@ export default function OrcamentoPage() {
                         <button
                           type="button"
                           onClick={() => setShowPlacaModal(true)}
-                          className="btn btn-sm mt-2"
-                          style={{
-                            backgroundColor: "transparent",
-                            color: "#221f20",
-                            border: "1px solid #ddd",
-                            borderRadius: "10px",
-                            fontSize: "0.85rem",
-                          }}
+                          className="btn btn-sm mt-2 orcamento-visual-button"
                         >
                           Escolher modelo visualmente
                         </button>
@@ -462,33 +433,24 @@ export default function OrcamentoPage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="btn fw-bold w-100 py-3 mt-5"
-                    style={{
-                      backgroundColor: "#febd17",
-                      color: "#221f20",
-                      borderRadius: "14px",
-                      border: "none",
-                      boxShadow: "0 4px 15px rgba(254, 189, 23, 0.3)",
-                    }}
+                    className="btn fw-bold w-100 py-3 mt-5 orcamento-submit-button"
                   >
                     {loading ? "Calculando..." : "Solicitar Orçamento"}
                   </button>
 
                   {showModal && (
                     <div
-                      className="modal d-block modal-fade"
+                      className="modal d-block modal-fade orcamento-modal-backdrop"
                       tabIndex="-1"
-                      style={{ backgroundColor: "rgba(0, 0, 0, 0.7)", backdropFilter: "blur(4px)" }}
                     >
-                      <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: "480px" }}>
+                      <div className="modal-dialog modal-dialog-centered orcamento-modal-sm">
                         <div 
-                          className="modal-content border-0 shadow-2xl p-4" 
-                          style={{ borderRadius: "24px", backgroundColor: "#ffffff" }}
+                          className="modal-content border-0 shadow-2xl p-4 orcamento-modal-content" 
                         >
 
                           {modalLoading ? (
                             <div className="text-center py-5">
-                              <div className="spinner-border text-warning mb-3" role="status" style={{ width: "3rem", height: "3rem" }}></div>
+                              <div className="spinner-border text-warning mb-3 orcamento-spinner" role="status"></div>
                               <h5 className="fw-bold text-dark">Calculando seu orçamento...</h5>
                               <p className="text-muted small mb-0">Analisando potência e estimativa de economia</p>
                             </div>
@@ -497,12 +459,10 @@ export default function OrcamentoPage() {
                               {/* ÍCONE DE SUCESSO ANIMADO */}
                               <div className="text-center my-3">
                                 <div 
-                                  className="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
-                                  style={{ width: "70px", height: "70px", backgroundColor: "rgba(254, 189, 23, 0.15)" }}
+                                  className="d-inline-flex align-items-center justify-content-center rounded-circle mb-3 orcamento-success-icon-box"
                                 >
                                   <i
-                                    className="bi bi-check-circle-fill"
-                                    style={{ fontSize: "2.5rem", color: "#febd17" }}
+                                    className="bi bi-check-circle-fill orcamento-success-icon"
                                   />
                                 </div>
                                 <h4 className="fw-bold text-dark mb-1">Orçamento Gerado!</h4>
@@ -510,27 +470,27 @@ export default function OrcamentoPage() {
                               </div>
 
                               {/* GRID DE DETALHES ESPECÍFICOS */}
-                              <div className="bg-light rounded-4 p-3 mb-3" style={{ borderRadius: "16px" }}>
+                              <div className="bg-light rounded-4 p-3 mb-3">
                                 <div className="row g-3">
                                   <div className="col-6">
-                                    <span className="text-secondary d-block" style={{ fontSize: "0.8rem", fontWeight: "500" }}>Potência Estimada</span>
+                                    <span className="text-secondary d-block orcamento-detail-label">Potência Estimada</span>
                                     <strong className="text-dark fs-5">{resultado?.potencia_estimada} <span className="fs-6 fw-normal text-muted">kWp</span></strong>
                                   </div>
                                   <div className="col-6">
-                                    <span className="text-secondary d-block" style={{ fontSize: "0.8rem", fontWeight: "500" }}>Economia Anual</span>
+                                    <span className="text-secondary d-block orcamento-detail-label">Economia Anual</span>
                                     <strong className="text-success fs-5">
                                       {Number(resultado?.economia_estimada || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
                                     </strong>
                                   </div>
                                   <div className="col-12"><hr className="my-1 opacity-25" /></div>
                                   <div className="col-6">
-                                    <span className="text-secondary d-block" style={{ fontSize: "0.8rem", fontWeight: "500" }}>Custo dos Painéis</span>
+                                    <span className="text-secondary d-block orcamento-detail-label">Custo dos Painéis</span>
                                     <span className="text-dark fw-semibold">
                                       {Number(resultado?.valor_placas || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
                                     </span>
                                   </div>
                                   <div className="col-6">
-                                    <span className="text-secondary d-block" style={{ fontSize: "0.8rem", fontWeight: "500" }}>Custo de Instalação</span>
+                                    <span className="text-secondary d-block orcamento-detail-label">Custo de Instalação</span>
                                     <span className="text-dark fw-semibold">
                                       {Number(resultado?.valor_instalacao || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
                                     </span>
@@ -540,17 +500,12 @@ export default function OrcamentoPage() {
 
                               {/* CAIXA DE DESTAQUE DO VALOR TOTAL */}
                               <div 
-                                className="text-center p-3 mb-4" 
-                                style={{ 
-                                  backgroundColor: "#221f20", 
-                                  borderRadius: "16px",
-                                  boxShadow: "0 8px 20px rgba(34, 31, 32, 0.15)"
-                                }}
+                                className="text-center p-3 mb-4 orcamento-total-box" 
                               >
-                                <span className="text-uppercase tracking-wider d-block mb-1" style={{ color: "#d4d4d4", fontSize: "0.75rem", fontWeight: "600", letterSpacing: "1px" }}>
+                                <span className="text-uppercase tracking-wider d-block mb-1 orcamento-total-label">
                                   Investimento Total
                                 </span>
-                                <h2 className="fw-bold m-0" style={{ color: "#febd17", fontSize: "2rem" }}>
+                                <h2 className="fw-bold m-0 orcamento-total-value">
                                   {Number(resultado?.valor_total || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
                                 </h2>
                               </div>
@@ -559,14 +514,7 @@ export default function OrcamentoPage() {
                               <div className="d-flex flex-column gap-2">
                                 <button
                                   type="button"
-                                  className="btn fw-bold py-3 text-center transition-all d-flex align-items-center justify-content-center gap-2"
-                                  style={{
-                                    backgroundColor: "#febd17",
-                                    color: "#221f20",
-                                    borderRadius: "14px",
-                                    border: "none",
-                                    boxShadow: "0 4px 12px rgba(254, 189, 23, 0.25)"
-                                  }}
+                                  className="btn fw-bold py-3 text-center transition-all d-flex align-items-center justify-content-center gap-2 orcamento-accept-button"
                                   onClick={handleAceitarOrcamento}
                                 >
                                   <span>Aceitar e Criar Conta</span>
@@ -575,12 +523,7 @@ export default function OrcamentoPage() {
 
                                 <button
                                   type="button"
-                                  className="btn fw-semibold py-2.5 text-secondary border-0 btn-hover-light"
-                                  style={{
-                                    borderRadius: "14px",
-                                    fontSize: "0.9rem",
-                                    backgroundColor: "transparent"
-                                  }}
+                                  className="btn fw-semibold py-2.5 text-secondary border-0 btn-hover-light orcamento-decline-button"
                                   onClick={handleRecusarOrcamento}
                                 >
                                   Recusar Proposta
@@ -596,14 +539,12 @@ export default function OrcamentoPage() {
 
 {showPlacaModal && (
   <div
-    className="modal d-block modal-fade"
+    className="modal d-block modal-fade orcamento-modal-backdrop"
     tabIndex="-1"
-    style={{ backgroundColor: "rgba(0, 0, 0, 0.7)", backdropFilter: "blur(4px)" }}
   >
-    <div className="modal-dialog modal-dialog-centered modal-scale" style={{ maxWidth: "680px" }}>
+    <div className="modal-dialog modal-dialog-centered modal-scale orcamento-modal-lg">
       <div 
-        className="modal-content border-0 shadow-2xl p-4" 
-        style={{ borderRadius: "24px", backgroundColor: "#ffffff" }}
+        className="modal-content border-0 shadow-2xl p-4 orcamento-modal-content" 
       >
         
         {/* CABEÇALHO DO MODAL */}
@@ -620,50 +561,33 @@ export default function OrcamentoPage() {
               <div key={placa.id} className="col-md-6">
                 <div
                   onClick={() => selecionarPlaca(placa.id)}
-                  className={`card h-100 p-3 transition-all ${isSelected ? 'shadow-sm' : ''}`}
-                  style={{
-                    cursor: "pointer",
-                    borderRadius: "16px",
-                    border: isSelected ? "2px solid #febd17" : "1px solid #e5e7eb",
-                    backgroundColor: isSelected ? "rgba(254, 189, 23, 0.03)" : "#ffffff",
-                    transform: isSelected ? "scale(1.01)" : "none",
-                    transition: "all 0.2s ease-in-out",
-                  }}
+                  className={`card h-100 p-3 transition-all placa-card ${isSelected ? 'shadow-sm placa-card-selected' : ''}`}
                 >
                   {/* CONTAINER DA IMAGEM */}
                   <div 
-                    className="w-100 mb-3 d-flex align-items-center justify-content-center bg-light"
-                    style={{ borderRadius: "12px", height: "130px", overflow: "hidden" }}
+                    className="w-100 mb-3 d-flex align-items-center justify-content-center bg-light placa-image-box"
                   >
                     <img
                       src={placa.imagem}
-                      className="img-fluid"
-                      style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "contain" }}
+                      className="img-fluid placa-image"
                       alt={placa.nome}
                     />
                   </div>
 
                   {/* LINHA DO TÍTULO + VALOR EM DESTAQUE */}
                   <div className="d-flex align-items-start justify-content-between gap-2 mb-1">
-                    <h6 className="fw-bold text-dark mb-0 style-title" style={{ lineHeight: "1.2" }}>
+                    <h6 className="fw-bold text-dark mb-0 style-title placa-title">
                       {placa.nome}
                     </h6>
                     <span 
-                      className="fw-bold px-2 py-1 rounded" 
-                      style={{ 
-                        fontSize: "0.85rem", 
-                        backgroundColor: isSelected ? "#febd17" : "#f3f4f6",
-                        color: "#221f20",
-                        whiteSpace: "nowrap",
-                        transition: "background-color 0.2s"
-                      }}
+                      className={`fw-bold px-2 py-1 rounded placa-price ${isSelected ? 'placa-price-selected' : ''}`} 
                     >
                       {Number(placa.valor || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
                     </span>
                   </div>
 
                   {/* DESCRIÇÃO */}
-                  <p className="small text-secondary mb-0 flex-grow-1" style={{ fontSize: "0.85rem", lineHeight: "1.4" }}>
+                  <p className="small text-secondary mb-0 flex-grow-1 placa-description">
                     {placa.descricao}
                   </p>
                   
@@ -679,14 +603,7 @@ export default function OrcamentoPage() {
         <div className="d-flex justify-content-end mt-4">
           <button
             type="button"
-            className="btn fw-bold px-4 py-2.5 text-white"
-            style={{ 
-              backgroundColor: "#221f20", 
-              borderRadius: "12px",
-              fontSize: "0.95rem",
-              border: "none",
-              boxShadow: "0 4px 12px rgba(34, 31, 32, 0.15)"
-            }}
+            className="btn fw-bold px-4 py-2.5 text-white orcamento-confirm-button"
             onClick={() => setShowPlacaModal(false)}
           >
             Confirmar Escolha

@@ -1,4 +1,6 @@
 
+import styles from "./page.module.css";
+
 const userPreview = {
   name: "Maria Oliveira",
   email: "maria.oliveira@email.com",
@@ -22,8 +24,7 @@ export default function PreferenciasPage() {
 
                 <div className="d-flex align-items-center gap-3 mb-4">
                   <div
-                    className="rounded-circle bg-yellow text-dark-2 d-flex align-items-center justify-content-center fw-bold"
-                    style={{ width: "72px", height: "72px", fontSize: "1.6rem" }}
+                    className={`rounded-circle bg-yellow text-dark-2 d-flex align-items-center justify-content-center fw-bold ${styles.avatar}`}
                   >
                     MO
                   </div>

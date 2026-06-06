@@ -2,6 +2,11 @@ import { hashPassword, comparePassword, getConnection } from '../config/database
 
 class UsuarioModel {
 
+    static normalizarTipoUsuario(tipo) {
+        const tipoNormalizado = String(tipo || 'CLIENTE').trim().toUpperCase();
+        return tipoNormalizado === 'ADMIN' ? 'ADMIN' : 'CLIENTE';
+    }
+
     // LISTAR USUÁRIOS (SEM SENHA)
     static async listarTodos(pagina = 1, limite = 10) {
         const offset = (pagina - 1) * limite;
@@ -122,7 +127,7 @@ class UsuarioModel {
                 dados.nome,
                 dados.email,
                 senhaHash,
-                dados.tipo_usuario || 'CLIENTE',
+                this.normalizarTipoUsuario(dados.tipo_usuario ?? dados.tipo),
                 dados.id_empresa || null
             ]);
 
@@ -155,7 +160,7 @@ class UsuarioModel {
 
         if (dados.tipo_usuario !== undefined) {
             campos.push('tipo_usuario = ?');
-            valores.push(dados.tipo_usuario);
+            valores.push(this.normalizarTipoUsuario(dados.tipo_usuario));
         }
 
         if (dados.id_empresa !== undefined) {
@@ -166,6 +171,44 @@ class UsuarioModel {
         if (dados.status_usuario !== undefined) {
             campos.push('status_usuario = ?');
             valores.push(dados.status_usuario);
+        }
+
+        if (campos.length === 0) return 0;
+
+        const connection = await getConnection();
+
+        try {
+            const sql = `
+                UPDATE usuarios
+                SET ${campos.join(', ')}
+                WHERE id_usuario = ?
+            `;
+
+            const [result] = await connection.execute(sql, [
+                ...valores,
+                id
+            ]);
+
+            return result.affectedRows;
+
+        } finally {
+            connection.release();
+        }
+    }
+
+    // ATUALIZAR PRÓPRIO PERFIL (NOME E SENHA)
+    static async atualizarPerfil(id, dados) {
+        const campos = [];
+        const valores = [];
+
+        if (dados.nome !== undefined) {
+            campos.push('nome = ?');
+            valores.push(dados.nome);
+        }
+
+        if (dados.senha !== undefined) {
+            campos.push('senha = ?');
+            valores.push(await hashPassword(dados.senha));
         }
 
         if (campos.length === 0) return 0;

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { criarFaleConosco } from "../../../api";
 import { toast } from "sonner";
+import styles from "./page.module.css";
 
 export default function FaleConosco() {
   const [formData, setFormData] = useState({
@@ -78,49 +79,27 @@ export default function FaleConosco() {
   return (
     <>
       <div
-        className="d-flex flex-column min-vh-100"
-        style={{
-          backgroundColor: "#ececec",
-          overflowX: "hidden",
-        }}
+        className={`d-flex flex-column min-vh-100 ${styles.page}`}
       >
         {/* CONTEÚDO */}
-        <main className="flex-grow-1 py-9 px-3" style={{ paddingTop: "80px", paddingBottom: "80px" }}>
+        <main className={`flex-grow-1 py-9 px-3 ${styles.main}`}>
           <div
-            className="container overflow-hidden shadow-lg p-0"
-            style={{
-              maxWidth: "1350px",
-              borderRadius: "28px",
-              backgroundColor: "#221f20",
-            }}
+            className={`container overflow-hidden shadow-lg p-0 ${styles.shell}`}
           >
             <div className="row g-0">
               {/* ESQUERDA */}
               <div
-                className="col-lg-5 text-white d-flex flex-column justify-content-center"
-                style={{
-                  background: "linear-gradient(135deg,#221f20,#2d2a2b)",
-                  padding: "60px",
-                }}
+                className={`col-lg-5 text-white d-flex flex-column justify-content-center ${styles.formPanel}`}
               >
                 {/* TÍTULO */}
                 <h1
-                  className="fw-bold mb-3"
-                  style={{
-                    fontSize: "3.5rem",
-                    lineHeight: "1",
-                  }}
+                  className={`fw-bold mb-3 ${styles.title}`}
                 >
-                  <span style={{ color: "#febd17" }}>Fale Conosco</span>
+                  <span className={styles.highlight}>Fale Conosco</span>
                 </h1>
 
                 <p
-                  className="mb-5"
-                  style={{
-                    color: "#d4d4d4",
-                    lineHeight: "1.8",
-                    fontSize: "1.2rem",
-                  }}
+                  className={`mb-5 ${styles.description}`}
                 >
                   Tem dúvidas, sugestões ou deseja conhecer melhor a Luminar? Estamos prontos para te atender!
                 </p>
@@ -131,7 +110,7 @@ export default function FaleConosco() {
                   <div className="mb-3">
                     <input
                       type="text"
-                      className="form-control border-0"
+                      className={`form-control border-0 ${styles.input}`}
                       placeholder="Nome completo"
                       value={formData.nome}
                       onChange={(e) =>
@@ -140,13 +119,6 @@ export default function FaleConosco() {
                           nome: e.target.value,
                         })
                       }
-                      style={{
-                        background: "#221f20",
-                        color: "white",
-                        WebkitTextFillColor: "white",
-                        borderRadius: "14px",
-                        height: "58px",
-                      }}
                     />
                   </div>
 
@@ -154,7 +126,7 @@ export default function FaleConosco() {
                   <div className="mb-3">
                     <input
                       type="email"
-                      className="form-control border-0"
+                      className={`form-control border-0 ${styles.input}`}
                       placeholder="E-mail"
                       value={formData.email}
                       onChange={(e) =>
@@ -163,13 +135,6 @@ export default function FaleConosco() {
                           email: e.target.value,
                         })
                       }
-                      style={{
-                        background: "#221f20",
-                        color: "white",
-                        WebkitTextFillColor: "white",
-                        borderRadius: "14px",
-                        height: "58px",
-                      }}
                     />
                   </div>
 
@@ -177,7 +142,7 @@ export default function FaleConosco() {
                   <div className="mb-3">
                     <input
                       type="text"
-                      className="form-control border-0"
+                      className={`form-control border-0 ${styles.input}`}
                       placeholder="Telefone (opcional)"
                       value={formData.telefone}
                       onChange={(e) =>
@@ -186,21 +151,14 @@ export default function FaleConosco() {
                           telefone: e.target.value,
                         })
                       }
-                      style={{
-                        background: "#221f20",
-                        color: "white",
-                        WebkitTextFillColor: "white",
-                        borderRadius: "14px",
-                        height: "58px",
-                      }}
                     />
                   </div>
 
                   {/* TEXTAREA MENSAGEM */}
                   <div className="mb-4">
                     <textarea
-                      className="form-control border-0"
-                      rows="5"
+                      className={`form-control border-0 ${styles.textarea}`}
+                      rows="4"
                       placeholder="Sua mensagem"
                       value={formData.mensagem}
                       onChange={(e) =>
@@ -209,13 +167,6 @@ export default function FaleConosco() {
                           mensagem: e.target.value,
                         })
                       }
-                      style={{
-                        background: "#221f20",
-                        color: "white",
-                        WebkitTextFillColor: "white",
-                        borderRadius: "14px",
-                        resize: "none",
-                      }}
                     ></textarea>
                   </div>
 
@@ -223,13 +174,7 @@ export default function FaleConosco() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="btn fw-bold w-100 py-3"
-                    style={{
-                      backgroundColor: "#febd17",
-                      color: "#221f20",
-                      borderRadius: "14px",
-                      fontSize: "1.05rem",
-                    }}
+                    className={`btn fw-bold w-100 py-2 ${styles.submitButton}`}
                   >
                     <i className="bi bi-send me-2"></i>
                     {loading ? "Enviando..." : "Enviar mensagem"}
@@ -239,26 +184,14 @@ export default function FaleConosco() {
 
               {/* DIREITA */}
               <div
-                className="col-lg-7 position-relative d-flex flex-column justify-content-between"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(rgba(255, 253, 250, 0.66), rgba(34, 31, 32, 0)), url('https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=1600&auto=format&fit=crop')",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  minHeight: "850px",
-                  padding: "50px",
-                }}
+                className={`col-lg-7 position-relative d-flex flex-column justify-content-between ${styles.imagePanel}`}
               >
                 {/* LOGO CENTRAL */}
-                <div className="text-center" style={{ marginTop: "-20px" }}>
+                <div className={`text-center ${styles.logoWrap}`}>
                   <img
                     src="logo-luminar-removebg-preview.png"
                     alt="Luminar"
-                    className="img-fluid"
-                    style={{
-                      maxWidth: "381px",
-                      objectFit: "contain",
-                    }}
+                    className={`img-fluid ${styles.logo}`}
                   />
                 </div>
 
@@ -270,16 +203,7 @@ export default function FaleConosco() {
                   />
                   <div className="col-md-4 mb-4">
                     <div
-                      className="mx-auto mb-3 d-flex align-items-center justify-content-center"
-                      style={{
-                        width: "85px",
-                        height: "85px",
-                        borderRadius: "50%",
-                        border: "2px solid #febd17",
-                        color: "#febd17",
-                        fontSize: "34px",
-                        backgroundColor: "rgba(34,31,32,0.75)",
-                      }}
+                      className={`mx-auto mb-3 d-flex align-items-center justify-content-center ${styles.featureIcon}`}
                     >
                       <i className="bi bi-headset"></i>
                     </div>
@@ -288,16 +212,7 @@ export default function FaleConosco() {
 
                   <div className="col-md-4 mb-4">
                     <div
-                      className="mx-auto mb-3 d-flex align-items-center justify-content-center"
-                      style={{
-                        width: "85px",
-                        height: "85px",
-                        borderRadius: "50%",
-                        border: "2px solid #febd17",
-                        color: "#febd17",
-                        fontSize: "34px",
-                        backgroundColor: "rgba(34,31,32,0.75)",
-                      }}
+                      className={`mx-auto mb-3 d-flex align-items-center justify-content-center ${styles.featureIcon}`}
                     >
                       <i className="bi bi-sun"></i>
                     </div>
@@ -306,16 +221,7 @@ export default function FaleConosco() {
 
                   <div className="col-md-4 mb-4">
                     <div
-                      className="mx-auto mb-3 d-flex align-items-center justify-content-center"
-                      style={{
-                        width: "85px",
-                        height: "85px",
-                        borderRadius: "50%",
-                        border: "2px solid #febd17",
-                        color: "#febd17",
-                        fontSize: "34px",
-                        backgroundColor: "rgba(34,31,32,0.75)",
-                      }}
+                      className={`mx-auto mb-3 d-flex align-items-center justify-content-center ${styles.featureIcon}`}
                     >
                       <i className="bi bi-lightning-charge"></i>
                     </div>

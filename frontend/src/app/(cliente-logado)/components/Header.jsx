@@ -2,6 +2,7 @@
 
 import { logoutUsuario, getPerfil } from "@/api";
 import React, { useEffect, useState } from "react";
+import styles from "./Header.module.css";
 
 export default function Header() {
 
@@ -51,31 +52,18 @@ export default function Header() {
   return (
     <>
       <nav
-        className="navbar fixed-top px-3"
-        style={{
-          height: "78px",
-          background: "#221f20",
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
-          zIndex: 9999,
-        }}
+        className={`navbar fixed-top px-3 ${styles.navbar}`}
       >
         <div className="container-fluid">
 
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="border-0 bg-transparent shadow-none"
-            style={{
-              outline: "none",
-            }}
+            className={`border-0 bg-transparent shadow-none ${styles.menuButton}`}
           >
             <i
               className={`bi ${
                 sidebarOpen ? "bi-x-lg" : "bi-list"
-              }`}
-              style={{
-                color: "#fff",
-                fontSize: "2rem",
-              }}
+              } ${styles.menuIcon}`}
             />
           </button>
 
@@ -95,10 +83,10 @@ export default function Header() {
                           className="rounded-circle me-2"
                         />
                         <div className="d-none d-sm-block text-start me-1">
-                          <strong style={{ display: "block", fontSize: "0.95rem" }}>
+                          <strong className={styles.userName}>
                             {usuario?.nome}
                           </strong>
-                          <small style={{ color: "#b5b5b5", display: "block", marginTop: "-2px" }}>
+                          <small className={styles.userRole}>
                             Cliente
                           </small>
                         </div>
@@ -131,17 +119,9 @@ export default function Header() {
 
       {/* SIDEBAR */}
       <aside
-        style={{
-          position: "fixed",
-          top: "78px",
-          left: sidebarOpen ? "0" : "-290px",
-          width: "290px",
-          height: "calc(100vh - 78px)",
-          background: "#221f20",
-          borderRight: "1px solid rgba(255,255,255,0.06)",
-          transition: "0.35s ease",
-          zIndex: 9998,
-        }}
+        className={`${styles.sidebar} ${
+          sidebarOpen ? styles.sidebarOpen : styles.sidebarClosed
+        }`}
       >
 
         {/* CONTAINER */}
@@ -153,13 +133,7 @@ export default function Header() {
         <img
             src="/logo-semEscrita.png"
             alt="Logo Luminar"
-            style={{
-            width: "42px",
-            height: "42px",
-            borderRadius: "14px",
-            objectFit: "cover",
-            padding: "4px",
-            }}
+            className={styles.logoImage}
         />
 
         <div>
@@ -174,7 +148,7 @@ export default function Header() {
         <li className="nav-item">
             <a
             href="/inicio-dashboard"
-            className="nav-link sidebar-link text-white d-flex align-items-center gap-3"
+            className={`nav-link text-white d-flex align-items-center gap-3 ${styles.sidebarLink}`}
             >
             <i className="bi bi-house-door-fill"></i>
             Início
@@ -184,7 +158,7 @@ export default function Header() {
         <li>
             <a
             href="/dashboard"
-            className="nav-link sidebar-link text-white d-flex align-items-center gap-3"
+            className={`nav-link text-white d-flex align-items-center gap-3 ${styles.sidebarLink}`}
             >
             <i className="bi bi-speedometer2"></i>
             Dashboard
@@ -194,7 +168,7 @@ export default function Header() {
         <li>
             <a
             href="/dashboard-financeiro"
-            className="nav-link sidebar-link text-white d-flex align-items-center gap-3"
+            className={`nav-link text-white d-flex align-items-center gap-3 ${styles.sidebarLink}`}
             >
             <i className="bi bi-table"></i>
             Financeiro
@@ -204,7 +178,7 @@ export default function Header() {
         <li>
             <a
             href="/solicitar-instalacao"
-            className="nav-link sidebar-link text-white d-flex align-items-center gap-3"
+            className={`nav-link text-white d-flex align-items-center gap-3 ${styles.sidebarLink}`}
             >
             <i className="bi bi-grid-fill"></i>
             Solicitar instalação
@@ -213,8 +187,18 @@ export default function Header() {
 
         <li>
             <a
+            href="/cadastrar-endereco"
+            className={`nav-link text-white d-flex align-items-center gap-3 ${styles.sidebarLink}`}
+            >
+            <i className="bi bi-geo-alt-fill"></i>
+            Cadastrar endereço
+            </a>
+        </li>
+
+        <li>
+            <a
             href="/chamados"
-            className="nav-link sidebar-link text-white d-flex align-items-center gap-3"
+            className={`nav-link text-white d-flex align-items-center gap-3 ${styles.sidebarLink}`}
             >
             <i className="bi bi-people-fill"></i>
             Abrir chamado
@@ -223,32 +207,11 @@ export default function Header() {
 
         </ul>
 
-          <hr
-            style={{
-              borderColor: "rgba(255, 255, 255, 0.08)",
-            }}
-          />
+          <hr className={styles.divider} />
 
         </div>
       </aside>
 
-    <style jsx>{`
-    .sidebar-link {
-        border-radius: 14px;
-        padding: 14px 18px;
-        transition: all 0.3s ease;
-    }
-
-    .sidebar-link:hover {
-        background: linear-gradient(135deg, #febd17, #e5a900);
-        color: #221f20 !important;
-        transform: translateX(4px);
-    }
-
-    .sidebar-link:hover i {
-        color: #221f20 !important;
-    }
-    `}</style>
     </>
   );
 }

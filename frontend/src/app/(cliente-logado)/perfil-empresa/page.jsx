@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import styles from "./page.module.css";
 
 export default function PerfilPage() {
     const [formData, setFormData] = useState({
@@ -35,35 +36,17 @@ export default function PerfilPage() {
 
     return (
         <div
-            className="container-fluid"
-            style={{
-                minHeight: "100vh",
-                background: "#f4f4f4",
-                padding: "20px",
-            }}
+            className={`container-fluid ${styles.page}`}
         >
             <div
-                className="row shadow mx-auto"
-                style={{
-                    width: "95vw",
-                    minHeight: "90vh",
-                    background: "#fff",
-                    overflow: "hidden",
-                }}
+                className={`row shadow mx-auto ${styles.shell}`}
             >
                 {/* SIDEBAR */}
                 <div
-                    className="col-lg-3 p-5 text-white d-flex flex-column"
-                    style={{
-                        background: "#221f20",
-                    }}
+                    className={`col-lg-3 p-5 text-white d-flex flex-column ${styles.sidebar}`}
                 >
                     <small
-                        className="fw-bold"
-                        style={{
-                            color: "#febd17",
-                            letterSpacing: "1px",
-                        }}
+                        className={`fw-bold ${styles.eyebrow}`}
                     >
                         ÁREA DA EMPRESA
                     </small>
@@ -72,15 +55,7 @@ export default function PerfilPage() {
                         <img
                             src="/IMG_8007.jpeg"
                             alt="Foto de Perfil"
-                            style={{
-                                width: "90px",
-                                height: "90px",
-                                objectFit: "cover",
-                                borderRadius: "50%",
-                                border: "4px solid #252323",
-                                boxShadow: "0 8px 20px rgba(0, 0, 0, 0.25)",
-                                flexShrink: 0,
-                            }}
+                            className={styles.avatar}
                         />
 
                         <div>
@@ -89,28 +64,17 @@ export default function PerfilPage() {
                             </h3>
 
                             <p
-                                className="mb-0"
-                                style={{
-                                    color: "#bbb",
-                                }}
+                                className={`mb-0 ${styles.mutedText}`}
                             >
                                 Cliente Luminar
                             </p>
                         </div>
                     </div>
 
-                    <hr
-                        style={{
-                            borderColor: "#444",
-                            margin: "35px 0",
-                        }}
-                    />
+                    <hr className={styles.divider} />
 
                     <small
-                        className="fw-bold"
-                        style={{
-                            color: "#888",
-                        }}
+                        className={`fw-bold ${styles.secondaryLabel}`}
                     >
                         USUÁRIO ATUAL
                     </small>
@@ -119,11 +83,7 @@ export default function PerfilPage() {
                         "EMPRESA DE TESTE LTDA ME"
                     </h4>
 
-                    <p
-                        style={{
-                            color: "#bbb",
-                        }}
-                    >
+                    <p className={styles.mutedText}>
                         marcelo@email.com
                     </p>
 
@@ -141,13 +101,7 @@ export default function PerfilPage() {
                     <link href="/perfil">
 
                         <button
-                            className="btn w-100 fw-bold"
-                            style={{
-                                background: "#1d1c1c",
-                                border: "1px solid #1d1c1c",
-                                color: "#febd17",
-                                padding: "12px",
-                            }}
+                            className={`btn w-100 fw-bold ${styles.darkButton}`}
                         >
                             Perfil Pessoal
                         </button>
@@ -155,12 +109,7 @@ export default function PerfilPage() {
 
                     <div className="mt-auto">
                         <button
-                            className="btn w-100 fw-bold"
-                            style={{
-                                border: "1px solid #febd17",
-                                color: "#febd17",
-                                padding: "12px",
-                            }}
+                            className={`btn w-100 fw-bold ${styles.outlineButton}`}
 
                         >
                             Sair da Conta
@@ -174,10 +123,7 @@ export default function PerfilPage() {
                     <div className="d-flex justify-content-between align-items-center mb-5">
                         <div>
                             <h1
-                                className="fw-bold"
-                                style={{
-                                    color: "#221f20",
-                                }}
+                                className={`fw-bold ${styles.title}`}
                             >
                                 Editar Perfil
                             </h1>
@@ -188,13 +134,7 @@ export default function PerfilPage() {
                         </div>
 
                         <span
-                            className="badge"
-                            style={{
-                                background: "#fff3cd",
-                                color: "#221f20",
-                                padding: "12px 16px",
-                                fontSize: "14px",
-                            }}
+                            className={`badge ${styles.badge}`}
                         >
                             Cliente Luminar
                         </span>
@@ -203,10 +143,7 @@ export default function PerfilPage() {
                     <form onSubmit={handleSubmit}>
                         {/* DADOS */}
                         <h4
-                            className="fw-bold mb-4"
-                            style={{
-                                color: "#221f20",
-                            }}
+                            className={`fw-bold mb-4 ${styles.title}`}
                         >
                             Dados empresariais
                         </h4>
@@ -320,10 +257,7 @@ export default function PerfilPage() {
 
                         {/* SEGURANÇA */}
                         <h4
-                            className="fw-bold mb-4"
-                            style={{
-                                color: "#221f20",
-                            }}
+                            className={`fw-bold mb-4 ${styles.title}`}
                         >
                             Segurança
                         </h4>
@@ -373,11 +307,7 @@ export default function PerfilPage() {
 
                             <button
                                 type="submit"
-                                className="btn px-4 py-2 fw-bold"
-                                style={{
-                                    background: "#febd17",
-                                    color: "#221f20",
-                                }}
+                                className={`btn px-4 py-2 fw-bold ${styles.primaryButton}`}
                             >
                                 Salvar Alterações
                             </button>

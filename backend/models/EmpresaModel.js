@@ -284,6 +284,48 @@ class EmpresaModel {
         }
     }
 
+    // ATUALIZAR DADOS EDITÁVEIS DA EMPRESA
+    static async atualizarDadosEditaveis(id, dados) {
+
+        const campos = [];
+        const valores = [];
+
+        if (dados.nome_empresa !== undefined) {
+            campos.push('nome_empresa = ?');
+            valores.push(dados.nome_empresa);
+        }
+
+        if (dados.telefone_principal !== undefined) {
+            campos.push('telefone_principal = ?');
+            valores.push(dados.telefone_principal);
+        }
+
+        if (campos.length === 0) {
+            return 0;
+        }
+
+        const connection = await getConnection();
+
+        try {
+
+            const sql = `
+                UPDATE empresa_clientes
+                SET ${campos.join(', ')}
+                WHERE id_empresa = ?
+            `;
+
+            const [result] = await connection.execute(
+                sql,
+                [...valores, id]
+            );
+
+            return result.affectedRows;
+
+        } finally {
+            connection.release();
+        }
+    }
+
     // INATIVAR EMPRESA
     static async inativar(id) {
 

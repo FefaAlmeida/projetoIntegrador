@@ -1,0 +1,60 @@
+.shell {
+  min-height: calc(100vh - 180px);
+  padding-top: 72px;
+  padding-bottom: 72px;
+  font-family: "Poppins", sans-serif;
+}
+
+.content {
+  z-index: 2;
+}
+
+.imageBox {
+  width: min(520px, 100%);
+  height: 300px;
+  border-radius: 48% 52% 45% 55% / 52% 43% 57% 48%;
+  box-shadow: 0 24px 42px rgba(34, 31, 32, 0.38);
+}
+
+.coverImage {
+  object-fit: cover;
+}
+
+.title {
+  color: #221f20;
+  font-size: clamp(3.2rem, 6vw, 3.8rem);
+  font-weight: 900;
+  line-height: 1;
+}
+
+.highlight {
+  color: #f5bd31;
+}
+
+.subtitle {
+  max-width: 560px;
+  color: #221f20;
+  font-size: clamp(1.45rem, 2.6vw, 2rem);
+  line-height: 1.15;
+}
+
+.formCard {
+  max-width: 430px;
+  border: 1px solid #221f20;
+  box-shadow: 0 24px 48px rgba(34, 31, 32, 0.32);
+}
+
+.formTitle {
+  color: #221f20;
+}
+
+.input {
+  border-color: #d8d8d8 !important;
+  border-bottom-width: 2px !important;
+  font-size: 1.05rem;
+  padding-bottom: 12px;
+}
+
+.primaryButton {
+  color: #221f20 !important;
+}

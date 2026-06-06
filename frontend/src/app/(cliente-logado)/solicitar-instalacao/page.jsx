@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { solicitarInstalacao, getMinhaInstalacao, getPerfil } from "../../../api";
 import { toast } from "sonner";
+import styles from "./page.module.css";
 
 export default function SolicitarInstalacaoPage() {
   const [usuario, setUsuario] = useState(null);
@@ -170,7 +171,7 @@ export default function SolicitarInstalacaoPage() {
 
   if (loadingPagina) {
     return (
-      <div className="d-flex justify-content-center align-items-center min-vh-100" style={{ backgroundColor: "#ececec" }}>
+      <div className={`d-flex justify-content-center align-items-center min-vh-100 ${styles.loadingWrapper}`}>
         <div className="spinner-border text-warning" role="status">
           <span className="visually-hidden">Carregando...</span>
         </div>
@@ -180,28 +181,22 @@ export default function SolicitarInstalacaoPage() {
 
   return (
     <div
-      className="d-flex flex-column min-vh-100"
-      style={{
-        backgroundColor: "#ececec",
-        overflowX: "hidden",
-        fontFamily: "'Poppins', sans-serif",
-      }}
+      className={`d-flex flex-column min-vh-100 ${styles.page}`}
     >
-      <main className="flex-grow-1 py-5 px-3" style={{ paddingTop: "100px", paddingBottom: "100px" }}>
+      <main className={`flex-grow-1 py-5 px-3 ${styles.main}`}>
         <div
-          className="container shadow-lg p-0 overflow-hidden"
-          style={{ maxWidth: "1100px", borderRadius: "28px", backgroundColor: "#ffffff" }}
+          className={`container shadow-lg p-0 overflow-hidden ${styles.shell}`}
         >
           <div className="row g-0">
             
             {/* ESQUERDA */}
-            <div className="col-lg-5 text-white d-flex flex-column justify-content-center p-5" style={{ backgroundColor: "#221f20" }}>
-              <h1 className="fw-bold mb-4" style={{ fontSize: "3rem", lineHeight: "1.1" }}>
+            <div className={`col-lg-5 text-white d-flex flex-column justify-content-center p-5 ${styles.sidebar}`}>
+              <h1 className={`fw-bold mb-4 ${styles.heroTitle}`}>
                 {solicitacao ? "Acompanhar" : "Solicitar"} <br />
-                <span style={{ color: "#febd17" }}>Instalação</span>
+                <span className={styles.highlight}>Instalação</span>
               </h1>
 
-              <p className="mb-4" style={{ color: "#d4d4d4", fontSize: "1.1rem", lineHeight: "1.7" }}>
+              <p className={`mb-4 ${styles.heroText}`}>
                 {solicitacao 
                   ? "Acompanhe o andamento do seu pedido de instalação fotovoltaica e os dados do endereço cadastrado."
                   : "Informe os dados de localização onde o sistema fotovoltaico será montado para análise da nossa equipe de engenharia."
@@ -210,13 +205,13 @@ export default function SolicitarInstalacaoPage() {
 
               <div className="mt-4">
                 <div className="d-flex align-items-center mb-3">
-                  <div className="rounded-circle d-flex align-items-center justify-content-center me-3" style={{ width: "45px", height: "45px", backgroundColor: "rgba(254, 189, 23, 0.2)", color: "#febd17" }}>
+                  <div className={`rounded-circle d-flex align-items-center justify-content-center me-3 ${styles.iconCircle}`}>
                     <i className="bi bi-geo-alt fs-4"></i>
                   </div>
                   <span>Mapeamento via satélite</span>
                 </div>
                 <div className="d-flex align-items-center mb-3">
-                  <div className="rounded-circle d-flex align-items-center justify-content-center me-3" style={{ width: "45px", height: "45px", backgroundColor: "rgba(254, 189, 23, 0.2)", color: "#febd17" }}>
+                  <div className={`rounded-circle d-flex align-items-center justify-content-center me-3 ${styles.iconCircle}`}>
                     <i className="bi bi-shield-check fs-4"></i>
                   </div>
                   <span>Garantia estrutural Luminar</span>
@@ -229,12 +224,12 @@ export default function SolicitarInstalacaoPage() {
               {solicitacao ? (
                 <div>
                   <div className="d-flex justify-content-between align-items-center mb-5 border-bottom pb-3">
-                    <h2 className="fw-bold m-0" style={{ color: "#221f20" }}>Status do Pedido</h2>
+                    <h2 className={`fw-bold m-0 ${styles.title}`}>Status do Pedido</h2>
                     {renderBadgeStatus(solicitacao.status)}
                   </div>
 
                   <p className="text-secondary small fw-bold text-uppercase tracking-wider mb-3">Dados do Agendamento</p>
-                  <div className="row g-4 mb-5 p-4 rounded-3 border" style={{ backgroundColor: "#fdfdfd" }}>
+                  <div className={`row g-4 mb-5 p-4 rounded-3 border ${styles.scheduleCard}`}>
                     <div className="col-md-6">
                       <label className="text-muted d-block small mb-1">
                         <i className="bi bi-calendar-event me-2 text-warning"></i>Data da Visita
@@ -294,26 +289,25 @@ export default function SolicitarInstalacaoPage() {
 
                   <div className="p-3 rounded-3 bg-light border border-dashed d-flex align-items-start">
                     <i className="bi bi-info-circle text-warning fs-4 me-3 mt-1"></i>
-                    <p className="text-secondary small m-0" style={{ lineHeight: "1.5" }}>
+                    <p className={`text-secondary small m-0 ${styles.infoText}`}>
                       Sua solicitação está sendo processada por nosso departamento de engenharia. Você receberá uma notificação assim que a visita técnica for completamente agendada.
                     </p>
                   </div>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit}>
-                  <h2 className="fw-bold mb-5" style={{ color: "#221f20" }}>Dados do Endereço</h2>
+                  <h2 className={`fw-bold mb-5 ${styles.title}`}>Dados do Endereço</h2>
                   
                   <div className="row">
                     <div className="col-md-6 mb-3">
                       <label className="form-label fw-bold small text-secondary">CEP *</label>
                       <input
                         type="text"
-                        className="form-control"
                         placeholder="00000-000"
                         maxLength="9"
                         value={cep}
                         onChange={(e) => setCep(e.target.value)}
-                        style={{ borderRadius: "10px", padding: "12px", border: "1px solid #ddd" }}
+                        className={`form-control ${styles.input}`}
                       />
                     </div>
 
@@ -321,11 +315,10 @@ export default function SolicitarInstalacaoPage() {
                       <label className="form-label fw-bold small text-secondary">Número *</label>
                       <input
                         type="text"
-                        className="form-control"
+                        className={`form-control ${styles.input}`}
                         placeholder="Ex: 123"
                         value={numero}
                         onChange={(e) => setNumero(e.target.value)}
-                        style={{ borderRadius: "10px", padding: "12px", border: "1px solid #ddd" }}
                       />
                     </div>
                   </div>
@@ -334,11 +327,10 @@ export default function SolicitarInstalacaoPage() {
                     <label className="form-label fw-bold small text-secondary">Logradouro / Rua *</label>
                     <input
                       type="text"
-                      className="form-control"
+                      className={`form-control ${styles.input}`}
                       placeholder="Rua, Avenida..."
                       value={logradouro}
                       onChange={(e) => setLogradouro(e.target.value)}
-                      style={{ borderRadius: "10px", padding: "12px", border: "1px solid #ddd" }}
                     />
                   </div>
 
@@ -346,11 +338,10 @@ export default function SolicitarInstalacaoPage() {
                     <label className="form-label fw-bold small text-secondary">Bairro *</label>
                     <input
                       type="text"
-                      className="form-control"
+                      className={`form-control ${styles.input}`}
                       placeholder="Seu bairro"
                       value={bairro}
                       onChange={(e) => setBairro(e.target.value)}
-                      style={{ borderRadius: "10px", padding: "12px", border: "1px solid #ddd" }}
                     />
                   </div>
 
@@ -359,11 +350,10 @@ export default function SolicitarInstalacaoPage() {
                       <label className="form-label fw-bold small text-secondary">Cidade *</label>
                       <input
                         type="text"
-                        className="form-control"
+                        className={`form-control ${styles.input}`}
                         placeholder="Sua cidade"
                         value={cidade}
                         onChange={(e) => setCidade(e.target.value)}
-                        style={{ borderRadius: "10px", padding: "12px", border: "1px solid #ddd" }}
                       />
                     </div>
 
@@ -371,12 +361,11 @@ export default function SolicitarInstalacaoPage() {
                       <label className="form-label fw-bold small text-secondary">Estado (UF) *</label>
                       <input
                         type="text"
-                        className="form-control text-uppercase"
+                        className={`form-control text-uppercase ${styles.input}`}
                         placeholder="SP"
                         maxLength="2"
                         value={estado}
                         onChange={(e) => setEstado(e.target.value)}
-                        style={{ borderRadius: "10px", padding: "12px", border: "1px solid #ddd" }}
                       />
                     </div>
                   </div>
@@ -385,26 +374,17 @@ export default function SolicitarInstalacaoPage() {
                     <label className="form-label fw-bold small text-secondary">Complemento</label>
                     <input
                       type="text"
-                      className="form-control"
+                      className={`form-control ${styles.input}`}
                       placeholder="Apto, Bloco, Casa (Opcional)"
                       value={complemento}
                       onChange={(e) => setComplemento(e.target.value)}
-                      style={{ borderRadius: "10px", padding: "12px", border: "1px solid #ddd" }}
                     />
                   </div>
 
                   <button
                     type="submit"
-                    className="btn fw-bold w-100 py-3 mt-2"
+                    className={`btn fw-bold w-100 py-3 mt-2 ${styles.submitButton}`}
                     disabled={loadingSubmit}
-                    style={{
-                      backgroundColor: "#febd17",
-                      color: "#221f20",
-                      borderRadius: "14px",
-                      fontSize: "1.1rem",
-                      border: "none",
-                      boxShadow: "0 4px 15px rgba(254, 189, 23, 0.3)",
-                    }}
                   >
                     {loadingSubmit ? "Processando..." : "Confirmar Solicitação"}
                   </button>

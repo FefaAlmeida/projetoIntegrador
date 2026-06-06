@@ -39,7 +39,7 @@ function montarHistoricoFinanceiro(historico) {
 
     return {
       icon: pago ? "bi-check-circle" : "bi-cash-stack",
-      color: pago ? "#48b96c" : "#febd17",
+      iconClass: pago ? "financeiro-history-icon-paid" : "financeiro-history-icon-pending",
       text: pago
         ? `Pagamento da parcela #${String(item.numero_parcela || "").padStart(2, "0")} confirmado`
         : `Parcela #${String(item.numero_parcela || "").padStart(2, "0")} ${item.status_pagamento?.toLowerCase()}`,
@@ -227,8 +227,7 @@ export default function FinanceiroPage() {
                   <div className="financeiro-history-content">
                     <div className="financeiro-history-icon-box">
                       <i
-                        className={`bi ${item.icon} financeiro-history-icon`}
-                        style={{ color: item.color }}
+                        className={`bi ${item.icon} financeiro-history-icon ${item.iconClass}`}
                       />
                     </div>
 

@@ -247,6 +247,8 @@ class AuthController {
                 });
             }
 
+            delete usuario.senha;
+
             return res.status(200).json({
                 sucesso: true,
                 dados: usuario
@@ -266,10 +268,57 @@ class AuthController {
         try {
             const id = req.usuario.id;
 
-            const dadosAtualizacao = { ...req.body };
+            const {
+                nome,
+                senha
+            } = req.body;
+
+            const usuarioAtual = await UsuarioModel.buscarPorId(id);
+
+            if (!usuarioAtual) {
+                return res.status(404).json({
+                    sucesso: false,
+                    erro: 'Usuário não encontrado'
+                });
+            }
+
+            const dadosAtualizacao = {};
+
+            if (nome !== undefined) {
+                if (!nome.trim()) {
+                    return res.status(400).json({
+                        sucesso: false,
+                        erro: 'Nome é obrigatório'
+                    });
+                }
+
+                const nomeNormalizado = nome.trim();
+
+                if (nomeNormalizado !== usuarioAtual.nome) {
+                    dadosAtualizacao.nome = nomeNormalizado;
+                }
+            }
+
+            if (senha !== undefined) {
+                if (senha.length < 6) {
+                    return res.status(400).json({
+                        sucesso: false,
+                        erro: 'A senha deve ter pelo menos 6 caracteres'
+                    });
+                }
+
+                dadosAtualizacao.senha = senha;
+            }
+
+            if (Object.keys(dadosAtualizacao).length === 0) {
+                return res.status(400).json({
+                    sucesso: false,
+                    erro: 'Nenhuma alteração realizada'
+                });
+            }
 
             // Se estiver alterando senha, já deixa pronto pro model hashear
-            const resultado = await UsuarioModel.atualizar(id, dadosAtualizacao);
+            const resultado = await UsuarioModel.atualizarPerfil(id, dadosAtualizacao);
 
             if (resultado === 0) {
                 return res.status(400).json({
@@ -287,7 +336,10 @@ class AuthController {
                     id: atualizado.id,
                     nome: atualizado.nome,
                     email: atualizado.email,
-                    tipo_usuario: atualizado.tipo_usuario
+                    tipo_usuario: atualizado.tipo_usuario,
+                    status_usuario: atualizado.status_usuario,
+                    id_solicitacao: atualizado.id_solicitacao,
+                    id_empresa: atualizado.id_empresa
                 }
             });
 

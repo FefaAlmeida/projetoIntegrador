@@ -11,6 +11,20 @@ router.get(
     EmpresaController.minhaEmpresa
 );
 
+// ENDEREÇOS DA EMPRESA DO USUÁRIO LOGADO
+router.get(
+    '/minha/enderecos',
+    authMiddleware,
+    EmpresaController.meusEnderecos
+);
+
+// CADASTRAR ENDEREÇO DA EMPRESA DO USUÁRIO LOGADO
+router.post(
+    '/minha/enderecos',
+    authMiddleware,
+    EmpresaController.cadastrarEndereco
+);
+
 // CRIAR EMPRESA
 router.post(
     '/',
@@ -70,6 +84,21 @@ router.options('/minha', (req, res) => {
     res.header(
         'Access-Control-Allow-Methods',
         'GET, OPTIONS'
+    );
+    res.header(
+        'Access-Control-Allow-Headers',
+        'Content-Type, Authorization'
+    );
+    res.sendStatus(200);
+});
+
+// OPTIONS /minha/enderecos
+
+router.options('/minha/enderecos', (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header(
+        'Access-Control-Allow-Methods',
+        'GET, POST, OPTIONS'
     );
     res.header(
         'Access-Control-Allow-Headers',

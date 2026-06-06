@@ -1,0 +1,14 @@
+.footer {
+  margin-top: auto;
+  padding: 56px 0 34px;
+  background: linear-gradient(90deg, #221f20, #221f20);
+}
+
+.brandTitle {
+  color: #febd17;
+}
+
+.copyright {
+  color: #bdbdbd;
+  font-size: 14px;
+}

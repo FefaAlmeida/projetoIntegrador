@@ -1,32 +1,26 @@
 import React from 'react';
+import styles from "./Header.module.css";
 
 export default function Header() {
   return (
     <>
       <nav
-        className="navbar navbar-expand-lg navbar-dark sticky-top"
-        style={{
-          backgroundColor: "#221f20",
-          padding: "15px 0",
-          boxShadow: "0 4px 15px rgba(0,0,0,0.3)",
-          fontFamily: "'Poppins', sans-serif",
-        }}
+        className={`navbar navbar-expand-lg navbar-dark sticky-top ${styles.navbar}`}
       >
         <div className="container">
           {/* LOGO */}
           <a className="navbar-brand d-flex align-items-center gap-2" href="/">
             <div 
-              className="d-flex align-items-center justify-content-center"
-              style={{ width: "45px", height: "45px" }}
+              className={`d-flex align-items-center justify-content-center ${styles.logoBox}`}
             >
               <img
                 src="/logo-semEscrita.png"
                 alt="Luminar Logo"
-                style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                className={styles.logoImage}
               />
             </div>
-            <span className="fw-bold fs-4" style={{ letterSpacing: "-0.5px" }}>
-              Lumi<span style={{ color: "#febd17" }}>nar</span>
+            <span className={`fw-bold fs-4 ${styles.brandText}`}>
+              Lumi<span className={styles.brandHighlight}>nar</span>
             </span>
           </a>
 
@@ -63,8 +57,7 @@ export default function Header() {
                   Serviços
                 </a>
                 <ul 
-                  className="dropdown-menu dropdown-menu-dark border-0 shadow-lg"
-                  style={{ backgroundColor: "#1a1718", borderRadius: "12px", padding: "10px" }}
+                  className={`dropdown-menu dropdown-menu-dark border-0 shadow-lg ${styles.dropdownMenu}`}
                 >
                   <li><a className="dropdown-item py-2 px-3 rounded-2" href="/servicos/instalacao">Instalação de painéis</a></li>
                   <li><a className="dropdown-item py-2 px-3 rounded-2" href="/servicos/monitoramento">Monitoramento</a></li>
@@ -88,14 +81,7 @@ export default function Header() {
             <div className="d-flex align-items-center gap-2 mt-3 mt-lg-0">
               <a
                 href="/login"
-                className="btn fw-bold px-4 py-2"
-                style={{
-                  backgroundColor: "#febd17",
-                  color: "#221f20",
-                  borderRadius: "50px",
-                  fontSize: "0.9rem",
-                  transition: "0.3s",
-                }}
+                className={`btn fw-bold px-4 py-2 headerLoginBtn ${styles.loginButton}`}
               >
                 Entrar
               </a>

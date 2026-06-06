@@ -94,20 +94,18 @@ export default function ChamadosPage() {
                         <div className="mb-4">
                             <label className="form-label fw-bold">Sua Resposta</label>
                             <textarea
-                                className="form-control border-light shadow-sm"
+                                className="form-control border-light shadow-sm resposta-textarea"
                                 rows="5"
                                 value={resposta}
                                 onChange={(e) => setResposta(e.target.value)}
                                 placeholder="A resposta será enviada para o e-mail do cliente..."
-                                style={{ borderRadius: '14px', resize: 'none' }}
                             />
                         </div>
 
                         <div className="d-flex gap-3">
                             <button
                                 onClick={() => setMensagemSelecionada(null)}
-                                className="btn btn-light flex-grow-1 py-3 fw-bold shadow-sm"
-                                style={{ borderRadius: '14px' }}
+                                className="btn btn-light flex-grow-1 py-3 fw-bold shadow-sm btn-modal-cancelar"
                             >Cancelar</button>
                             <button
                                 onClick={handleEnviarResposta}
@@ -199,8 +197,7 @@ export default function ChamadosPage() {
                                 <li key={n} className={`page-item ${paginaAtual === n ? 'active' : ''}`}>
                                     <button 
                                         onClick={() => setPaginaAtual(n)} 
-                                        className={`page-link border-0 shadow-sm fw-bold ${paginaAtual === n ? 'bg-warning text-dark' : 'text-dark'}`}
-                                        style={{ borderRadius: '10px', width: '45px', textAlign: 'center' }}
+                                        className={`page-link border-0 shadow-sm fw-bold pagination-button ${paginaAtual === n ? 'bg-warning text-dark' : 'text-dark'}`}
                                     >{n}</button>
                                 </li>
                             ))}

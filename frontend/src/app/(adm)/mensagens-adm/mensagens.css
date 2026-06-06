@@ -119,7 +119,22 @@
     margin-bottom: 25px;
     padding: 15px;
     background: #f8f8f8;
-    borderRadius: 14px;
+    border-radius: 14px;
+}
+
+.resposta-textarea {
+    border-radius: 14px;
+    resize: none;
+}
+
+.btn-modal-cancelar {
+    border-radius: 14px;
+}
+
+.pagination-button {
+    width: 45px;
+    text-align: center;
+    border-radius: 10px;
 }
 
 .btn-luminar {

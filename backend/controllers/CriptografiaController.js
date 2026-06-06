@@ -138,13 +138,13 @@ class CriptografiaController {
                 nome: nome.trim(),
                 email: email.trim().toLowerCase(),
                 senha: senhaHash, // ← SENHA CRIPTOGRAFADA
-                tipo: tipo || 'comum'
+                tipo_usuario: UsuarioModel.normalizarTipoUsuario(tipo)
             };
 
             console.log('📦 Dados preparados para o banco:');
             console.log('   Nome:', dadosUsuario.nome);
             console.log('   Email:', dadosUsuario.email);
-            console.log('   Tipo:', dadosUsuario.tipo);
+            console.log('   Tipo:', dadosUsuario.tipo_usuario);
             console.log('   Senha: [CRIPTOGRAFADA - não visível]');
             console.log('');
 
@@ -178,7 +178,7 @@ class CriptografiaController {
                     id: usuarioId,
                     nome: dadosUsuario.nome,
                     email: dadosUsuario.email,
-                    tipo: dadosUsuario.tipo
+                    tipo_usuario: dadosUsuario.tipo_usuario
                 },
                 demonstracao: {
                     criptografia: {

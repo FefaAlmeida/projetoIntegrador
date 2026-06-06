@@ -7,6 +7,189 @@
   animation: popIn 1.0s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.orcamento-page {
+  overflow-x: hidden;
+  font-family: "Poppins", sans-serif;
+  background-color: #ececec;
+}
+
+.orcamento-main {
+  padding-top: 100px;
+  padding-bottom: 100px;
+}
+
+.orcamento-shell {
+  max-width: 1000px;
+  border-radius: 28px;
+  background-color: #ffffff;
+}
+
+.orcamento-sidebar {
+  background-color: #221f20;
+}
+
+.orcamento-title {
+  font-size: 3rem;
+  line-height: 1.1;
+}
+
+.orcamento-highlight {
+  color: #febd17;
+}
+
+.orcamento-description {
+  color: #d4d4d4;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.orcamento-icon-circle {
+  width: 45px;
+  height: 45px;
+  color: #febd17;
+  background-color: rgba(254, 189, 23, 0.2);
+}
+
+.orcamento-visual-button {
+  color: #221f20;
+  font-size: 0.85rem;
+  background-color: transparent;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+.orcamento-submit-button,
+.orcamento-accept-button {
+  color: #221f20 !important;
+  background-color: #febd17 !important;
+  border: none;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(254, 189, 23, 0.3);
+}
+
+.orcamento-modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+.orcamento-modal-sm {
+  max-width: 480px;
+}
+
+.orcamento-modal-lg {
+  max-width: 680px;
+}
+
+.orcamento-modal-content {
+  background-color: #ffffff;
+  border-radius: 24px;
+}
+
+.orcamento-spinner {
+  width: 3rem;
+  height: 3rem;
+}
+
+.orcamento-success-icon-box {
+  width: 70px;
+  height: 70px;
+  background-color: rgba(254, 189, 23, 0.15);
+}
+
+.orcamento-success-icon {
+  color: #febd17;
+  font-size: 2.5rem;
+}
+
+.orcamento-detail-label {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.orcamento-total-box {
+  background-color: #221f20;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(34, 31, 32, 0.15);
+}
+
+.orcamento-total-label {
+  color: #d4d4d4;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.orcamento-total-value {
+  color: #febd17;
+  font-size: 2rem;
+}
+
+.orcamento-accept-button {
+  box-shadow: 0 4px 12px rgba(254, 189, 23, 0.25);
+}
+
+.orcamento-decline-button {
+  font-size: 0.9rem;
+  background-color: transparent;
+  border-radius: 14px;
+}
+
+.placa-card {
+  cursor: pointer;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  transition: all 0.2s ease-in-out;
+}
+
+.placa-card-selected {
+  border: 2px solid #febd17;
+  background-color: rgba(254, 189, 23, 0.03);
+  transform: scale(1.01);
+}
+
+.placa-image-box {
+  height: 130px;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.placa-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.placa-title {
+  line-height: 1.2;
+}
+
+.placa-price {
+  color: #221f20;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  background-color: #f3f4f6;
+  transition: background-color 0.2s;
+}
+
+.placa-price-selected {
+  background-color: #febd17;
+}
+
+.placa-description {
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.orcamento-confirm-button {
+  color: #ffffff !important;
+  font-size: 0.95rem;
+  background-color: #221f20 !important;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(34, 31, 32, 0.15);
+}
+
 @keyframes popIn {
   0% {
     transform: scale(0.85);

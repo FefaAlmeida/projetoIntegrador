@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { loginUsuario, getPerfil, solicitarRedefinicaoSenha } from "../../../api";
 import { toast } from "sonner";
+import styles from "./page.module.css";
 
 export default function LoginPage() {
   
@@ -105,80 +106,32 @@ export default function LoginPage() {
 
   return (
     <main
-      className="container-fluid min-vh-100 d-flex align-items-center position-relative overflow-hidden p-0 bg-white"
-      style={{ fontFamily: "'Poppins', sans-serif" }}
+      className={`auth-shell container-fluid min-vh-100 d-flex align-items-center position-relative overflow-hidden p-0 bg-white ${styles.shell}`}
     >
-      <div className="position-absolute top-0 start-0 w-50" style={{ zIndex: 1 }}>
-        <svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M0 0H620C520 60 460 112 376 90C250 56 204 162 92 170C44 173 12 194 0 218V0Z"
-            fill="#ffc107"
-          />
-          <path
-            d="M0 80C106 154 194 88 278 116C356 142 396 218 508 156C552 132 590 128 620 142V0H0V80Z"
-            fill="#ffe58a"
-            opacity="0.75"
-          />
-        </svg>
-      </div>
+      <div className="auth-corner auth-corner-top" aria-hidden="true" />
+      <div className="auth-corner auth-corner-bottom" aria-hidden="true" />
 
-      <div
-        className="position-absolute bottom-0 end-0 w-50"
-        style={{ zIndex: 1, transform: "rotate(180deg)" }}
-      >
-        <svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M0 0H620C520 60 460 112 376 90C250 56 204 162 92 170C44 173 12 194 0 218V0Z"
-            fill="#221f20"
-          />
-          <path
-            d="M0 80C106 154 194 88 278 116C356 142 396 218 508 156C552 132 590 128 620 142V0H0V80Z"
-            fill="#d9d9d9"
-            opacity="0.8"
-          />
-        </svg>
-      </div>
-
-      <div className="container position-relative py-5" style={{ zIndex: 2 }}>
+      <div className={`container position-relative py-5 ${styles.content}`}>
         <div className="row align-items-center gy-5">
           <section className="col-lg-6">
             <div
-              className="mb-5 overflow-hidden bg-white mx-auto mx-lg-0"
-              style={{
-                width: "min(520px, 100%)",
-                height: "300px",
-                borderRadius: "48% 52% 45% 55% / 52% 43% 57% 48%",
-                boxShadow: "0 24px 42px rgba(34, 31, 32, 0.38)",
-              }}
+              className={`mb-5 overflow-hidden bg-white mx-auto mx-lg-0 ${styles.imageBox}`}
             >
               <img
                 src="/dashboard.png"
                 alt="Painéis solares"
-                className="w-100 h-100"
-                style={{ objectFit: "cover" }}
+                className={`w-100 h-100 ${styles.coverImage}`}
               />
             </div>
 
             <div className="text-center text-lg-start">
               <h1
-                className="fw-black mb-3"
-                style={{
-                  color: "#221f20",
-                  fontSize: "clamp(3.2rem, 6vw, 3.8rem)",
-                  fontWeight: 900,
-                  lineHeight: 1,
-                }}
+                className={`fw-black mb-3 ${styles.title}`}
               >
-                Painel <span style={{ color: "#f5bd31" }}>Luminar</span>
+                Painel <span className={styles.highlight}>Luminar</span>
               </h1>
               <p
-                className="m-0"
-                style={{
-                  maxWidth: "620px",
-                  color: "#221f20",
-                  fontSize: "clamp(1.45rem, 2.6vw, 2.0rem)",
-                  lineHeight: 1.15,
-                }}
+                className={`m-0 ${styles.subtitle}`}
               >
                 Faça login para acessar seu painel de monitoramento energético inteligente.
               </p>
@@ -187,14 +140,9 @@ export default function LoginPage() {
 
           <section className="col-lg-5 offset-lg-1 d-flex justify-content-center justify-content-lg-end">
             <div
-              className="bg-white rounded-4 p-4 p-md-5 w-100"
-              style={{
-                maxWidth: "430px",
-                border: "1px solid #221f20",
-                boxShadow: "0 24px 48px rgba(34, 31, 32, 0.32)",
-              }}
+              className={`bg-white rounded-4 p-4 p-md-5 w-100 ${styles.formCard}`}
             >
-              <h2 className="fw-bold mb-5" style={{ color: "#221f20" }}>
+              <h2 className={`fw-bold mb-5 ${styles.formTitle}`}>
                 Entrar na sua conta
               </h2>
 
@@ -205,13 +153,7 @@ export default function LoginPage() {
                   </label>
                   <input
                     type="email"
-                    className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
-                    style={{
-                      borderColor: "#d8d8d8",
-                      borderBottomWidth: "2px",
-                      fontSize: "1.05rem",
-                      paddingBottom: "12px",
-                    }}
+                    className={`form-control border-0 border-bottom rounded-0 px-0 shadow-none ${styles.input}`}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
@@ -223,13 +165,7 @@ export default function LoginPage() {
                   </label>
                   <input
                     type="password"
-                    className="form-control border-0 border-bottom rounded-0 px-0 shadow-none"
-                    style={{
-                      borderColor: "#d8d8d8",
-                      borderBottomWidth: "2px",
-                      fontSize: "1.05rem",
-                      paddingBottom: "12px",
-                    }}
+                    className={`form-control border-0 border-bottom rounded-0 px-0 shadow-none ${styles.input}`}
                     value={senha}
                     onChange={(e) => setSenha(e.target.value)}
                   />
@@ -237,8 +173,7 @@ export default function LoginPage() {
 
                 <button
                   type="button"
-                  className="btn btn-warning w-100 py-3 rounded-pill fw-bold shadow-sm mb-3"
-                  style={{ color: "#221f20" }}
+                  className={`btn btn-warning w-100 py-3 rounded-pill fw-bold shadow-sm mb-3 ${styles.primaryButton}`}
                   onClick={handleLogin}
                   disabled={loading}
                 >
@@ -248,8 +183,7 @@ export default function LoginPage() {
                 <div className="text-center mb-2">
                   <button
                     type="button"
-                    className="border-0 bg-transparent text-decoration-none small fw-bold"
-                    style={{ color: "#f5bd31" }}
+                    className={`border-0 bg-transparent text-decoration-none small fw-bold ${styles.linkButton}`}
                     onClick={handleSolicitarRedefinicaoSenha}
                     disabled={loadingRedefinicao}
                   >

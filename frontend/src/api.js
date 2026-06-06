@@ -73,6 +73,19 @@ export async function getPerfil() {
   return res.json();
 }
 
+export async function atualizarPerfil(data) {
+  const res = await fetch(`${BASE_URL}/auth/perfil`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+
+  return res.json();
+}
+
 
 // EMPRESA
 export async function criarEmpresa(data) {
@@ -100,6 +113,28 @@ export async function getMinhaEmpresa() {
 export async function atualizarEmpresa(id, data) {
   const res = await fetch(`${BASE_URL}/empresas/${id}`, {
     method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+
+  return res.json();
+}
+
+export async function getMeusEnderecos() {
+  const res = await fetch(`${BASE_URL}/empresas/minha/enderecos`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  return res.json();
+}
+
+export async function criarEndereco(data) {
+  const res = await fetch(`${BASE_URL}/empresas/minha/enderecos`, {
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },

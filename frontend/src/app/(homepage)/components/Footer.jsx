@@ -1,69 +1,54 @@
+import styles from "./Footer.module.css";
+
 export default function Footer() {
   return (
     <>
       <footer
-        style={{
-          marginTop: "auto",
-          background: "linear-gradient(90deg,#221f20,#221f20)",
-          padding: "35px 0",
-        }}
+        className={styles.footer}
       >
         <div className="container">
-          <div className="row align-items-center text-center text-lg-start">
+          <div className="footer-main">
             {/* LOGO */}
-            <div className="col-lg-3 mb-4 mb-lg-0">
+            <div className="footer-brand">
               <h3
-                className="fw-bold"
-                style={{
-                  color: "#febd17",
-                }}
+                className={`fw-bold m-0 ${styles.brandTitle}`}
               >
                 Luminar
               </h3>
             </div>
 
-            {/* TELEFONE */}
-            <div className="col-lg-3 mb-3 mb-lg-0">
-              <div className="text-white">
-                <i
-                  className="bi bi-telephone-fill me-2"
-                  style={{ color: "#febd17" }}
-                ></i>
-                (11) 94002-8922
+            <div className="footer-contact-list">
+              {/* TELEFONE */}
+              <div className="footer-contact-item text-white">
+                <span className="footer-contact-icon">
+                  <i className="bi bi-telephone-fill"></i>
+                </span>
+                <span className="footer-contact-text">(11) 94002-8922</span>
               </div>
-            </div>
 
-            {/* EMAIL */}
-            <div className="col-lg-3 mb-3 mb-lg-0">
-              <div className="text-white">
-                <i
-                  className="bi bi-envelope-fill me-2"
-                  style={{ color: "#febd17" }}
-                ></i>
-                luminar.energia.solar14@gmail.com
+              {/* EMAIL */}
+              <div className="footer-contact-item footer-contact-email text-white">
+                <span className="footer-contact-icon">
+                  <i className="bi bi-envelope-fill"></i>
+                </span>
+                <span className="footer-contact-text">
+                  luminar.energia.solar14@gmail.com
+                </span>
               </div>
-            </div>
 
-            {/* LOCAL */}
-            <div className="col-lg-3">
-              <div className="text-white">
-                <i
-                  className="bi bi-geo-alt-fill me-2"
-                  style={{ color: "#febd17" }}
-                ></i>
-                São Paulo - SP
+              {/* LOCAL */}
+              <div className="footer-contact-item text-white">
+                <span className="footer-contact-icon">
+                  <i className="bi bi-geo-alt-fill"></i>
+                </span>
+                <span className="footer-contact-text">São Paulo - SP</span>
               </div>
             </div>
           </div>
 
           {/* COPYRIGHT */}
           <div
-            className="text-center mt-4 pt-3"
-            style={{
-              borderTop: "1px solid rgba(255,255,255,0.1)",
-              color: "#bdbdbd",
-              fontSize: "14px",
-            }}
+            className={`footer-copyright text-center ${styles.copyright}`}
           >
             © 2026 Luminar. Todos os direitos reservados.
           </div>

@@ -186,15 +186,41 @@ class UsuarioController {
 
             const {
                 nome,
-                email,
                 senha
             } = req.body;
 
-            await UsuarioModel.atualizar(id, {
-                nome,
-                email: email?.trim().toLowerCase(),
-                senha
-            });
+            const dadosAtualizacao = {};
+
+            if (nome !== undefined) {
+                if (!nome.trim()) {
+                    return res.status(400).json({
+                        sucesso: false,
+                        erro: 'Nome é obrigatório'
+                    });
+                }
+
+                dadosAtualizacao.nome = nome.trim();
+            }
+
+            if (senha !== undefined) {
+                if (senha.length < 6) {
+                    return res.status(400).json({
+                        sucesso: false,
+                        erro: 'A senha deve ter pelo menos 6 caracteres'
+                    });
+                }
+
+                dadosAtualizacao.senha = senha;
+            }
+
+            const resultado = await UsuarioModel.atualizarPerfil(id, dadosAtualizacao);
+
+            if (resultado === 0) {
+                return res.status(400).json({
+                    sucesso: false,
+                    erro: 'Nenhuma alteração realizada'
+                });
+            }
 
             return res.status(200).json({
                 sucesso: true,

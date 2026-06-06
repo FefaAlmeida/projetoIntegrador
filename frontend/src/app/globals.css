@@ -89,6 +89,101 @@ a {
   color: var(--dark);
 }
 
+.service-hero {
+  min-height: 78vh;
+  padding: 108px 0 68px;
+  background: linear-gradient(180deg, #ffffff 0%, #fff8df 100%);
+}
+
+.service-hero-copy {
+  max-width: 520px;
+}
+
+.service-hero-title {
+  font-size: clamp(2.6rem, 4.8vw, 3.65rem);
+}
+
+.service-hero-text {
+  max-width: 500px;
+  font-size: 1.2rem;
+  line-height: 1.55;
+  opacity: 0.85;
+}
+
+.service-quote-btn {
+  padding: 0.95rem 2.1rem;
+  border: none;
+  border-radius: 0.9rem;
+  background-color: var(--primary);
+  color: var(--dark);
+  font-size: 1rem;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.service-quote-btn:hover {
+  background-color: #ffc933 !important;
+  color: var(--dark) !important;
+  box-shadow: 0 12px 28px rgba(254, 189, 23, 0.35) !important;
+  transform: translateY(-3px);
+}
+
+.service-hero-logo-wrap {
+  max-width: 420px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.service-hero-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 0;
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  background: rgba(254, 189, 23, 0.18);
+  filter: blur(100px);
+  transform: translate(-50%, -50%);
+}
+
+.service-hero-logo {
+  z-index: 2;
+  max-width: 82%;
+}
+
+@media (max-width: 991.98px) {
+  .service-hero {
+    min-height: auto;
+    padding: 92px 0 56px;
+    text-align: center;
+  }
+
+  .service-hero-copy,
+  .service-hero-text {
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .service-hero-logo-wrap {
+    max-width: 340px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .service-hero {
+    padding: 80px 0 48px;
+  }
+
+  .service-hero-title {
+    font-size: 2.35rem;
+    letter-spacing: -1px;
+  }
+
+  .service-hero-text {
+    font-size: 1.05rem;
+  }
+}
+
 .btn-outline-custom {
   border: 2px solid var(--dark);
   color: var(--dark);
@@ -99,6 +194,118 @@ a {
 .btn-outline-custom:hover {
   background-color: var(--dark);
   color: var(--light);
+}
+
+.auth-shell {
+  isolation: isolate;
+}
+
+.auth-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(254, 189, 23, 0.16), transparent 28%),
+    radial-gradient(circle at 86% 82%, rgba(34, 31, 32, 0.08), transparent 32%);
+}
+
+.auth-corner {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.auth-corner::before,
+.auth-corner::after {
+  content: "";
+  position: absolute;
+  display: block;
+}
+
+.auth-corner-top {
+  top: -160px;
+  left: -120px;
+  width: min(720px, 62vw);
+  height: 360px;
+}
+
+.auth-corner-top::before {
+  inset: 0;
+  border-radius: 0 0 58% 42% / 0 0 64% 44%;
+  background: linear-gradient(135deg, #febd17 0%, #ffc933 58%, #ffe8a3 100%);
+  transform: rotate(-5deg);
+  box-shadow: 0 28px 70px rgba(254, 189, 23, 0.18);
+}
+
+.auth-corner-top::after {
+  right: 4%;
+  bottom: 20px;
+  width: 76%;
+  height: 190px;
+  border-radius: 52% 48% 56% 44% / 60% 44% 56% 40%;
+  background: rgba(255, 244, 197, 0.62);
+  transform: rotate(7deg);
+}
+
+.auth-corner-bottom {
+  right: -150px;
+  bottom: -170px;
+  width: min(760px, 64vw);
+  height: 390px;
+}
+
+.auth-corner-bottom::before {
+  inset: 0;
+  border-radius: 56% 0 0 0 / 58% 0 0 0;
+  background: linear-gradient(135deg, rgba(236, 236, 236, 0.95) 0%, rgba(207, 207, 207, 0.92) 58%, #221f20 59%, #221f20 100%);
+  transform: rotate(-5deg);
+  box-shadow: 0 -24px 70px rgba(34, 31, 32, 0.12);
+}
+
+.auth-corner-bottom::after {
+  left: 8%;
+  top: 44px;
+  width: 60%;
+  height: 170px;
+  border-radius: 58% 42% 52% 48% / 48% 58% 42% 52%;
+  background: rgba(255, 255, 255, 0.34);
+  transform: rotate(8deg);
+}
+
+@media (max-width: 991.98px) {
+  .auth-corner-top {
+    top: -135px;
+    left: -170px;
+    width: 620px;
+    height: 300px;
+  }
+
+  .auth-corner-bottom {
+    right: -210px;
+    bottom: -150px;
+    width: 650px;
+    height: 310px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .auth-corner-top {
+    top: -150px;
+    left: -230px;
+    width: 520px;
+    height: 280px;
+    opacity: 0.9;
+  }
+
+  .auth-corner-bottom {
+    right: -260px;
+    bottom: -170px;
+    width: 560px;
+    height: 290px;
+    opacity: 0.92;
+  }
 }
 
 /* NAV */

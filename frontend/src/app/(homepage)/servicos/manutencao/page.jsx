@@ -4,46 +4,28 @@ export const metadata = {
 
 export default function ManutencaoPage() {
  return (
-    <div className="bg-white min-vh-100" style={{ color: "#221f20" }}>
+    <div className="bg-white min-vh-100 service-page">
 
   {/* HERO */}
-  <section
-    className="d-flex align-items-center py-5"
-    style={{
-      minHeight: "90vh",
-      background:
-        "linear-gradient(180deg, #ffffff 0%, #fff8df 100%)",
-      paddingTop: "120px",
-      paddingBottom: "80px",
-    }}
-  >
+  <section className="service-hero d-flex align-items-center">
     <div className="container px-4 px-lg-5">
 
-      <div className="row align-items-center g-5">
+      <div className="row align-items-center g-4 g-lg-5">
 
         {/* TEXTO */}
         <div className="col-lg-6">
 
           <h1
-            className="display-3 fw-black mb-4"
-            style={{
-              fontWeight: "900",
-              lineHeight: "1.05",
-              letterSpacing: "-2px",
-            }}
+            className="service-hero-title fw-black mb-3 service-hero-copy service-hero-heading"
           >
             Manutenção profissional dos{" "}
-            <span style={{ color: "#febd17" }}>
+            <span className="service-highlight">
               sistemas solares
             </span>
           </h1>
 
           <p
-            className="fs-3 mb-5"
-            style={{
-              opacity: 0.85,
-              lineHeight: "1.5",
-            }}
+            className="service-hero-text mb-4"
           >
             Garantimos máxima eficiência, segurança e
             vida útil para o seu sistema fotovoltaico
@@ -54,12 +36,7 @@ export default function ManutencaoPage() {
 
             <a
               href="/orcamento"
-              className="btn btn-lg px-5 py-4 rounded-4 fw-bold shadow"
-              style={{
-                backgroundColor: "#febd17",
-                color: "#221f20",
-                border: "none",
-              }}
+              className="btn fw-bold shadow service-quote-btn"
             >
               Solicitar Orçamento
             </a>
@@ -75,33 +52,16 @@ export default function ManutencaoPage() {
         {/* IMAGEM */}
         <div className="col-lg-6 text-center">
 
-          <div className="position-relative d-inline-block">
+          <div className="position-relative d-inline-block service-hero-logo-wrap">
 
             {/* GLOW */}
-            <div
-              style={{
-                position: "absolute",
-                width: "450px",
-                height: "450px",
-                background: "rgba(254,189,23,0.20)",
-                filter: "blur(120px)",
-                borderRadius: "50%",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                zIndex: 0,
-              }}
-            />
+            <div className="service-hero-glow" />
 
             {/* IMAGEM */}
             <img
       src="/logo-luminar-removebg-preview.png"
       alt="Painéis solares"
-      className="img-fluid position-relative"
-      style={{
-        maxWidth: "95%",
-        zIndex: 2,
-      }}
+      className="img-fluid position-relative service-hero-logo"
     />
 
           </div>
@@ -114,11 +74,7 @@ export default function ManutencaoPage() {
 
   {/* PROCESSO */}
   <section
-    className="py-5"
-    style={{
-      backgroundColor: "#2e2e2e",
-      color: "#ffffff",
-    }}
+    className="py-5 service-process-section"
   >
     <div className="container px-4 px-lg-5 py-5">
 
@@ -133,7 +89,7 @@ export default function ManutencaoPage() {
         </p>
       </div>
 
-      <div className="row g-4 text-center">
+      <div className="row g-4 g-lg-5 text-center justify-content-center">
 
         {[
           {
@@ -161,40 +117,37 @@ export default function ManutencaoPage() {
             icone: "bi-check-circle",
           },
         ].map((item, index) => (
-          <div className="col-md-6 col-lg-3" key={index}>
+          <div className="col-12 col-lg-10 mx-auto" key={index}>
 
             <div
-              className="h-100 p-5 rounded-4"
-              style={{
-                backgroundColor: "rgba(255,255,255,0.05)",
-                border: "1px solid rgba(255,255,255,0.08)",
-              }}
+              className="service-step-card service-step-card-dark h-100 p-4 rounded-4 d-flex flex-column flex-md-row align-items-center text-center text-md-start gap-3 gap-md-4"
             >
 
               <div
-                className="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4"
-                style={{
-                  width: "80px",
-                  height: "80px",
-                  backgroundColor: "#febd17",
-                  color: "#221f20",
-                }}
+                className="service-step-icon service-step-icon-md rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
               >
                 <i
-                  className={`bi ${item.icone}`}
-                  style={{
-                    fontSize: "36px",
-                  }}
+                  className={`bi ${item.icone} service-step-symbol-md`}
                 ></i>
               </div>
 
-              <h3 className="fw-bold mb-3">
-                {item.titulo}
-              </h3>
+              <div className="flex-grow-1">
+                <span
+                  className="badge mb-2 px-3 py-2 rounded-pill service-step-badge"
+                >
+                  Etapa {index + 1}
+                </span>
 
-              <p className="fs-5 opacity-75 m-0">
-                {item.descricao}
-              </p>
+                <h3 className="h5 fw-bold mb-2">
+                  {item.titulo}
+                </h3>
+
+                <p
+                  className="opacity-75 m-0 service-step-description-sm"
+                >
+                  {item.descricao}
+                </p>
+              </div>
 
             </div>
 
