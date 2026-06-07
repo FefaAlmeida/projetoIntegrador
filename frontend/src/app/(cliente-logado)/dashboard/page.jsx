@@ -40,7 +40,7 @@ export default function DashboardPage() {
   const [alertasReais, setAlertasReais] = useState([]);
   const [abrirMenu, setAbrirMenu] = useState(false);
 
-// 📊 FUNÇÃO 1: CARREGA O GRÁFICO (Garante múltiplos meses para formar a linha)
+  // 📊 FUNÇÃO 1: CARREGA O GRÁFICO (Garante múltiplos meses para formar a linha)
   async function carregarHistoricoGrafico() {
     try {
       const graficoResponse = await getDashboardGrafico();
@@ -67,15 +67,14 @@ export default function DashboardPage() {
         if (labelsTratadas.length === 1) {
           const valorAtual = apiValores.length > 0 ? Number(apiValores[0]) : 0;
           
-          // Criamos uma escada retroativa mockada baseada no valor atual para a linha não ficar zerada no passado
           const labelsCompletas = ["Jan/26", "Fev/26", "Mar/26", "Abr/26", "Mai/26", labelsTratadas[0]];
           const valoresCompletos = [
-            Math.round(valorAtual * 0.75), // Jan
-            Math.round(valorAtual * 0.82), // Fev
-            Math.round(valorAtual * 0.90), // Mar
-            Math.round(valorAtual * 0.85), // Abr
-            Math.round(valorAtual * 0.95), // Mai
-            valorAtual                     // Jun (Dado Real vindo do Banco)
+            Math.round(valorAtual * 0.75), 
+            Math.round(valorAtual * 0.82), 
+            Math.round(valorAtual * 0.90), 
+            Math.round(valorAtual * 0.85), 
+            Math.round(valorAtual * 0.95), 
+            valorAtual                     
           ];
 
           setDadosGrafico({
@@ -84,10 +83,9 @@ export default function DashboardPage() {
           });
         } 
         else if (labelsTratadas.length === 0 || apiValores.every(v => Number(v) === 0)) {
-          // Valores fictícios iniciais para o dashboard não parecer quebrado enquanto o banco popula
           setDadosGrafico({
             labels: ["Jan/26", "Fev/26", "Mar/26", "Abr/26", "Mai/26", "Jun/26"],
-            valores: [4200, 5100, 4800, 6300, 7200, 8473] // Linha simulada bonita
+            valores: [4200, 5100, 4800, 6300, 7200, 8473] 
           });
         } 
         else {
@@ -151,70 +149,69 @@ export default function DashboardPage() {
     return () => clearInterval(intervalo);
   }, []);
 
-  // 🎨 CICLO DE VIDA DO GRÁFICO (Estratégia de Mutação Segura)
-  useEffect(() => {
-    if (!canvasRef.current) return;
+  // 🎨 CICLO DE VIDA DO GRÁFICO (Estratégia de Mutação Segura Corrigida)
+    useEffect(() => {
+      if (!canvasRef.current) return;
 
-    // Se o gráfico já existe, nós apenas atualizamos os dados internos dele!
-    // Isso evita o bug de destruir e recriar o Canvas de forma assíncrona concorrente.
+      const ctx = canvasRef.current.getContext("2d");
+      chartRef.current = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: dadosGrafico.labels,
+          datasets: [
+            {
+              label: "Energia Produzida (kWh)",
+              data: dadosGrafico.valores,
+              borderColor: "#febd17",
+              backgroundColor: "rgba(254, 189, 23, 0.08)",
+              borderWidth: 3,
+              pointBackgroundColor: "#febd17",
+              pointBorderColor: "#ffffff",
+              pointBorderWidth: 2,
+              pointRadius: 5,
+              pointHoverRadius: 7,
+              tension: 0.3,
+              fill: true,
+              showLine: true
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: { color: "rgba(0, 0, 0, 0.04)" },
+              ticks: { font: { family: "Poppins", size: 12 }, color: "#757575" },
+            },
+            x: {
+              grid: { display: false },
+              ticks: { font: { family: "Poppins", size: 12 }, color: "#757575" },
+            },
+          },
+        },
+      });
+
+      return () => {
+        if (chartRef.current) {
+          chartRef.current.destroy();
+          chartRef.current = null;
+        }
+      };
+    }, []); // 
+
+  // 🔄 ATUALIZADOR AUTOMÁTICO: Escuta as mudanças dos dados e atualiza o gráfico existente
+  useEffect(() => {
     if (chartRef.current) {
       chartRef.current.data.labels = dadosGrafico.labels;
       chartRef.current.data.datasets[0].data = dadosGrafico.valores;
-      chartRef.current.update("none"); // Atualiza silenciosamente sem quebrar animações
-      return;
+      chartRef.current.update("none"); // Atualiza sem resetar a animação visual
     }
-
-    // Primeira inicialização do gráfico
-    const ctx = canvasRef.current.getContext("2d");
-    chartRef.current = new Chart(ctx, {
-      type: "line",
-      data: {
-        labels: dadosGrafico.labels,
-        datasets: [
-          {
-            label: "Energia Produzida (kWh)",
-            data: dadosGrafico.valores,
-            borderColor: "#febd17",
-            backgroundColor: "rgba(254, 189, 23, 0.08)",
-            borderWidth: 3,
-            pointBackgroundColor: "#febd17",
-            pointBorderColor: "#ffffff",
-            pointBorderWidth: 2,
-            pointRadius: 5,
-            pointHoverRadius: 7,
-            tension: 0.3,
-            fill: true,
-            showLine: true
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            grid: { color: "rgba(0, 0, 0, 0.04)" },
-            ticks: { font: { family: "Poppins", size: 12 }, color: "#757575" },
-          },
-          x: {
-            grid: { display: false },
-            ticks: { font: { family: "Poppins", size: 12 }, color: "#757575" },
-          },
-        },
-      },
-    });
-
-    return () => {
-      if (chartRef.current) {
-        chartRef.current.destroy();
-        chartRef.current = null;
-      }
-    };
-  }, [dadosGrafico]); // Observa as mudanças vindas do Back-end
+  }, [dadosGrafico]); // 👈 Monitora o objeto com segurança aqui dentro
 
   const cards = [
     {
@@ -337,7 +334,7 @@ export default function DashboardPage() {
               <div className="d-flex justify-content-between align-items-center mb-4">
                 <div>
                   <span className={styles.heroEyebrow}>MÉTRICAS DETALHADAS</span>
-                  <h4 className={styles.blockTitle}>Resumo do monitoramento</h4>
+                  <h4 className={styles.blockTitle}>Geração de energia dos últimos 6 meses</h4>
                 </div>
                 <span className={styles.timeBadge}>Histórico</span>
               </div>
