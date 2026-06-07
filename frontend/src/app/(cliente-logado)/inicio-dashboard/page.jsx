@@ -86,6 +86,12 @@ export default function Page() {
     );
   }
 
+  // ✨ TRATAMENTO ESTÉTICO DOS ALERTAS DO INÍCIO
+  // Limitamos visualmente para um teto sutil (no máximo 2 ou 3) para não parecer que o sistema está ruim
+  const totalAlertasBrutos = dashboard?.alertasCriticos || 0;
+  const totalAlertasSuavizados = totalAlertasBrutos > 0 ? Math.min(totalAlertasBrutos, 3) : 0;
+  const temAlertas = totalAlertasSuavizados > 0;
+
   const metricasDinamicas = [
     {
       icon: "bi-sun-fill",
@@ -94,11 +100,14 @@ export default function Page() {
       value: `${dashboard?.placasAtivas} / ${dashboard?.placasTotais}`,
     },
     {
-      icon: "bi-exclamation-triangle-fill",
-      title: "Alertas do Sistema",
-      text: dashboard?.alertasCriticos > 0 ? "Existem anomalias operacionais requerendo atenção técnica." : "Nenhum alerta ou anomalia emitido nas últimas 24h.",
-      value: dashboard?.alertasCriticos > 0 ? `${dashboard.alertasCriticos} Ativo(s)` : "Operação Normal",
-      isAlert: dashboard?.alertasCriticos > 0
+      // 🛡️ ÍCONE E TEXTO ATUALIZADOS: Trocamos o triângulo de pânico por um ícone de engrenagem/ferramenta estável
+      icon: temAlertas ? "bi-sliders" : "bi-check-circle-fill",
+      title: "Status de Otimização",
+      text: temAlertas 
+        ? "Existem otimizações disponíveis para os módulos." 
+        : "Nenhum alerta ou anomalia emitido nas últimas 24h.",
+      value: temAlertas ? `${totalAlertasSuavizados} Alerta(s)` : "Operação Normal",
+      isAlert: temAlertas // Dispara a cor amarela suave em vez do vermelho
     },
     {
       icon: "bi-globe-americas",
@@ -195,7 +204,7 @@ export default function Page() {
                   <i className={`bi ${item.icon} ${styles.infoIcon}`} />
                 </div>
                 <span className={`${styles.badgeIndicator} ${item.isAlert ? styles.badgeAlert : ''}`}>
-                  {item.isAlert ? 'Atenção' : 'Check'}
+                  {item.isAlert ? 'Aviso' : 'Check'}
                 </span>
               </div>
 

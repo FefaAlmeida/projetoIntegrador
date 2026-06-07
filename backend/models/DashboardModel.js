@@ -6,6 +6,23 @@ class DashboardModel {
         return Number((Math.random() * (max - min) + min).toFixed(2));
     }
 
+    static async registrarAlertaDinamico(connection, idMonitoramento, tipo, descricao, nivel) {
+        // Evita duplicar alertas idênticos ATIVOS para o mesmo monitoramento/placa
+        const [existente] = await connection.execute(
+            `SELECT id_alerta FROM alertas 
+            WHERE id_monitoramento = ? AND tipo_alerta = ? AND status_alerta = 'ATIVO' LIMIT 1`,
+            [idMonitoramento, tipo]
+        );
+
+        if (existente.length === 0) {
+            await connection.execute(
+                `INSERT INTO alertas (id_monitoramento, tipo_alerta, descricao, nivel, status_alerta)
+                VALUES (?, ?, ?, ?, 'ATIVO')`,
+                [idMonitoramento, tipo, descricao, nivel]
+            );
+        }
+    }
+
     static async buscarEmpresaDoUsuario(idUsuario) {
         const connection = await getConnection();
 
@@ -37,10 +54,10 @@ class DashboardModel {
         try {
             const [placas] = await connection.execute(
                 `
-                    SELECT id_placa, potencia_watts
+                    SELECT id_placa, potencia_watts, modelo
                     FROM placas_solares
                     WHERE id_empresa = ?
-                      AND status_placa = 'ATIVA'
+                    AND status_placa = 'ATIVA'
                 `,
                 [idEmpresa]
             );
@@ -52,7 +69,7 @@ class DashboardModel {
                 const fatorGeracao = this.gerarValorAleatorio(3.5, 6.5);
                 const energiaGerada = Number((potenciaKw * fatorGeracao * (eficiencia / 100)).toFixed(2));
 
-                await connection.execute(
+                const [result] = await connection.execute(
                     `
                         INSERT INTO monitoramentos (
                             id_placa,
@@ -63,16 +80,70 @@ class DashboardModel {
                         )
                         VALUES (?, ?, ?, ?, NOW())
                     `,
-                    [
-                        placa.id_placa,
-                        energiaGerada,
-                        eficiencia,
-                        temperatura
-                    ]
+                    [placa.id_placa, energiaGerada, eficiencia, temperatura]
                 );
+
+                const idMonitoramento = result.insertId;
+
+                // 🚨 GERAÇÃO DINÂMICA DE ALERTAS COM BASE NAS LEITURAS SIMULADAS
+                if (eficiencia < 85) {
+                    await this.registrarAlertaDinamico(
+                        connection, 
+                        idMonitoramento, 
+                        'QUEDA_EFICIENCIA', 
+                        `Eficiência abaixo do limite operacional: ${eficiencia}%`, 
+                        'MEDIO'
+                    );
+                }
+
+                if (temperatura > 50) {
+                    await this.registrarAlertaDinamico(
+                        connection, 
+                        idMonitoramento, 
+                        'TEMPERATURA_ALTA', 
+                        `Temperatura crítica detectada no painel: ${temperatura}°C`, 
+                        'ALTO'
+                    );
+                }
             }
 
             return placas.length;
+
+        } finally {
+            connection.release();
+        }
+    }
+
+    static async buscarAlertas(idUsuario) {
+        const idEmpresa = await this.buscarEmpresaDoUsuario(idUsuario);
+
+        if (!idEmpresa) {
+            return [];
+        }
+
+        const connection = await getConnection();
+
+        try {
+            // Agora busca diretamente da tabela de alertas populada dinamicamente
+            const sql = `
+                SELECT
+                    p.id_placa,
+                    p.modelo,
+                    p.status_placa,
+                    a.tipo_alerta,
+                    a.descricao,
+                    a.nivel,
+                    a.data_alerta AS data_hora
+                FROM alertas a
+                INNER JOIN monitoramentos m ON a.id_monitoramento = m.id_monitoramento
+                INNER JOIN placas_solares p ON m.id_placa = p.id_placa
+                WHERE p.id_empresa = ? AND a.status_alerta = 'ATIVO'
+                ORDER BY a.data_alerta DESC
+                LIMIT 10
+            `;
+
+            const [rows] = await connection.execute(sql, [idEmpresa]);
+            return rows;
 
         } finally {
             connection.release();
@@ -170,52 +241,6 @@ class DashboardModel {
             return rows.map((row) => ({
                 mes: row.mes,
                 energiaGerada: Number(row.energiaGerada || 0)
-            }));
-
-        } finally {
-            connection.release();
-        }
-    }
-
-    static async buscarAlertas(idUsuario) {
-        const idEmpresa = await this.buscarEmpresaDoUsuario(idUsuario);
-
-        if (!idEmpresa) {
-            return [];
-        }
-
-        const connection = await getConnection();
-
-        try {
-            const sql = `
-                SELECT
-                    p.id_placa,
-                    p.status_placa,
-                    p.modelo,
-                    m.eficiencia,
-                    m.data_hora
-                FROM placas_solares p
-                LEFT JOIN monitoramentos m ON m.id_monitoramento = (
-                    SELECT m2.id_monitoramento
-                    FROM monitoramentos m2
-                    WHERE m2.id_placa = p.id_placa
-                    ORDER BY m2.data_hora DESC
-                    LIMIT 1
-                )
-                WHERE p.id_empresa = ?
-                  AND (p.status_placa <> 'ATIVA' OR m.eficiencia < 80)
-                ORDER BY m.data_hora DESC
-                LIMIT 10
-            `;
-
-            const [rows] = await connection.execute(sql, [idEmpresa]);
-
-            return rows.map((row) => ({
-                id_placa: row.id_placa,
-                modelo: row.modelo,
-                status_placa: row.status_placa,
-                eficiencia: row.eficiencia ? Number(row.eficiencia) : null,
-                data_hora: row.data_hora
             }));
 
         } finally {

@@ -53,17 +53,24 @@ class DashboardController {
         try {
             const alertas = await DashboardModel.buscarAlertas(req.usuario.id);
 
-            const dados = alertas.map((alerta) => ({
-                id_placa: alerta.id_placa,
-                tipo: alerta.status_placa !== 'ATIVA' ? 'STATUS_PLACA' : 'BAIXA_EFICIENCIA',
-                titulo: alerta.status_placa !== 'ATIVA'
-                    ? `Placa ${alerta.status_placa.toLowerCase()}`
-                    : 'Placa com baixa eficiência',
-                descricao: alerta.eficiencia
-                    ? `Eficiência atual: ${alerta.eficiencia}%`
-                    : `Modelo ${alerta.modelo}`,
-                data_hora: alerta.data_hora
-            }));
+            const dados = alertas.map((alerta) => {
+                // Mapeador dinâmico de títulos por tipo do ENUM
+                const titulos = {
+                    'QUEDA_EFICIENCIA': 'Queda de Eficiência',
+                    'TEMPERATURA_ALTA': 'Temperatura Elevada',
+                    'FALHA_GERACAO': 'Falha Crítica na Geração',
+                    'PLACA_INATIVA': 'Módulo Solar Inativo'
+                };
+
+                return {
+                    id_placa: alerta.id_placa,
+                    tipo: alerta.tipo_alerta, // repassa o enum puro (QUEDA_EFICIENCIA, etc)
+                    nivel: alerta.nivel,       // BAIXO, MEDIO, ALTO, CRITICO
+                    titulo: titulos[alerta.tipo_alerta] || 'Aviso no Sistema',
+                    descricao: alerta.descricao,
+                    data_hora: alerta.data_hora
+                };
+            });
 
             return res.status(200).json({
                 sucesso: true,

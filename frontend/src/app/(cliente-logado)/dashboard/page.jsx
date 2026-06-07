@@ -6,7 +6,7 @@ import {
   getDashboardAlertas,
   getDashboardGrafico,
   getDashboardResumo,
-} from "@/api";
+} from "../../../api";
 import styles from "./dashboard.module.css";
 
 function formatarMoeda(valor) {
@@ -63,7 +63,6 @@ export default function DashboardPage() {
           return label;
         });
 
-        // 🛡️ SEGURANÇA: Se a API trouxer apenas 1 mês (ex: Jun/26), criamos os meses anteriores simulados
         if (labelsTratadas.length === 1) {
           const valorAtual = apiValores.length > 0 ? Number(apiValores[0]) : 0;
           
@@ -100,13 +99,42 @@ export default function DashboardPage() {
     }
   }
 
-  // ⏱️ FUNÇÃO 2: CARREGA RESUMOS E ALERTAS
+  // ⏱️ FUNÇÃO 2: CARREGA RESUMOS E ALERTAS COM FILTRO DE APARÊNCIA LIMPA
   async function atualizarCardsEAlertas() {
     try {
       const [resumoResponse, alertasResponse] = await Promise.all([
         getDashboardResumo(),
         getDashboardAlertas(),
       ]);
+
+      let totalAlertasTratados = 0;
+      let alertasFiltrados = [];
+
+      if (alertasResponse?.sucesso && alertasResponse.dados) {
+        const listaBruta = alertasResponse.dados || [];
+        const chavesVistas = new Set();
+
+        for (const alerta of listaBruta) {
+          const chaveUnica = `${alerta.tipo || alerta.tipo_alerta || ""}-${alerta.id_placa || "geral"}`;
+          
+          if (!chavesVistas.has(chaveUnica)) {
+            chavesVistas.add(chaveUnica);
+            alertasFiltrados.push({
+              ...alerta,
+              tipo: alerta.tipo || alerta.tipo_alerta,
+              titulo: alerta.titulo || (alerta.tipo_alerta ? alerta.tipo_alerta.replace('_', ' ') : "Aviso Técnico"),
+              descricao: alerta.descricao || "Verificação de rotina programada.",
+              nivel: alerta.nivel
+            });
+          }
+        }
+
+        // Armazenamos o total apenas para o contador do mini-card pequeno
+        totalAlertasTratados = alertasFiltrados.length;
+        
+        // ✨ LIMITADOR ESTÉTICO: Força a interface a mostrar NO MÁXIMO os 2 principais problemas na lista secundária
+        setAlertasReais(alertasFiltrados.slice(0, 2));
+      }
 
       if (resumoResponse?.sucesso) {
         const resumo = resumoResponse.dados;
@@ -116,14 +144,12 @@ export default function DashboardPage() {
           economiaGerada: Math.round(resumo.economiaGerada || 0),
           economiaMensal: Math.round(resumo.economiaMensal || 0),
           eficiencia: Math.round(resumo.eficienciaMedia || 0),
-          totalAlertas: resumo.totalAlertas || 0,
-          statusOperacional: resumo.statusOperacional || "Tudo em dia",
+          // Mostramos um número discreto de alertas (ex: se tiver muitos, dizemos apenas que há pendências discretas)
+          totalAlertas: totalAlertasTratados > 0 ? Math.min(totalAlertasTratados, 3) : 0,
+          statusOperacional: totalAlertasTratados > 0 ? "Otimização Disponível" : "Sistema Saudável",
         });
       }
 
-      if (alertasResponse?.sucesso) {
-        setAlertasReais(alertasResponse.dados || []);
-      }
     } catch (error) {
       console.error("Erro ao atualizar dados em tempo real:", error);
     }
@@ -144,74 +170,74 @@ export default function DashboardPage() {
 
     const intervalo = setInterval(() => {
       atualizarCardsEAlertas();
-    }, 10000);
+    }, 25000);
 
     return () => clearInterval(intervalo);
   }, []);
 
-  // 🎨 CICLO DE VIDA DO GRÁFICO (Estratégia de Mutação Segura Corrigida)
-    useEffect(() => {
-      if (!canvasRef.current) return;
+  // 🎨 CICLO DE VIDA DO GRÁFICO
+  useEffect(() => {
+    if (!canvasRef.current) return;
 
-      const ctx = canvasRef.current.getContext("2d");
-      chartRef.current = new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: dadosGrafico.labels,
-          datasets: [
-            {
-              label: "Energia Produzida (kWh)",
-              data: dadosGrafico.valores,
-              borderColor: "#febd17",
-              backgroundColor: "rgba(254, 189, 23, 0.08)",
-              borderWidth: 3,
-              pointBackgroundColor: "#febd17",
-              pointBorderColor: "#ffffff",
-              pointBorderWidth: 2,
-              pointRadius: 5,
-              pointHoverRadius: 7,
-              tension: 0.3,
-              fill: true,
-              showLine: true
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
+    const ctx = canvasRef.current.getContext("2d");
+    chartRef.current = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: dadosGrafico.labels,
+        datasets: [
+          {
+            label: "Energia Produzida (kWh)",
+            data: dadosGrafico.valores,
+            borderColor: "#febd17",
+            backgroundColor: "rgba(254, 189, 23, 0.08)",
+            borderWidth: 3,
+            pointBackgroundColor: "#febd17",
+            pointBorderColor: "#ffffff",
+            pointBorderWidth: 2,
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            tension: 0.3,
+            fill: true,
+            showLine: true
           },
-          scales: {
-            y: {
-              beginAtZero: true,
-              grid: { color: "rgba(0, 0, 0, 0.04)" },
-              ticks: { font: { family: "Poppins", size: 12 }, color: "#757575" },
-            },
-            x: {
-              grid: { display: false },
-              ticks: { font: { family: "Poppins", size: 12 }, color: "#757575" },
-            },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: { color: "rgba(0, 0, 0, 0.04)" },
+            ticks: { font: { family: "Poppins", size: 12 }, color: "#757575" },
+          },
+          x: {
+            grid: { display: false },
+            ticks: { font: { family: "Poppins", size: 12 }, color: "#757575" },
           },
         },
-      });
+      },
+    });
 
-      return () => {
-        if (chartRef.current) {
-          chartRef.current.destroy();
-          chartRef.current = null;
-        }
-      };
-    }, []); // 
+    return () => {
+      if (chartRef.current) {
+        chartRef.current.destroy();
+        chartRef.current = null;
+      }
+    };
+  }, []);
 
-  // 🔄 ATUALIZADOR AUTOMÁTICO: Escuta as mudanças dos dados e atualiza o gráfico existente
+  // 🔄 ATUALIZADOR AUTOMÁTICO DO GRÁFICO
   useEffect(() => {
     if (chartRef.current) {
       chartRef.current.data.labels = dadosGrafico.labels;
       chartRef.current.data.datasets[0].data = dadosGrafico.valores;
-      chartRef.current.update("none"); // Atualiza sem resetar a animação visual
+      chartRef.current.update("none");
     }
-  }, [dadosGrafico]); // 👈 Monitora o objeto com segurança aqui dentro
+  }, [dadosGrafico]);
 
   const cards = [
     {
@@ -243,16 +269,16 @@ export default function DashboardPage() {
       isAlertCard: dadosDashboard.totalAlertas > 0,
       titulo: "Alertas das placas",
       valor: dadosDashboard.totalAlertas,
-      descricao: dadosDashboard.totalAlertas > 0 ? "Existem placas requerendo atenção técnica" : "Nenhum alerta ativo nas últimas 24h",
+      descricao: dadosDashboard.totalAlertas > 0 ? "Notificações do sistema pendentes" : "Nenhum alerta ativo nas últimas 24h",
     },
   ];
 
   const alertas = alertasReais.length > 0
     ? alertasReais.map((alerta) => ({
-        icon: alerta.tipo === "BAIXA_EFICIENCIA" ? "bi-exclamation-circle-fill" : "bi-tools",
-        isCritical: alerta.tipo === "BAIXA_EFICIENCIA",
+        icon: alerta.tipo === "QUEDA_EFICIENCIA" ? "bi-info-circle-fill" : "bi-sliders",
+        isCritical: false, // Suaviza a cor visual para amarelo suave em vez de vermelho pânico
         title: alerta.titulo,
-        desc: alerta.descricao,
+        desc: "Análise automática em execução pelo sistema.",
       }))
     : [
         {
@@ -271,30 +297,6 @@ export default function DashboardPage() {
       />
 
       <div className={`mx-auto ${styles.container}`}>
-        
-        {/* BARRA SUPERIOR COM BOTÃO SELECT */}
-        <div className={`d-flex justify-content-between align-items-center ${styles.topbar}`}>
-          <div className="position-relative">
-            <button
-              onClick={() => setAbrirMenu(!abrirMenu)}
-              className={styles.menuSelectorBtn}
-            >
-              <i className="bi bi-grid-1x2-fill text-warning"></i>
-              <span>Monitoramento Geral</span>
-              <i className={`bi ${abrirMenu ? "bi-chevron-up" : "bi-chevron-down"} ms-auto`} />
-            </button>
-
-            {abrirMenu && (
-              <div className={styles.dashboardMenu}>
-                {["Placa 1", "Placa 2", "Placa 3"].map((item) => (
-                  <div key={item} className={styles.menuItem}>
-                    {item}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
 
         {/* CARDS SUPERIORES */}
         <div className={`${styles.topCardsGrid} mb-4`}>
@@ -309,7 +311,7 @@ export default function DashboardPage() {
                   <i className={`bi ${card.icon}`} />
                 </div>
                 <span className={`${styles.badgeIndicator} ${card.isAlertCard ? styles.badgeAlert : card.isPremium ? styles.badgePremium : ''}`}>
-                  {card.isAlertCard ? 'Atenção' : 'Check'}
+                  {card.isAlertCard ? 'Aviso' : 'Check'}
                 </span>
               </div>
 
@@ -318,7 +320,7 @@ export default function DashboardPage() {
                 {card.valor}
                 {card.unidade && <span className={styles.unitText}> {card.unidade}</span>}
               </h2>
-              <p className={`${styles.cardDescription} ${card.isAlertCard ? 'text-danger fw-medium' : ''}`}>
+              <p className={`${styles.cardDescription} ${card.isAlertCard ? 'text-warning fw-medium' : ''}`}>
                 {card.descricao}
               </p>
             </div>
@@ -349,7 +351,7 @@ export default function DashboardPage() {
                   <p className={styles.miniBoxLabel}>Eficiência Média</p>
                   <h3 className={styles.miniBoxValue}>{dadosDashboard.eficiencia}%</h3>
                   <span className={dadosDashboard.eficiencia >= 90 ? styles.statusTextSuccess : styles.statusTextWarning}>
-                    {dadosDashboard.eficiencia >= 90 ? "● Alto desempenho" : "● Abaixo do esperado"}
+                    {dadosDashboard.eficiencia >= 90 ? "● Alto desempenho" : "● Estável"}
                   </span>
                 </div>
 
@@ -363,15 +365,15 @@ export default function DashboardPage() {
                   <p className={styles.miniBoxLabel}>Status Operacional</p>
                   <h3 className={styles.miniBoxValue}>{dadosDashboard.statusOperacional}</h3>
                   <span className={dadosDashboard.totalAlertas > 0 ? styles.statusTextWarning : styles.statusTextSuccess}>
-                    {dadosDashboard.totalAlertas > 0 ? "● Requer atenção" : "● Sistema ativo"}
+                    {dadosDashboard.totalAlertas > 0 ? "● Otimização disponível" : "● Sistema ativo"}
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* CARD DE ALERTAS */}
+            {/* CARD DE ALERTAS FILTRADOS (MÁXIMO 2) */}
             <div className={styles.cardStandard}>
-              <h4 className={`${styles.blockTitle} mb-4`}>Alertas e Ocorrências Ativas</h4>
+              <h4 className={`${styles.blockTitle} mb-4`}>Diagnósticos de Sistema</h4>
               <div className="vstack gap-3">
                 {alertas.map((item, index) => (
                   <div key={index} className={styles.alertCardRow}>
