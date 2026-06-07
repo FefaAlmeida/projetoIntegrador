@@ -1,61 +1,198 @@
 .page {
   overflow-x: hidden;
   font-family: "Poppins", sans-serif;
-  background-color: #ececec;
+  background-color: #f4f4f4;
 }
 
 .main {
-  padding-top: 100px;
-  padding-bottom: 100px;
+  padding-top: 60px;
+  padding-bottom: 80px;
 }
 
 .shell {
-  max-width: 1100px;
-  border-radius: 28px;
-  background-color: #ffffff;
+  max-width: 1200px;
+  background: transparent;
 }
 
-.sidebar {
-  background-color: #221f20;
-}
-
-.title {
-  font-size: 3rem;
-  line-height: 1.1;
+.pageTitle {
+  font-size: 1.8rem;
+  color: #221f20;
 }
 
 .highlight {
   color: #febd17;
 }
 
-.description {
-  color: #d4d4d4;
+/* Botão de abrir modal superior */
+.openModalButton {
+  color: #221f20;
+  background-color: #febd17;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(254, 189, 23, 0.25);
+  transition: all 0.2s ease;
+}
+
+.openModalButton:hover {
+  background-color: #e5a910;
+  transform: translateY(-1px);
+}
+
+/* Grid de Cards de Chamados */
+.chamadoCard {
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.chamadoCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.cardId {
+  color: #a0aec0;
+  letter-spacing: 0.05em;
+}
+
+.cardTitle {
+  color: #221f20;
+  font-size: 1.15rem;
+}
+
+.cardDesc {
+  color: #718096;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Estrutura Moderna da Janela Modal Pop-up */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(34, 31, 32, 0.5); /* Cortina escura translúcida Luminar */
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modalShell {
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 650px;
+  border-radius: 20px;
+  overflow: hidden;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modalHeader {
+  background-color: #221f20;
+}
+
+.closeModalButton {
+  background: transparent;
+  border: none;
+  color: #ffffff;
   font-size: 1.1rem;
-  line-height: 1.7;
+  opacity: 0.7;
+  transition: opacity 0.2s;
 }
 
-.iconCircle {
-  width: 45px;
-  height: 45px;
+.closeModalButton:hover {
+  opacity: 1;
   color: #febd17;
-  background-color: rgba(254, 189, 23, 0.2);
 }
 
+/* Campos de entrada internos */
 .field {
-  border: 1px solid #ddd;
+  border: 1px solid #e2e8f0;
   border-radius: 10px;
   padding: 12px;
+  font-size: 0.95rem;
+  background-color: #f8fafc;
+}
+
+.field:focus {
+  border-color: #febd17;
+  box-shadow: 0 0 0 3px rgba(254, 189, 23, 0.15);
+  background-color: #ffffff;
 }
 
 .textarea {
   resize: none;
 }
 
+/* Enviar da modal */
 .submitButton {
   color: #221f20 !important;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   background-color: #febd17 !important;
   border: none;
-  border-radius: 14px;
-  box-shadow: 0 4px 15px rgba(254, 189, 23, 0.3);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(254, 189, 23, 0.2);
+  transition: all 0.2s ease;
+}
+
+.submitButton:hover {
+  background-color: #e5a910 !important;
+}
+
+/* Badges e Tags elegantes */
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* Estados e Cores Luminar */
+.ABERTO { background-color: #e3effd; color: #1d4ed8; }
+.EM_ANDAMENTO { background-color: #fffbeb; color: #b45309; }
+.CONCLUIDO { background-color: #f0fdf4; color: #15803d; }
+.CANCELADO { background-color: #fef2f2; color: #b91c1c; }
+
+.BAIXA { background-color: #f3f4f6; color: #4b5563; }
+.MEDIA { background-color: #ffedd5; color: #c2410c; }
+.ALTA { background-color: #fee2e2; color: #dc2626; }
+
+/* Botão de Cancelar interno do card */
+.cancelButton {
+  background-color: transparent;
+  color: #ef4444;
+  border: 1px solid #fee2e2;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.cancelButton:hover {
+  background-color: #ef4444;
+  color: #ffffff;
+  border-color: #ef4444;
+}
+
+/* Animações fluidas */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }

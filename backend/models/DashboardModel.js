@@ -338,13 +338,12 @@ class DashboardModel {
 
 
 
-
-
-
-    // Dentro de src/models/DashboardModel.js
     static async buscarDadosGeraisDoCliente(idUsuario) {
         const connection = await getConnection(); 
         try {
+
+            await this.gerarLeiturasSimuladas(idUsuario);
+
             // 1. Busca o id_empresa vinculado ao usuário
             const [usuario] = await connection.execute(
                 `SELECT id_empresa FROM usuarios WHERE id_usuario = ? LIMIT 1`,

@@ -145,7 +145,7 @@
   backdrop-filter: blur(12px);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 .performanceLabel {

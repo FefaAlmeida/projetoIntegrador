@@ -9,8 +9,10 @@ export default function Page() {
   const [carregando, setCarregando] = useState(true);
   const [sistemaInstalado, setSistemaInstalado] = useState(false);
 
+  const [ultimaAtualizacao, setUltimaAtualizacao] = useState("");
+
   useEffect(() => {
-    // 1. Criamos a função responsável por buscar os dados do Back-end
+    // Função responsável por buscar os dados do Back-end
     async function carregarDadosDashboard() {
       try {
         const resDash = await obterDadosGeraisDashboard();
@@ -19,6 +21,8 @@ export default function Page() {
         if (resDash?.sucesso && resDash.instalado) {
           setDashboard(resDash.dados);
           setSistemaInstalado(true);
+
+          setUltimaAtualizacao(new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", second: "2-digit" }));
         } else {
           setSistemaInstalado(false);
         }
@@ -43,7 +47,7 @@ export default function Page() {
     iniciarPerfil();
     carregarDadosDashboard();
 
-    // 3. Configura o setInterval para atualizar os dados a cada 5 segundos (5000ms)
+    // 3. Configura o setInterval para atualizar os dados a cada 10 segundos
     const intervalo = setInterval(() => {
       carregarDadosDashboard();
     }, 10000); 
@@ -168,13 +172,14 @@ export default function Page() {
 
               <div className="vstack gap-3 mt-2">
                 <div className={styles.metricRow}>
-                  <span className={styles.metricLabel}>Módulos Totais</span>
-                  <span className={styles.metricValue}>{dashboard?.placasTotais} un</span>
+                  <span className={styles.metricLabel}>Essa é a média de desempenho do seu sistema de energia solar.</span>
                 </div>
-                <div className={styles.metricRow}>
-                  <span className={styles.metricLabel}>Energia Produzida</span>
-                  <span className={styles.metricValue}>{dashboard?.energiaTotalGerada} kWh</span>
-                </div>
+                
+                {ultimaAtualizacao && ( <span style={{ fontSize: "1rem", color: "#f2f2f2" }}>
+                  Última checagem às {ultimaAtualizacao}
+                  </span>
+                )}
+
               </div>
             </div>
 

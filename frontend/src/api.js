@@ -426,3 +426,86 @@ export async function inativarTecnico(id) {
   return res.json();
 }
 
+
+
+// ==========================================================================
+// CHAMADOS
+// ==========================================================================
+
+// (Cliente) Abrir um novo chamado
+export async function abrirChamado(data) {
+  const res = await fetch(`${BASE_URL}/chamados`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+
+  return res.json();
+}
+
+// (Cliente) Listar os chamados da empresa autenticada
+export async function getMeusChamados() {
+  const res = await fetch(`${BASE_URL}/chamados/meus-chamados`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  return res.json();
+}
+
+// (Cliente) Cancelar o próprio chamado (Apenas se o status for 'ABERTO')
+export async function cancelarChamadoCliente(id) {
+  const res = await fetch(`${BASE_URL}/chamados/${id}/cancelar`, {
+    method: "PUT",
+    credentials: "include",
+  });
+
+  return res.json();
+}
+
+// (Admin) Listar de forma global todos os chamados do sistema
+export async function getTodosChamadosSistema() {
+  const res = await fetch(`${BASE_URL}/chamados/admin`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  return res.json();
+}
+
+// (Admin) Responder chamado, vincular técnico e definir prioridade
+export async function responderChamadoAdmin(id, data) {
+  const res = await fetch(`${BASE_URL}/chamados/${id}/responder`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+
+  return res.json();
+}
+
+// (Compartilhado) Buscar detalhes de um chamado específico por ID
+export async function getChamadoPorId(id) {
+  const res = await fetch(`${BASE_URL}/chamados/${id}`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  return res.json();
+}
+
+// (Admin) Excluir fisicamente o registro do chamado do banco de dados
+export async function excluirRegistroChamado(id) {
+  const res = await fetch(`${BASE_URL}/chamados/${id}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+
+  return res.json();
+}
