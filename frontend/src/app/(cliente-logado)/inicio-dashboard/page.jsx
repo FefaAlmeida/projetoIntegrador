@@ -116,7 +116,7 @@ export default function Page() {
           </div>
 
           <button className={styles.dashboardButton}>
-            <a href="/dashboard/placas">Acessar painel detalhado</a>
+            <a href="/dashboard">Acessar painel detalhado</a>
           </button>
         </div>
 
@@ -174,10 +174,6 @@ export default function Page() {
                 <div className={styles.metricRow}>
                   <span className={styles.metricLabel}>Energia Produzida</span>
                   <span className={styles.metricValue}>{dashboard?.energiaTotalGerada} kWh</span>
-                </div>
-                <div className={styles.metricRow}>
-                  <span className={styles.metricLabel}>Economia Estimada</span>
-                  <span className={styles.metricValue} style={{ color: '#00e676' }}>R$ {dashboard?.economiaMensal}</span>
                 </div>
               </div>
             </div>

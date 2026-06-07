@@ -117,10 +117,7 @@ class DashboardController {
     // Substitua o método antigo por este no seu DashboardController.js
     static async obterDadosGerais(req, res) {
         try {
-            // 🔥 Garante que leituras fakes existam para as placas se a instalação já estiver concluída
-            await DashboardModel.gerarLeiturasSimuladas(req.usuario.id);
-
-            // Invoca o método do Model passando o ID do token do usuário
+            // Invoca o método que acabamos de criar no Model passando o ID do token do usuário
             const resultado = await DashboardModel.buscarDadosGeraisDoCliente(req.usuario.id);
 
             if (!resultado.instalado) {
