@@ -191,6 +191,7 @@ class InstalacaoController {
 
     // ATUALIZAR INSTALAÇÃO E ENDEREÇO (FORMULÁRIO UNIFICADO)
     static async atualizarInstalacao(req, res) {
+        const connection = await getConnection(); // Movido para o escopo principal do método para uso seguro de transações
         try {
             const { id } = req.params;
             const { tecnico, status } = req.body;
@@ -205,28 +206,23 @@ class InstalacaoController {
             }
 
             if (tecnico !== undefined && tecnico !== null && tecnico !== "") {
-                const connection = await getConnection();
-                try {
-                    const [checaTecnico] = await connection.execute(
-                        `SELECT status_tecnico FROM tecnicos WHERE id_tecnico = ? LIMIT 1`,
-                        [tecnico]
-                    );
+                const [checaTecnico] = await connection.execute(
+                    `SELECT status_tecnico FROM tecnicos WHERE id_tecnico = ? LIMIT 1`,
+                    [tecnico]
+                );
 
-                    if (checaTecnico.length === 0) {
-                        return res.status(400).json({
-                            sucesso: false,
-                            erro: 'O técnico selecionado não existe no sistema.'
-                        });
-                    }
+                if (checaTecnico.length === 0) {
+                    return res.status(400).json({
+                        sucesso: false,
+                        erro: 'O técnico selecionado não existe no sistema.'
+                    });
+                }
 
-                    if (checaTecnico[0].status_tecnico?.toUpperCase() !== 'ATIVO') {
-                        return res.status(400).json({
-                            sucesso: false,
-                            erro: 'Não é possível atribuir este técnico. O profissional está INATIVO.'
-                        });
-                    }
-                } finally {
-                    connection.release();
+                if (checaTecnico[0].status_tecnico?.toUpperCase() !== 'ATIVO') {
+                    return res.status(400).json({
+                        sucesso: false,
+                        erro: 'Não é possível atribuir este técnico. O profissional está INATIVO.'
+                    });
                 }
 
                 // AJUSTADO: Alinhado estritamente com os termos ENUM ('PENDENTE' e 'EM_ANDAMENTO')
@@ -236,7 +232,58 @@ class InstalacaoController {
                 }
             }
 
+            // --- INÍCIO DA LÓGICA DE GERAÇÃO DE PLACAS EM LOTE ---
+            // Iniciamos uma transação para garantir que se a criação das placas falhar, a instalação não mude de status erroneamente
+            await connection.beginTransaction();
+
+            // Executa a atualização padrão que você já tinha mapeada no Model
             await InstalacaoModel.atualizar(id, req.body);
+
+            // Verificamos se o Admin está mudando o status para FINALIZADA
+            if (status && status.toUpperCase() === 'FINALIZADA') {
+                
+                // 1. Buscamos se já existem placas geradas para esta instalação para evitar duplicidade (caso o admin salve como FINALIZADA duas vezes)
+                const [placasExistentes] = await connection.execute(
+                    `SELECT id_placa FROM placas_solares WHERE id_instalacao = ? LIMIT 1`,
+                    [id]
+                );
+
+                if (placasExistentes.length === 0) {
+                    // 2. Buscamos a quantidade e o modelo no último orçamento aceito daquela empresa
+                    const [orcamento] = await connection.execute(
+                        `SELECT quantidade_placas, modelo_placa 
+                         FROM solicitacoes_orcamentos 
+                         WHERE email_contato = (
+                             SELECT email_principal FROM empresa_clientes WHERE id_empresa = ?
+                         ) OR nome_empresa = (
+                             SELECT nome_empresa FROM empresa_clientes WHERE id_empresa = ?
+                         )
+                         ORDER BY id_solicitacao DESC LIMIT 1`,
+                        [instalacao.id_empresa, instalacao.id_empresa]
+                    );
+
+                    // Se encontrou o orçamento correspondente, faz a mágica acontecer
+                    if (orcamento.length > 0) {
+                        const { quantidade_placas, modelo_placa } = orcamento[0];
+                        
+                        // Mapeia a potência com base no ENUM escolhido no seu banco
+                        let potenciaWatts = 550.00;
+                        if (modelo_placa === 'JINKO_600W') potenciaWatts = 600.00;
+                        if (modelo_placa === 'TRINA_575W') potenciaWatts = 575.00;
+                        if (modelo_placa === 'LONGI_650W') potenciaWatts = 650.00;
+
+                        // Loop automatizado: Cria as N placas diretamente no banco de uma vez só
+                        for (let i = 1; i <= quantidade_placas; i++) {
+                            await connection.execute(
+                                `INSERT INTO placas_solares (id_empresa, id_instalacao, modelo, potencia_watts, status_placa, data_instalacao) 
+                                 VALUES (?, ?, ?, ?, 'ATIVA', CURDATE())`,
+                                [instalacao.id_empresa, id, modelo_placa, potenciaWatts]
+                            );
+                        }
+                    }
+                }
+            }
+            // --- FIM DA LÓGICA DE GERAÇÃO DE PLACAS ---
 
             const { logradouro, numero, bairro, cidade, estado, cep, complemento } = req.body;
             const idEnderecoSeguro = instalacao.id_endereco;
@@ -259,17 +306,24 @@ class InstalacaoController {
                 }
             }
 
+            // Confirma todas as alterações no banco de dados com segurança
+            await connection.commit();
+
             return res.status(200).json({
                 sucesso: true,
                 mensagem: 'Instalação atualizada com sucesso'
             });
 
         } catch (error) {
+            // Se qualquer coisa der errado no loop ou na query, desfaz as alterações evitando dados corrompidos
+            await connection.rollback();
             console.error("Erro detectado no Controller:", error);
             return res.status(500).json({
                 sucesso: false,
                 erro: 'Erro interno ao processar a atualização'
             });
+        } finally {
+            connection.release(); // Garante a liberação da conexão em qualquer cenário
         }
     }
 

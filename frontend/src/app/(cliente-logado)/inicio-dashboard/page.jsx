@@ -1,131 +1,211 @@
 "use client";
 import { useEffect, useState } from "react";
-import { getPerfil } from "@/api";
+import { getPerfil, obterDadosGeraisDashboard } from "@/api";
 import styles from "./page.module.css";
 
-const metricas = [
-  {
-    icon: "bi-sun-fill",
-    title: "Produção solar",
-    text: "Seu sistema segue operando com excelente desempenho.",
-    value: "+24%",
-  },
-  {
-    icon: "bi-cash-stack",
-    title: "Economia mensal",
-    text: "Continue economizando todos os meses com energia limpa.",
-    value: "R$ 892",
-  },
-  {
-    icon: "bi-globe-americas",
-    title: "Impacto ambiental",
-    text: "Seu sistema já evitou toneladas de CO2 no planeta.",
-    value: "2.4 ton",
-  },
-];
-
 export default function Page() {
-
   const [usuario, setUsuario] = useState(null);
+  const [dashboard, setDashboard] = useState(null);
+  const [carregando, setCarregando] = useState(true);
+  const [sistemaInstalado, setSistemaInstalado] = useState(false);
 
   useEffect(() => {
-    async function carregarPerfil() {
-      const response = await getPerfil();
+    // 1. Criamos a função responsável por buscar os dados do Back-end
+    async function carregarDadosDashboard() {
+      try {
+        const resDash = await obterDadosGeraisDashboard();
+        console.log("Atualização em tempo real:", resDash);
 
-      console.log(response);
-
-      if (response?.sucesso) {
-        setUsuario(response.dados);
+        if (resDash?.sucesso && resDash.instalado) {
+          setDashboard(resDash.dados);
+          setSistemaInstalado(true);
+        } else {
+          setSistemaInstalado(false);
+        }
+      } catch (error) {
+        console.error("Erro ao atualizar dados em tempo real:", error);
       }
     }
 
-    carregarPerfil();
+    // 2. Carrega o Perfil (apenas uma vez ao entrar na página)
+    async function iniciarPerfil() {
+      try {
+        const resPerfil = await getPerfil();
+        if (resPerfil?.sucesso) setUsuario(resPerfil.dados);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setCarregando(false);
+      }
+    }
+
+    // Executa a primeira carga assim que entra na tela
+    iniciarPerfil();
+    carregarDadosDashboard();
+
+    // 3. Configura o setInterval para atualizar os dados a cada 5 segundos (5000ms)
+    const intervalo = setInterval(() => {
+      carregarDadosDashboard();
+    }, 10000); 
+
+    // 4. IMPORTANTE: Limpa o intervalo se o usuário sair da página (evita vazamento de memória)
+    return () => clearInterval(intervalo);
   }, []);
+
+  if (carregando) {
+    return (
+      <div className={styles.loadingContainer}>
+        <div className="spinner-border text-warning" role="status" />
+      </div>
+    );
+  }
+
+  if (!sistemaInstalado) {
+    return (
+      <section className={styles.page}>
+        <div className={`mx-auto ${styles.container}`}>
+          <div className={styles.blockedCard}>
+            <div className={styles.blockedGlow} />
+            <i className="bi bi-shield-exclamation text-warning display-4 mb-3 d-block"></i>
+            <h2 className={styles.blockedTitle}>Aguardando Ativação Técnica</h2>
+            <p className={styles.blockedText}>
+              Seu painel inteligente e o monitoramento em tempo real estarão disponíveis assim que a equipe técnica finalizar a instalação física e ativação das suas placas solares.
+            </p>
+            <div className="mt-4">
+              <a href="/solicitar-instalacao" className={styles.blockedButton}>
+                Acompanhar Status da Instalação
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const metricasDinamicas = [
+    {
+      icon: "bi-sun-fill",
+      title: "Placas do Sistema",
+      text: "Quantidade de módulos fotovoltaicos ativos e em operação monitorada.",
+      value: `${dashboard?.placasAtivas} / ${dashboard?.placasTotais}`,
+    },
+    {
+      icon: "bi-exclamation-triangle-fill",
+      title: "Alertas do Sistema",
+      text: dashboard?.alertasCriticos > 0 ? "Existem anomalias operacionais requerendo atenção técnica." : "Nenhum alerta ou anomalia emitido nas últimas 24h.",
+      value: dashboard?.alertasCriticos > 0 ? `${dashboard.alertasCriticos} Ativo(s)` : "Operação Normal",
+      isAlert: dashboard?.alertasCriticos > 0
+    },
+    {
+      icon: "bi-globe-americas",
+      title: "Sustentabilidade",
+      text: "Volume estimado de emissão de CO2 evitado na atmosfera terrestre.",
+      value: `${dashboard?.co2Evitado} ton`,
+    },
+  ];
 
   return (
     <section className={styles.page}>
       <div className={`mx-auto ${styles.container}`}>
+        
+        {/* BARRA SUPERIOR */}
         <div className={`d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 ${styles.topbar}`}>
-          <div className="d-flex align-items-baseline gap-3">
-            <p className={`m-0 ${styles.welcomeText}`}>Bem-vindo(a),</p>
-            <p className={`m-0 ${styles.userName}`}>{usuario?.nome}</p>
+          <div className="d-flex align-items-baseline gap-2">
+            <span className={styles.welcomeText}>Olá,</span>
+            <span className={styles.userName}>{usuario?.nome || "Cliente"}</span>
           </div>
 
-          <button className={`btn ${styles.dashboardButton}`}>
-            <a href="/dashboard">Ver dashboard completo</a>
+          <button className={styles.dashboardButton}>
+            <a href="/dashboard/placas">Acessar painel detalhado</a>
           </button>
         </div>
 
+        {/* CARD HERO PRINCIPAL */}
         <div className={styles.heroCard}>
           <div className={styles.glow} />
 
-          <div className={`d-flex flex-column flex-xl-row justify-content-between align-items-center gap-5 ${styles.heroContent}`}>
-            <div className="w-100">
-              <p className={`mb-3 ${styles.heroEyebrow}`}>PAINEL SOLAR INTELIGENTE</p>
-              <h2 className={`mb-4 ${styles.heroTitle}`}>
-                Sua energia
-                <br />
-                em tempo real.
-              </h2>
-              <p className={`mb-4 ${styles.heroText}`}>
-                Acompanhe geração, economia e desempenho do seu sistema de forma moderna, rápida e intuitiva.
-              </p>
+          <div className={`d-flex flex-column flex-xl-row justify-content-between align-items-stretch gap-5 ${styles.heroContent}`}>
+            <div className="d-flex flex-column justify-content-between w-100">
+              <div>
+                <p className={styles.heroEyebrow}>SISTEMA INTELIGENTE</p>
+                <h2 className={styles.heroTitle}>
+                  Sua energia
+                  <br />
+                  em tempo real.
+                </h2>
+                <p className={styles.heroText}>
+                  Acompanhe a geração ativa, métricas de eficiência agregadas e o retorno ecológico do seu investimento de forma automatizada.
+                </p>
+              </div>
 
-              <div className="d-flex flex-wrap gap-3">
+              <div className="d-flex flex-wrap gap-3 mt-4">
                 <div className={styles.miniCard}>
-                  <p className={`mb-2 ${styles.miniLabel}`}>Economia hoje</p>
-                  <h3 className={`m-0 ${styles.miniValue}`}>R$ 48</h3>
+                  <p className={styles.miniLabel}>Módulos Instalados</p>
+                  <h3 className={styles.miniValue}>{dashboard?.placasTotais} <span className={styles.miniUnit}>un</span></h3>
                 </div>
 
                 <div className={styles.miniCard}>
-                  <p className={`mb-2 ${styles.miniLabel}`}>Energia gerada</p>
-                  <h3 className={`m-0 ${styles.miniValue}`}>42 kWh</h3>
+                  <p className={styles.miniLabel}>Geração Acumulada</p>
+                  <h3 className={styles.miniValue}>{dashboard?.energiaTotalGerada} <span className={styles.miniUnit}>kWh</span></h3>
                 </div>
               </div>
             </div>
 
+            {/* QUADRADO PRETO PRINCIPAL (DESEMPENHO GERAL) */}
             <div className={styles.performanceCard}>
-              <div className="d-flex justify-content-between mb-4">
-                <div>
-                  <p className={`mb-2 ${styles.performanceLabel}`}>Desempenho das placas</p>
-                  <h3 className={`m-0 ${styles.performanceValue}`}>82%</h3>
+              <div className="mb-3">
+                <p className={styles.performanceLabel}>Eficiência Operacional</p>
+                <h3 className={styles.performanceValue}>{dashboard?.eficienciaSistema}%</h3>
+              </div>
+
+              {/* BARRA DE PROGRESSO DINÂMICA */}
+              <div className={styles.progressTrack}>
+                <div 
+                  className={styles.progressBar} 
+                  style={{ width: `${dashboard?.eficienciaSistema}%` }} 
+                />
+              </div>
+
+              <div className="vstack gap-3 mt-2">
+                <div className={styles.metricRow}>
+                  <span className={styles.metricLabel}>Módulos Totais</span>
+                  <span className={styles.metricValue}>{dashboard?.placasTotais} un</span>
+                </div>
+                <div className={styles.metricRow}>
+                  <span className={styles.metricLabel}>Energia Produzida</span>
+                  <span className={styles.metricValue}>{dashboard?.energiaTotalGerada} kWh</span>
+                </div>
+                <div className={styles.metricRow}>
+                  <span className={styles.metricLabel}>Economia Estimada</span>
+                  <span className={styles.metricValue} style={{ color: '#00e676' }}>R$ {dashboard?.economiaMensal}</span>
                 </div>
               </div>
-
-              <div className={styles.progressTrack}>
-                <div className={styles.progressBar} />
-              </div>
-
-              <div className="vstack gap-4">
-                {[
-                  ["Produção mensal", "1.284 kWh"],
-                  ["Economia total", "R$ 892"],
-                  ["CO2 evitado", "2.4 ton"],
-                ].map(([label, value]) => (
-                  <div className="d-flex justify-content-between" key={label}>
-                    <p className={`m-0 ${styles.metricLabel}`}>{label}</p>
-                    <h4 className={`m-0 ${styles.metricValue}`}>{value}</h4>
-                  </div>
-                ))}
-              </div>
             </div>
+
           </div>
         </div>
 
+        {/* GRID DE TRÊS CARDS INFERIORES */}
         <div className={styles.infoGrid}>
-          {metricas.map((item) => (
+          {metricasDinamicas.map((item) => (
             <div className={styles.infoCard} key={item.title}>
-              <div className={`d-flex align-items-center justify-content-center ${styles.infoIconBox}`}>
-                <i className={`bi ${item.icon} ${styles.infoIcon}`} />
+              <div className="d-flex align-items-center justify-content-between mb-3">
+                <div className={styles.infoIconBox}>
+                  <i className={`bi ${item.icon} ${styles.infoIcon}`} />
+                </div>
+                <span className={`${styles.badgeIndicator} ${item.isAlert ? styles.badgeAlert : ''}`}>
+                  {item.isAlert ? 'Atenção' : 'Check'}
+                </span>
               </div>
 
-              <h3 className={`mb-3 ${styles.infoTitle}`}>{item.title}</h3>
-              <p className={`mb-4 ${styles.infoText}`}>{item.text}</p>
-              <h2 className={`m-0 ${styles.infoValue}`}>{item.value}</h2>
+              <h3 className={styles.infoTitle}>{item.title}</h3>
+              <p className={styles.infoText}>{item.text}</p>
+              <h2 className={styles.infoValue}>{item.value}</h2>
             </div>
           ))}
         </div>
+
       </div>
-      </section>
+    </section>
   );
 }

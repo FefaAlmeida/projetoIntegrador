@@ -7,7 +7,7 @@ import {
   getDashboardGrafico,
   getDashboardResumo,
 } from "@/api";
-import "./dashboard.css";
+import styles from "./dashboard.module.css";
 
 function formatarMoeda(valor) {
   return new Intl.NumberFormat("pt-BR", {
@@ -32,45 +32,16 @@ export default function DashboardPage() {
   const canvasRef = useRef(null);
   const chartRef = useRef(null);
   const [dadosDashboard, setDadosDashboard] = useState(() => criarDadosDashboardVazios());
-  const [dadosGrafico, setDadosGrafico] = useState([]);
+  
+  // Iniciamos com os 6 meses padrão zerados de forma explícita e numérica
+  const [dadosGrafico, setDadosGrafico] = useState({ 
+    labels: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"], 
+    valores: [0, 0, 0, 0, 0, 0] 
+  });
   const [alertasReais, setAlertasReais] = useState([]);
+  const [abrirMenu, setAbrirMenu] = useState(false);
 
-  useEffect(() => {
-    if (!canvasRef.current) return;
-
-    chartRef.current = new Chart(canvasRef.current, {
-      type: "line",
-      data: {
-        labels: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"],
-        datasets: [
-          {
-            label: "Energia",
-            data: dadosGrafico,
-            borderColor: "#febd17",
-            backgroundColor: "rgba(254, 189, 23, 0.2)",
-            tension: 0.4,
-            fill: true,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-      },
-    });
-
-    return () => {
-      chartRef.current?.destroy();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!chartRef.current) return;
-
-    chartRef.current.data.datasets[0].data = dadosGrafico;
-    chartRef.current.update();
-  }, [dadosGrafico]);
-
+  // 1. CARGA DE DADOS DA API
   async function carregarDashboardReal() {
     try {
       const [resumoResponse, graficoResponse, alertasResponse] = await Promise.all([
@@ -79,270 +50,311 @@ export default function DashboardPage() {
         getDashboardAlertas(),
       ]);
 
-      if (!resumoResponse?.sucesso) return;
+      if (resumoResponse?.sucesso) {
+        const resumo = resumoResponse.dados;
+        setDadosDashboard({
+          energiaGerada: Math.round(resumo.energiaGeradaMes || 0),
+          consumoMensal: Math.round(resumo.consumoMensal || 0),
+          economiaGerada: Math.round(resumo.economiaGerada || 0),
+          economiaMensal: Math.round(resumo.economiaMensal || 0),
+          eficiencia: Math.round(resumo.eficienciaMedia || 0),
+          totalAlertas: resumo.totalAlertas || 0,
+          statusOperacional: resumo.statusOperacional || "Tudo em dia",
+        });
+      }
 
-      const resumo = resumoResponse.dados;
+      // 🔥 TRATAMENTO E ALINHAMENTO DO GRÁFICO (Garante o desenho da linha)
+      if (graficoResponse?.sucesso && graficoResponse.dados) {
+        const mesesPadrao = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"];
+        const apiLabels = graficoResponse.dados.labels || [];
+        const apiValores = graficoResponse.dados.valores || [];
 
-      setDadosDashboard({
-        energiaGerada: Math.round(resumo.energiaGeradaMes || 0),
-        consumoMensal: Math.round(resumo.consumoMensal || 0),
-        economiaGerada: Math.round(resumo.economiaGerada || 0),
-        economiaMensal: Math.round(resumo.economiaMensal || 0),
-        eficiencia: Math.round(resumo.eficienciaMedia || 0),
-        totalAlertas: resumo.totalAlertas || 0,
-        statusOperacional: resumo.statusOperacional || "Tudo em dia",
-      });
+        // Força a criação de um array de 6 posições casado com os meses fixos do eixo X
+        const valoresTratados = mesesPadrao.map((mes, index) => {
+          // Busca se o mês atual existe dentro do que a API retornou
+          const apiIndex = apiLabels.findIndex(
+            (label) => label && label.toLowerCase().includes(mes.toLowerCase())
+          );
 
-      if (graficoResponse?.sucesso && graficoResponse.dados?.valores?.length > 0) {
-        setDadosGrafico(graficoResponse.dados.valores);
+          // Se achou na API pega o valor convertido em Number, senão joga 0 para fechar o gráfico
+          if (apiIndex !== -1) {
+            return Number(apiValores[apiIndex] || 0);
+          }
+          
+          // Fallback caso a API mande os valores puramente sequenciais sem nome dos meses
+          if (apiLabels.length === 0 && apiValores[index] !== undefined) {
+            return Number(apiValores[index] || 0);
+          }
+
+          return 0;
+        });
+
+        setDadosGrafico({
+          labels: mesesPadrao, // Garante 6 labels no eixo X
+          valores: valoresTratados // Garante 6 valores correspondentes no eixo Y
+        });
       }
 
       if (alertasResponse?.sucesso) {
         setAlertasReais(alertasResponse.dados || []);
       }
     } catch (error) {
-      console.error(error);
+      console.error("Erro ao carregar dados do dashboard:", error);
     }
   }
 
+  // INTERVALO DE ATUALIZAÇÃO (Pooling de 10 segundos)
   useEffect(() => {
     carregarDashboardReal();
-  }, []);
-
-  useEffect(() => {
-    const intervalo = setInterval(async () => {
-      await carregarDashboardReal();
-    }, 30000);
-
+    const intervalo = setInterval(() => {
+      carregarDashboardReal();
+    }, 10000);
     return () => clearInterval(intervalo);
   }, []);
 
-  const [abrirMenu, setAbrirMenu] = useState(false);
+  // 2. CICLO DE VIDA DO GRÁFICO (Sincronizado e Reativo)
+  useEffect(() => {
+    if (!canvasRef.current) return;
+
+    // Se o gráfico já existe, atualiza os dados internamente e renderiza a mudança
+    if (chartRef.current) {
+      chartRef.current.data.labels = dadosGrafico.labels;
+      chartRef.current.data.datasets[0].data = dadosGrafico.valores;
+      chartRef.current.update();
+      return;
+    }
+
+    // Instancia o gráfico do zero
+    chartRef.current = new Chart(canvasRef.current, {
+      type: "line",
+      data: {
+        labels: dadosGrafico.labels,
+        datasets: [
+          {
+            label: "Energia Produzida (kWh)",
+            data: dadosGrafico.valores,
+            borderColor: "#febd17",
+            backgroundColor: "rgba(254, 189, 23, 0.08)",
+            borderWidth: 3,
+            pointBackgroundColor: "#febd17",
+            pointBorderColor: "#ffffff",
+            pointBorderWidth: 2,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            tension: 0.3,
+            fill: true,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+        },
+        scales: {
+          y: {
+            beginAtZero: true, // Começa do zero para traçar a linha corretamente de forma ascendente/descendente
+            grid: { color: "rgba(0, 0, 0, 0.04)" },
+            ticks: { font: { family: "Poppins", size: 12 }, color: "#757575" },
+          },
+          x: {
+            grid: { display: false },
+            ticks: { font: { family: "Poppins", size: 12 }, color: "#757575" },
+          },
+        },
+      },
+    });
+
+    return () => {
+      if (chartRef.current) {
+        chartRef.current.destroy();
+        chartRef.current = null;
+      }
+    };
+  }, [dadosGrafico]);
 
   const cards = [
     {
       icon: "bi-lightning-charge-fill",
-      iconBg: "bg-warning bg-opacity-25",
-      iconColor: "text-warning",
+      isPremium: true,
       titulo: "Energia gerada",
       valor: dadosDashboard.energiaGerada,
       unidade: "kWh",
       descricao: "Produção total do mês",
-      botao: "Ver detalhes",
     },
     {
       icon: "bi-battery-charging",
-      iconBg: "bg-light",
+      isPremium: false,
       titulo: "Consumo mensal",
       valor: dadosDashboard.consumoMensal,
       unidade: "kWh",
       descricao: "Consumo energético atual",
-      botao: "Ver consumo",
     },
     {
       icon: "bi-cash-stack",
-      iconBg: "bg-warning bg-opacity-25",
-      iconColor: "text-warning",
+      isPremium: false,
       titulo: "Economia gerada",
       valor: formatarMoeda(dadosDashboard.economiaGerada),
       descricao: "Economia acumulada",
-      botao: "Ver economia",
     },
     {
-      icon: "bi-exclamation-triangle",
-      iconBg: "bg-danger bg-opacity-10",
-      iconColor: "text-danger",
+      icon: "bi-exclamation-triangle-fill",
+      isPremium: false,
+      isAlertCard: dadosDashboard.totalAlertas > 0,
       titulo: "Alertas das placas",
       valor: dadosDashboard.totalAlertas,
-      descricao:
-        dadosDashboard.totalAlertas > 0
-          ? "Verifique placas com baixa eficiência"
-          : "Nenhum alerta ativo",
-      descricaoClass: "text-danger fw-semibold",
-      botao: "Ver alertas",
-      btnClass: "btn-dark",
+      descricao: dadosDashboard.totalAlertas > 0 ? "Existem placas requerendo atenção técnica" : "Nenhum alerta ativo nas últimas 24h",
     },
   ];
 
-  const alertas =
-    alertasReais.length > 0
-      ? alertasReais.map((alerta) => ({
-          icon: alerta.tipo === "BAIXA_EFICIENCIA" ? "bi-exclamation-circle" : "bi-tools",
-          color: alerta.tipo === "BAIXA_EFICIENCIA" ? "danger" : "warning",
-          title: alerta.titulo,
-          desc: alerta.descricao,
-        }))
-      : [
-          {
-            icon: "bi-check-circle",
-            color: "success",
-            title: "Nenhum alerta encontrado",
-            desc: "Quando houver dados do backend, eles aparecerão aqui.",
-          },
-        ];
+  const alertas = alertasReais.length > 0
+    ? alertasReais.map((alerta) => ({
+        icon: alerta.tipo === "BAIXA_EFICIENCIA" ? "bi-exclamation-circle-fill" : "bi-tools",
+        isCritical: alerta.tipo === "BAIXA_EFICIENCIA",
+        title: alerta.titulo,
+        desc: alerta.descricao,
+      }))
+    : [
+        {
+          icon: "bi-check-circle-fill",
+          isSuccess: true,
+          title: "Nenhum alerta encontrado",
+          desc: "Todos os módulos fotovoltaicos operando dentro da normalidade.",
+        },
+      ];
 
   return (
-    <div className="dashboard-layout-container">
+    <section className={styles.page}>
       <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
       />
 
-      {/* TOPO */}
-      <div className="mb-4">
-        <div className="position-relative d-inline-block">
-          <button
-            onClick={() => setAbrirMenu(!abrirMenu)}
-            className="btn btn-light border shadow-sm fw-bold px-4 py-3 d-flex align-items-center gap-2"
-          >
-            <i className="bi bi-grid text-warning"></i>
-            Monitoramento Geral
-            <i className={`bi ${abrirMenu ? "bi-chevron-up" : "bi-chevron-down"}`} />
-          </button>
+      <div className={`mx-auto ${styles.container}`}>
+        
+        {/* BARRA SUPERIOR COM BOTÃO SELECT */}
+        <div className={`d-flex justify-content-between align-items-center ${styles.topbar}`}>
+          <div className="position-relative">
+            <button
+              onClick={() => setAbrirMenu(!abrirMenu)}
+              className={styles.menuSelectorBtn}
+            >
+              <i className="bi bi-grid-1x2-fill text-warning"></i>
+              <span>Monitoramento Geral</span>
+              <i className={`bi ${abrirMenu ? "bi-chevron-up" : "bi-chevron-down"} ms-auto`} />
+            </button>
 
-          {abrirMenu && (
-            <div className="dashboard-menu">
-              {["Placa 1", "Placa 2", "Placa 3"].map((item) => (
-                <div key={item} className="menu-item">
-                  {item}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* GRID DOS CARDS SUPERIORES (Estilo idêntico ao financeiro para evitar bugs) */}
-      <div className="dashboard-top-cards-grid mb-4">
-        {cards.map((card) => (
-          <div className="card dashboard-card h-100" key={card.titulo}>
-            <div className="card-body d-flex flex-column justify-content-between">
-              <div>
-                <div className={`${card.iconBg} rounded-4 p-3 d-inline-flex mb-3`}>
-                  <i className={`bi ${card.icon} fs-3 ${card.iconColor || ""}`} />
-                </div>
-                <p className="text-muted mb-1">{card.titulo}</p>
-                <h2 className="fw-bold mb-2">
-                  {card.valor}
-                  {card.unidade && <small className="text-muted ms-1 fs-6">{card.unidade}</small>}
-                </h2>
-                <p className={`${card.descricaoClass || "text-muted"} small mb-3`}>
-                  {card.descricao}
-                </p>
-              </div>
-              <button className={`btn ${card.btnClass || "btn-outline-warning"} w-100 mt-auto`}>
-                {card.botao}
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* GRID PRINCIPAL (Esquerda / Direita) */}
-      <div className="dashboard-main-grid">
-        {/* ESQUERDA */}
-        <div className="d-flex flex-column gap-4">
-          <div className="card dashboard-card">
-            <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center mb-4">
-                <h4 className="fw-bold m-0">Resumo do monitoramento</h4>
-                <span className="badge bg-light text-dark border">Últimos 6 meses</span>
-              </div>
-
-              <div className="chart-area">
-                <canvas className="monitoring-chart" ref={canvasRef} />
-              </div>
-
-              <div className="dashboard-info-boxes-grid mt-4">
-                <div className="info-box">
-                  <p className="text-muted mb-1">Eficiência</p>
-                  <h3 className="fw-bold">{dadosDashboard.eficiencia}%</h3>
-                  <small className="text-muted">
-                    {dadosDashboard.eficiencia >= 90 ? "Alto desempenho" : "Abaixo do esperado"}
-                  </small>
-                </div>
-
-                <div className="info-box">
-                  <p className="text-muted mb-1">Economia mensal</p>
-                  <h3 className="fw-bold">{formatarMoeda(dadosDashboard.economiaMensal)}</h3>
-                  <small className="text-muted">Últimos 30 dias</small>
-                </div>
-
-                <div className="info-box">
-                  <p className="text-muted mb-1">Status operacional</p>
-                  <h3 className="fw-bold">{dadosDashboard.statusOperacional}</h3>
-                  <small
-                    className={`fw-bold ${
-                      dadosDashboard.totalAlertas > 0 ? "text-warning" : "text-success"
-                    }`}
-                  >
-                    {dadosDashboard.totalAlertas > 0
-                      ? "Sistema precisa de atenção"
-                      : "Sistema funcionando"}
-                  </small>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="card dashboard-card">
-            <div className="card-body">
-              <h4 className="fw-bold mb-4">Alertas e monitoramento</h4>
-              {alertas.map((item) => (
-                <div key={item.title} className="alert-card">
-                  <div className="d-flex align-items-center gap-3">
-                    <i className={`bi ${item.icon} text-${item.color} fs-4`} />
-                    <div>
-                      <div className="fw-bold">{item.title}</div>
-                      <small className="text-muted">{item.desc}</small>
-                    </div>
+            {abrirMenu && (
+              <div className={styles.dashboardMenu}>
+                {["Placa 1", "Placa 2", "Placa 3"].map((item) => (
+                  <div key={item} className={styles.menuItem}>
+                    {item}
                   </div>
-                  <i className="bi bi-chevron-right" />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* DIREITA */}
-        <div className="d-flex flex-column gap-4">
-          <div className="card dashboard-card dashboard-actions">
-            <div className="card-body">
-              <h4 className="fw-bold mb-4">Ações rápidas</h4>
-              {[
-                "Monitoramento em tempo real",
-                "Configuração das placas",
-                "Relatórios energéticos",
-                "Central de ajuda",
-                "Ver alertas",
-                "Energia gerada",
-              ].map((acao) => (
-                <button
-                  key={acao}
-                  className="btn btn-light border w-100 mb-3 text-start quick-btn"
-                >
-                  {acao}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="card dashboard-card dashboard-billing">
-            <div className="card-body text-center d-flex flex-column justify-content-between p-4">
-              <h4 className="fw-bold text-start mb-3">Próxima cobrança</h4>
-              <div>
-                <i className="bi bi-calendar-event text-warning fs-1"></i>
-                <h2 className="mt-2 fw-bold">10/06/2024</h2>
-                <h3 className="text-success fw-semibold">R$ 179,90</h3>
-                <p className="text-muted small">Plano Monitoramento Premium</p>
+                ))}
               </div>
-              <button className="btn btn-outline-warning w-100 mt-2">
-                Ver detalhes da cobrança
-              </button>
-            </div>
+            )}
           </div>
         </div>
+
+        {/* CARDS SUPERIORES */}
+        <div className={`${styles.topCardsGrid} mb-4`}>
+          {cards.map((card) => (
+            <div 
+              className={`${card.isPremium ? styles.cardPremium : styles.cardStandard} ${card.isAlertCard ? styles.cardAlertHighlight : ""}`} 
+              key={card.titulo}
+            >
+              {card.isPremium && <div className={styles.premiumGlow} />}
+              <div className="d-flex align-items-center justify-content-between mb-3">
+                <div className={card.isPremium ? styles.iconBoxPremium : styles.iconBoxStandard}>
+                  <i className={`bi ${card.icon}`} />
+                </div>
+                <span className={`${styles.badgeIndicator} ${card.isAlertCard ? styles.badgeAlert : card.isPremium ? styles.badgePremium : ''}`}>
+                  {card.isAlertCard ? 'Atenção' : 'Check'}
+                </span>
+              </div>
+
+              <p className={card.isPremium ? styles.labelPremium : styles.labelStandard}>{card.titulo}</p>
+              <h2 className={card.isPremium ? styles.valuePremium : styles.valueStandard}>
+                {card.valor}
+                {card.unidade && <span className={styles.unitText}> {card.unidade}</span>}
+              </h2>
+              <p className={`${styles.cardDescription} ${card.isAlertCard ? 'text-danger fw-medium' : ''}`}>
+                {card.descricao}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* GRID PRINCIPAL */}
+        <div className={styles.mainGrid}>
+          <div className="d-flex flex-column gap-4">
+            
+            {/* CARD DO GRÁFICO */}
+            <div className={styles.cardStandard}>
+              <div className="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                  <span className={styles.heroEyebrow}>MÉTRICAS DETALHADAS</span>
+                  <h4 className={styles.blockTitle}>Resumo do monitoramento</h4>
+                </div>
+                <span className={styles.timeBadge}>Histórico</span>
+              </div>
+
+              <div className={styles.chartArea}>
+                <canvas ref={canvasRef} />
+              </div>
+
+              {/* MINI BOXES INFERIORES DO GRÁFICO */}
+              <div className={`${styles.infoBoxesGrid} mt-4`}>
+                <div className={styles.miniBox}>
+                  <p className={styles.miniBoxLabel}>Eficiência Média</p>
+                  <h3 className={styles.miniBoxValue}>{dadosDashboard.eficiencia}%</h3>
+                  <span className={dadosDashboard.eficiencia >= 90 ? styles.statusTextSuccess : styles.statusTextWarning}>
+                    {dadosDashboard.eficiencia >= 90 ? "● Alto desempenho" : "● Abaixo do esperado"}
+                  </span>
+                </div>
+
+                <div className={styles.miniBox}>
+                  <p className={styles.miniBoxLabel}>Economia Mensal</p>
+                  <h3 className={styles.miniBoxValue} style={{ color: '#00e676' }}>{formatarMoeda(dadosDashboard.economiaMensal)}</h3>
+                  <span className={styles.statusTextMuted}>Últimos 30 dias</span>
+                </div>
+
+                <div className={styles.miniBox}>
+                  <p className={styles.miniBoxLabel}>Status Operacional</p>
+                  <h3 className={styles.miniBoxValue}>{dadosDashboard.statusOperacional}</h3>
+                  <span className={dadosDashboard.totalAlertas > 0 ? styles.statusTextWarning : styles.statusTextSuccess}>
+                    {dadosDashboard.totalAlertas > 0 ? "● Requer atenção" : "● Sistema ativo"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* CARD DE ALERTAS */}
+            <div className={styles.cardStandard}>
+              <h4 className={`${styles.blockTitle} mb-4`}>Alertas e Ocorrências Ativas</h4>
+              <div className="vstack gap-3">
+                {alertas.map((item, index) => (
+                  <div key={index} className={styles.alertCardRow}>
+                    <div className="d-flex align-items-center gap-3">
+                      <div className={`${styles.alertIconBox} ${item.isCritical ? styles.alertBoxCritical : item.isSuccess ? styles.alertBoxSuccess : styles.alertBoxWarning}`}>
+                        <i className={`bi ${item.icon}`} />
+                      </div>
+                      <div>
+                        <div className={styles.alertRowTitle}>{item.title}</div>
+                        <p className={styles.alertRowDesc}>{item.desc}</p>
+                      </div>
+                    </div>
+                    <i className="bi bi-chevron-right text-muted ms-auto" />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        </div>
+
       </div>
-    </div>
+    </section>
   );
 }

@@ -230,6 +230,19 @@ export async function atualizarInstalacao(id, dados) {
 
 
 // DASHBOARD CLIENTE
+
+export async function obterDadosGeraisDashboard() {
+  const res = await fetch(`${BASE_URL}/dashboard/geral`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include"
+  });
+
+  return res.json();
+}
+
 export async function getDashboardResumo() {
   const res = await fetch(`${BASE_URL}/dashboard/resumo`, {
     method: "GET",
@@ -412,3 +425,4 @@ export async function inativarTecnico(id) {
 
   return res.json();
 }
+

@@ -335,6 +335,105 @@ class DashboardModel {
             connection.release();
         }
     }
+
+
+
+
+
+
+    // Dentro de src/models/DashboardModel.js
+    static async buscarDadosGeraisDoCliente(idUsuario) {
+        const connection = await getConnection(); 
+        try {
+            // 1. Busca o id_empresa vinculado ao usuário
+            const [usuario] = await connection.execute(
+                `SELECT id_empresa FROM usuarios WHERE id_usuario = ? LIMIT 1`,
+                [idUsuario]
+            );
+
+            if (!usuario.length || !usuario[0].id_empresa) {
+                return { instalado: false, mensagem: "Nenhuma empresa vinculada." };
+            }
+
+            const idEmpresa = usuario[0].id_empresa;
+
+            // 2. Verifica se a instalação já foi finalizada
+            const [instalacao] = await connection.execute(
+                `SELECT status_instalacao FROM instalacoes WHERE id_empresa = ? AND status_instalacao = 'FINALIZADA' LIMIT 1`,
+                [idEmpresa]
+            );
+
+            if (instalacao.length === 0) {
+                return { instalado: false, mensagem: "Seu sistema ainda não foi instalado." };
+            }
+
+            // 3. CORREÇÃO DEFINITIVA: Busca o total real de placas cadastradas para a empresa
+            const [placasTotaisBanco] = await connection.execute(
+                `SELECT COUNT(*) as total FROM placas_solares 
+                 WHERE id_empresa = ?`,
+                [idEmpresa]
+            );
+
+            // Busca a contagem real de placas que estão com status 'ATIVA'
+            const [placasAtivasBanco] = await connection.execute(
+                `SELECT COUNT(*) as ativas FROM placas_solares 
+                 WHERE id_empresa = ? AND status_placa = 'ATIVA'`,
+                [idEmpresa]
+            );
+
+            const dadosPlacas = {
+                total: placasTotaisBanco[0]?.total || 0,
+                ativas: placasAtivasBanco[0]?.ativas || 0
+            };
+
+            // 4. Busca dados acumulados do monitoramento das placas da empresa
+            const [monitoramento] = await connection.execute(
+                `SELECT 
+                    IFNULL(SUM(m.energia_gerada), 0) as energia_total,
+                    IFNULL(AVG(m.eficiencia), 0) as eficiencia_media
+                 FROM monitoramentos m
+                 JOIN placas_solares p ON m.id_placa = p.id_placa
+                 WHERE p.id_empresa = ?`,
+                [idEmpresa]
+            );
+
+            // 5. Busca se existem alertas ativos de nível ALTO ou CRÍTICO
+            const [alertas] = await connection.execute(
+                `SELECT COUNT(*) as ativos FROM alertas a
+                 JOIN monitoramentos m ON a.id_monitoramento = m.id_monitoramento
+                 JOIN placas_solares p ON m.id_placa = p.id_placa
+                 WHERE p.id_empresa = ? AND a.status_alerta = 'ATIVO' AND a.nivel IN ('ALTO', 'CRITICO')`,
+                [idEmpresa]
+            );
+
+            const dadosMonit = monitoramento[0] || { energia_total: 0, eficiencia_media: 0 };
+            const totalAlertas = alertas[0]?.ativos || 0;
+
+            // Cálculos de Negócio
+            const valorKwh = 0.85; 
+            const economyTotal = dadosMonit.energia_total * valorKwh;
+            const economiaMensal = (dadosMonit.energia_total / 12) * valorKwh; 
+            const co2EvitadoToneladas = ((dadosMonit.energia_total * 0.42) / 1000).toFixed(2);
+
+            return {
+                instalado: true,
+                dados: {
+                    eficienciaSistema: parseFloat(dadosMonit.eficiencia_media).toFixed(1),
+                    placasTotais: dadosPlacas.total, 
+                    placasAtivas: dadosPlacas.ativas,
+                    energiaTotalGerada: parseFloat(dadosMonit.energia_total).toFixed(1),
+                    economiaTotal: economyTotal.toFixed(2),
+                    economiaMensal: economiaMensal.toFixed(2),
+                    alertasCriticos: totalAlertas,
+                    co2Evitado: co2EvitadoToneladas
+                }
+            };
+
+        } finally {
+            connection.release(); 
+        }
+    }
+
 }
 
 export default DashboardModel;

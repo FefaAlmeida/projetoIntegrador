@@ -1,4 +1,5 @@
 import DashboardModel from '../models/DashboardModel.js';
+import UsuarioModel from '../models/UsuarioModel.js'
 
 function formatarData(data) {
     if (!data) return null;
@@ -108,6 +109,43 @@ class DashboardController {
             });
         }
     }
+
+
+
+
+
+    // Substitua o método antigo por este no seu DashboardController.js
+    static async obterDadosGerais(req, res) {
+        try {
+            // 🔥 Garante que leituras fakes existam para as placas se a instalação já estiver concluída
+            await DashboardModel.gerarLeiturasSimuladas(req.usuario.id);
+
+            // Invoca o método do Model passando o ID do token do usuário
+            const resultado = await DashboardModel.buscarDadosGeraisDoCliente(req.usuario.id);
+
+            if (!resultado.instalado) {
+                return res.status(200).json({ 
+                    sucesso: true, 
+                    instalado: false, 
+                    mensagem: resultado.mensagem 
+                });
+            }
+
+            return res.status(200).json({
+                sucesso: true,
+                instalado: true,
+                dados: resultado.dados
+            });
+
+        } catch (error) {
+            console.error('Erro ao obter dados gerais do dashboard:', error);
+            return res.status(500).json({ 
+                sucesso: false, 
+                erro: 'Erro interno ao processar dashboard' 
+            });
+        }
+    }
+
 }
 
 export default DashboardController;

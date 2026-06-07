@@ -4,6 +4,8 @@ import { authMiddleware } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
+
+router.get('/geral', authMiddleware, DashboardController.obterDadosGerais);
 router.get('/resumo', authMiddleware, DashboardController.resumo);
 router.get('/grafico-monitoramento', authMiddleware, DashboardController.graficoMonitoramento);
 router.get('/alertas', authMiddleware, DashboardController.alertas);
