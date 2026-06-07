@@ -1,25 +1,50 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { toast } from "sonner";
 import styles from "./page.module.css";
-import { abrirChamado, getMeusChamados, cancelarChamadoCliente } from "../../../api";
+import { abrirChamado, getMeusChamados, cancelarChamadoCliente, getChamadoPorId } from "../../../api";
 
 export default function ChamadosPage() {
+
+  const MAPA_CATEGORIAS = {
+    MANUTENCAO: "Manutenção",
+    LIMPEZA: "Limpeza",
+    EMERGENCIA: "Emergência",
+    OUTROS: "Outros Assuntos"
+  };
+
+  const MAPA_STATUS = {
+    ABERTO: "Aberto",
+    EM_ANDAMENTO: "Em Andamento",
+    FINALIZADO: "Finalizado",
+    CANCELADO: "Cancelado"
+  };
+
+  const MAPA_PRIORIDADES = {
+    BAIXA: "Baixa",
+    MEDIA: "Média",
+    ALTA: "Alta"
+  };
+
   const [chamados, setChamados] = useState([]);
+  const [filtroStatus, setFiltroStatus] = useState("TODOS");
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  const [chamadoParaCancelar, setChamadoParaCancelar] = useState(null);
+  const [chamadoDetalhado, setChamadoDetalhado] = useState(null);
 
-  // Estado do formulário baseado nos campos da Luminar
   const [formData, setFormData] = useState({
-    nome: "",
-    email: "",
-    telefone: "",
-    tipo: "",
-    assunto: "", 
+    tipo_chamado: "", 
+    titulo: "",
     descricao: ""
   });
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      require("bootstrap/dist/js/bootstrap.bundle.min.js");
+    }
     carregarChamados();
   }, []);
 
@@ -27,233 +52,457 @@ export default function ChamadosPage() {
     setLoading(true);
     try {
       const res = await getMeusChamados();
-      if (res && Array.isArray(res.dados)) {
-        setChamados(res.dados);
+      if (res && res.sucesso) {
+        setChamados(res.dados || []);
       } else if (Array.isArray(res)) {
         setChamados(res);
       } else {
         setChamados([]);
+        toast.error(res?.erro || res?.mensagem || "Erro ao carregar seu histórico.");
       }
     } catch (error) {
       console.error("Erro ao carregar chamados:", error);
+      tratarErroServidor(error);
       setChamados([]);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleVisualizarChamado = async (id) => {
+    setLoading(true);
+    try {
+      const res = await getChamadoPorId(id);
+      if (res && res.sucesso) {
+        setChamadoDetalhado(res.dados);
+      } else {
+        toast.error(res?.erro || "Não foi possível carregar os detalhes.");
+      }
+    } catch (error) {
+      console.error("Erro ao buscar detalhes:", error);
+      tratarErroServidor(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  function fecharModalConfirmacao() {
+    if (typeof window !== "undefined" && window.bootstrap) {
+      const modalElement = document.getElementById("modalConfirmarCancelarChamado");
+      if (modalElement) {
+        const instance = window.bootstrap.Modal.getInstance(modalElement) || new window.bootstrap.Modal(modalElement);
+        instance.hide();
+      }
+    }
+  }
+
   const handleCriarChamado = async (e) => {
     e.preventDefault();
-    if (!formData.assunto.trim() || !formData.descricao.trim()) {
-      return alert("Por favor, preencha o título e a descrição do problema.");
+    if (!formData.tipo_chamado) return toast.error("Selecione o tipo do chamado.");
+    if (!formData.titulo.trim() || !formData.descricao.trim()) {
+      return toast.error("Preencha o título e a descrição do problema.");
     }
 
+    setLoading(true);
     try {
-      await abrirChamado(formData);
-      setFormData({ nome: "", email: "", telefone: "", tipo: "", assunto: "", descricao: "" });
-      setIsModalOpen(false); // Fecha a modal após o sucesso
-      alert("Chamado técnico aberto com sucesso!");
-      carregarChamados(); 
+      const response = await abrirChamado(formData);
+      if (response && response.sucesso) {
+        toast.success("Chamado técnico aberto com sucesso!");
+        setFormData({ tipo_chamado: "", titulo: "", descricao: "" });
+        setIsModalOpen(false);
+        carregarChamados(); 
+      } else {
+        toast.error(response?.erro || response?.mensagem || "Erro ao abrir chamado.");
+      }
     } catch (error) {
-      alert("Erro ao abrir chamado. Tente novamente.");
+      tratarErroServidor(error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleCancelar = async (id) => {
-    if (!confirm("Deseja realmente cancelar este chamado?")) return;
+  const handleCancelarConfirmado = async () => {
+    if (!chamadoParaCancelar) return;
+
+    setLoading(true);
     try {
-      await cancelarChamadoCliente(id);
-      alert("Chamado cancelado com sucesso.");
-      carregarChamados();
+      const response = await cancelarChamadoCliente(chamadoParaCancelar);
+      if (response && response.sucesso) {
+        toast.success("Chamado cancelado com sucesso.");
+        fecharModalConfirmacao();
+        carregarChamados();
+        setChamadoParaCancelar(null);
+      } else {
+        toast.error(response?.erro || response?.mensagem || "Não foi possível cancelar.");
+      }
     } catch (error) {
-      alert("Não foi possível cancelar o chamado.");
+      tratarErroServidor(error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  function tratarErroServidor(error) {
+    if (error.response && error.response.data) {
+      const apiError = error.response.data.erro || error.response.data.mensagem || error.response.data.mensage;
+      toast.error(apiError || "Erro de conexão com o servidor.");
+    } else {
+      toast.error("Erro de conexão com o servidor.");
+    }
+  }
+
+  // Normaliza o status do chamado para evitar problemas com nulos
+  const obterStatusTratado = (status) => {
+    if (!status) return "ABERTO";
+    return status.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+  };
+
+  // Contadores para os Cards de Métricas
+  const totalAbertos = chamados.filter(c => obterStatusTratado(c.status_chamado) === "ABERTO").length;
+  const totalAndamento = chamados.filter(c => obterStatusTratado(c.status_chamado) === "EM_ANDAMENTO").length;
+  const totalRespondidos = chamados.filter(c => c.resposta_admin).length;
+
+  // Filtragem da Lista
+  const chamadosFiltrados = chamados.filter(c => {
+    const statusAtuais = obterStatusTratado(c.status_chamado);
+    if (filtroStatus === "TODOS") return true;
+    
+    const filtroNormalizado = filtroStatus.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+    return statusAtuais === filtroNormalizado;
+  });
 
   return (
     <>
-      <div className={`d-flex flex-column min-vh-100 ${styles.page}`}>
-        <main className={`flex-grow-1 py-5 px-3 ${styles.main}`}>
+      <div className={styles.page}>
+        <div className={`container ${styles.container}`}>
           
-          <div className={`container p-4 ${styles.shell}`}>
-            
-            {/* CABEÇALHO DO PAINEL */}
-            <div className="d-flex justify-content-between align-items-center border-bottom pb-4 mb-4">
-              <div>
-                <h1 className={`fw-bold m-0 ${styles.pageTitle}`}>
-                  Suporte & <span className={styles.highlight}>Chamados</span>
-                </h1>
-                <p className="text-secondary m-0 small mt-1">
-                  Gerencie e acompanhe suas solicitações técnicas Luminar.
-                </p>
+          {/* TOPBAR / HEADER */}
+          <div className={`d-flex justify-content-between align-items-center ${styles.topbar}`}>
+            <div>
+              <span className={styles.welcomeText}>Central de Atendimento</span>
+              <h1 className={styles.userName}>
+                Meus <span className={styles.highlight}>Chamados Técnicos</span>
+              </h1>
+            </div>
+            <button 
+              className={`btn d-flex align-items-center justify-content-center ${styles.dashboardButton}`}
+              onClick={() => setIsModalOpen(true)}
+              disabled={loading}
+            >
+              <i className="bi bi-plus-lg me-2 fs-6"></i> Abrir Chamado
+            </button>
+          </div>
+
+          {/* CARDS INDICADORES DE PERFORMANCE */}
+          <div className="row g-4 mb-5">
+            <div className="col-12 col-md-4">
+              <div className={styles.metricCard}>
+                <div className={styles.metricIcon} style={{ background: 'rgba(29, 78, 216, 0.08)', color: '#1d4ed8' }}>
+                  <i className="bi bi-envelope-fill"></i>
+                </div>
+                <div>
+                  <span className={styles.metricLabel}>Aguardando Análise</span>
+                  <h3 className={styles.metricValue}>{totalAbertos}</h3>
+                </div>
               </div>
-              <button 
-                className={`btn fw-bold px-4 py-2 ${styles.openModalButton}`}
-                onClick={() => setIsModalOpen(true)}
-              >
-                <i className="bi bi-plus-lg me-2"></i> Abrir Chamado
-              </button>
+            </div>
+            <div className="col-12 col-md-4">
+              <div className={styles.metricCard}>
+                <div className={styles.metricIcon} style={{ background: 'rgba(180, 83, 9, 0.08)', color: '#b45309' }}>
+                  <i className="bi bi-gear-wide-connected"></i>
+                </div>
+                <div>
+                  <span className={styles.metricLabel}>Em Atendimento</span>
+                  <h3 className={styles.metricValue}>{totalAndamento}</h3>
+                </div>
+              </div>
+            </div>
+            <div className="col-12 col-md-4">
+              <div className={styles.metricCard}>
+                <div className={styles.metricIcon} style={{ background: 'rgba(21, 128, 61, 0.08)', color: '#15803d' }}>
+                  <i className="bi bi-headset"></i>
+                </div>
+                <div>
+                  <span className={styles.metricLabel}>Retornos do Suporte</span>
+                  <h3 className={styles.metricValue}>{totalRespondidos}</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* FILTROS E MESA DE TRABALHO */}
+          <div className={`bg-white ${styles.shell}`}>
+            <div className={`d-flex flex-wrap justify-content-between align-items-center p-4 border-bottom gap-3 ${styles.filterBar}`}>
+              <div className="d-flex gap-2">
+                {["TODOS", "ABERTO", "EM_ANDAMENTO", "FINALIZADO"].map((status) => (
+                  <button
+                    key={status}
+                    className={`${styles.filterBtn} ${filtroStatus === status ? styles.filterBtnActive : ""}`}
+                    onClick={() => setFiltroStatus(status)}
+                  >
+                    {MAPA_STATUS[status] || (status === "TODOS" ? "Todos" : status)}
+                  </button>
+                ))}
+              </div>
+              <span className="text-muted small fw-medium">Mostrando {chamadosFiltrados.length} solicitações</span>
             </div>
 
-            {/* LISTAGEM DE CHAMADOS EM CARDS ELEGANTES */}
-            {loading ? (
+            {/* TABELA */}
+            {loading && chamados.length === 0 ? (
               <div className="text-center py-5 text-secondary">
                 <div className="spinner-border text-warning mb-3" role="status"></div>
-                <p>Buscando seus chamados...</p>
+                <p className="m-0 small">Buscando histórico na base de dados...</p>
               </div>
-            ) : chamados.length === 0 ? (
+            ) : chamadosFiltrados.length === 0 ? (
               <div className="text-center py-5 text-secondary">
-                <i className="bi bi-folder-x fs-1 text-muted"></i>
-                <p className="mt-3">Nenhum chamado aberto encontrado para esta conta.</p>
+                <i className="bi bi-folder2-open fs-2 text-muted mb-2 d-block"></i>
+                <p className="m-0 small">Nenhum chamado encontrado para este filtro.</p>
               </div>
             ) : (
-              <div className="row g-4">
-                {chamados.map((chamado) => (
-                  <div className="col-md-6 col-lg-4" key={chamado.id}>
-                    <div className={`card h-100 p-4 border-0 position-relative ${styles.chamadoCard}`}>
-                      
-                      <div className="d-flex justify-content-between align-items-center mb-3">
-                        <span className={`fw-bold small ${styles.cardId}`}>#{chamado.id}</span>
-                        <div className="d-flex gap-2">
-                          {chamado.prioridade && (
-                            <span className={`${styles.badge} ${styles[chamado.prioridade.toUpperCase()]}`}>
-                              {chamado.prioridade}
+              <div className="table-responsive">
+                <table className={`table align-middle m-0 text-dark ${styles.customTable}`}>
+                  <thead>
+                    <tr className="text-secondary small fw-bold">
+                      <th className="px-4 py-3">ID</th>
+                      <th className="py-3">Tipo</th>
+                      <th className="py-3">Problema</th>
+                      <th className="py-3">Descrição</th>
+                      <th className="py-3">Prioridade</th>
+                      <th className="py-3">Status</th>
+                      <th className="px-4 py-3 text-end">Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {chamadosFiltrados.map((chamado) => {
+                      const statusTratado = obterStatusTratado(chamado.status_chamado);
+                      const prioridadeTratada = chamado.prioridade?.toUpperCase();
+                      return (
+                        <tr key={chamado.id_chamado} className={styles.tableRow}>
+                          <td className="px-4 py-3 fw-bold text-secondary">#{chamado.id_chamado}</td>
+                          <td className="py-3 small fw-semibold text-uppercase text-muted">
+                            {MAPA_CATEGORIAS[chamado.tipo_chamado] || chamado.tipo_chamado}
+                          </td>
+                          <td className="py-3 fw-semibold text-dark">{chamado.titulo}</td>
+                          <td className={`py-3 text-muted ${styles.tableDesc}`}>{chamado.descricao}</td>
+                          <td className="py-3">
+                            {chamado.prioridade ? (
+                              <span className={`${styles.badge} ${styles[prioridadeTratada] || ""}`}>
+                                {MAPA_PRIORIDADES[prioridadeTratada] || chamado.prioridade}
+                              </span>
+                            ) : (
+                              <span className="text-muted small italic">A definir</span>
+                            )}
+                          </td>
+                          <td className="py-3">
+                            <span className={`${styles.badge} ${styles[statusTratado] || styles.ABERTO}`}>
+                              {MAPA_STATUS[statusTratado] || statusTratado}
                             </span>
-                          )}
-                          <span className={`${styles.badge} ${styles[chamado.status.toUpperCase()]}`}>
-                            {chamado.status}
-                          </span>
-                        </div>
-                      </div>
+                          </td>
+                          <td className="px-4 py-3 text-end">
+                            <div className="d-flex gap-2 justify-content-end">
+                              <button
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalDetalhesChamado"
+                                onClick={() => handleVisualizarChamado(chamado.id_chamado)}
+                                className={`btn btn-sm ${styles.btnDetails}`}
+                              >
+                                Ver Detalhes
+                              </button>
 
-                      <h4 className={`h5 fw-bold mb-2 ${styles.cardTitle}`}>{chamado.assunto}</h4>
-                      <p className={`small mb-4 ${styles.cardDesc}`}>{chamado.descricao}</p>
-
-                      <div className="mt-auto pt-3 border-top d-flex justify-content-end">
-                        {chamado.status === "ABERTO" ? (
-                          <button
-                            onClick={() => handleCancelar(chamado.id)}
-                            className={`btn btn-sm ${styles.cancelButton}`}
-                          >
-                            Cancelar Solicitação
-                          </button>
-                        ) : (
-                          <span className="text-muted small italic">Em análise técnica</span>
-                        )}
-                      </div>
-
-                    </div>
-                  </div>
-                ))}
+                              {statusTratado === "ABERTO" ? (
+                                <button
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#modalConfirmarCancelarChamado"
+                                  onClick={() => setChamadoParaCancelar(chamado.id_chamado)}
+                                  className={`btn btn-sm ${styles.btnActionDelete}`}
+                                  disabled={loading}
+                                >
+                                  Cancelar
+                                </button>
+                              ) : (
+                                <span className="text-muted small px-3 align-self-center">-</span>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
               </div>
             )}
           </div>
-        </main>
+
+        </div>
       </div>
 
-      {/* JANELA MODAL (ABRIR CHAMADO) */}
+      {/* MODAL: ABRIR CHAMADO */}
       {isModalOpen && (
         <div className={styles.modalOverlay}>
-          <div className={`shadow-lg border-0 ${styles.modalShell}`}>
-            
+          <div className={`modal-content ${styles.modalContent}`}>
             <div className={`p-4 d-flex justify-content-between align-items-center ${styles.modalHeader}`}>
               <h3 className="m-0 fw-bold text-white h5">
                 Nova Solicitação de <span className={styles.highlight}>Suporte</span>
               </h3>
-              <button 
-                className={styles.closeModalButton} 
-                onClick={() => setIsModalOpen(false)}
-              >
+              <button className={styles.closeModalButton} onClick={() => setIsModalOpen(false)}>
                 <i className="bi bi-x-lg"></i>
               </button>
             </div>
 
-            <div className="p-4">
+            <div className="p-4 bg-white">
               <form onSubmit={handleCriarChamado}>
-                
-                <div className="row">
-                  <div className="col-md-6 mb-3">
-                    <label className="form-label fw-bold small text-secondary">Nome</label>
-                    <input
-                      type="text"
-                      className={`form-control ${styles.field}`}
-                      placeholder="Seu nome"
-                      value={formData.nome}
-                      onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
-                    />
-                  </div>
-
-                  <div className="col-md-6 mb-3">
-                    <label className="form-label fw-bold small text-secondary">E-mail</label>
-                    <input
-                      type="email"
-                      className={`form-control ${styles.field}`}
-                      placeholder="seu@email.com"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    />
-                  </div>
-                </div>
-
-                <div className="row">
-                  <div className="col-md-6 mb-3">
-                    <label className="form-label fw-bold small text-secondary">Telefone</label>
-                    <input
-                      type="text"
-                      className={`form-control ${styles.field}`}
-                      placeholder="(00) 00000-0000"
-                      value={formData.telefone}
-                      onChange={(e) => setFormData({ ...formData, telefone: e.target.value })}
-                    />
-                  </div>
-
-                  <div className="col-md-6 mb-3">
-                    <label className="form-label fw-bold small text-secondary">Tipo do chamado</label>
-                    <select
-                      className={`form-select ${styles.field}`}
-                      value={formData.tipo}
-                      onChange={(e) => setFormData({ ...formData, tipo: e.target.value })}
-                    >
-                      <option value="">Selecione...</option>
-                      <option value="manutencao">Manutenção</option>
-                      <option value="limpeza">Limpeza</option>
-                      <option value="emergencia">Emergência</option>
-                      <option value="outros">Outros</option>
-                    </select>
-                  </div>
+                <div className="mb-3">
+                  <label className="form-label fw-semibold small text-secondary">Tipo do Chamado *</label>
+                  <select
+                    className={`form-select ${styles.modalField}`}
+                    value={formData.tipo_chamado}
+                    onChange={(e) => setFormData({ ...formData, tipo_chamado: e.target.value })}
+                    required
+                  >
+                    <option value="">Selecione o tipo de atendimento...</option>
+                    <option value="MANUTENCAO">Manutenção</option>
+                    <option value="LIMPEZA">Limpeza</option>
+                    <option value="EMERGENCIA">Emergência</option>
+                    <option value="OUTROS">Outros Assuntos</option>
+                  </select>
                 </div>
 
                 <div className="mb-3">
-                  <label className="form-label fw-bold small text-secondary">Título do problema</label>
+                  <label className="form-label fw-semibold small text-secondary">Título do Problema *</label>
                   <input
                     type="text"
-                    className={`form-control ${styles.field}`}
+                    className={`form-control ${styles.modalField}`}
                     placeholder="Ex: Inversor piscando luz vermelha"
-                    value={formData.assunto}
-                    onChange={(e) => setFormData({ ...formData, assunto: e.target.value })}
+                    value={formData.titulo}
+                    onChange={(e) => setFormData({ ...formData, titulo: e.target.value })}
+                    required
                   />
                 </div>
 
                 <div className="mb-4">
-                  <label className="form-label fw-bold small text-secondary">Descrição detalhada</label>
+                  <label className="form-label fw-semibold small text-secondary">Descrição Completa *</label>
                   <textarea
-                    className={`form-control ${styles.field} ${styles.textarea}`}
-                    rows="4"
-                    placeholder="Descreva o que houve com o máximo de detalhes..."
+                    className={`form-control ${styles.modalField}`}
+                    rows="5"
+                    style={{ resize: "none" }}
+                    placeholder="Descreva detalhadamente o ocorrido..."
                     value={formData.descricao}
                     onChange={(e) => setFormData({ ...formData, descricao: e.target.value })}
+                    required
                   ></textarea>
                 </div>
 
-                <button type="submit" className={`btn fw-bold w-100 py-3 ${styles.submitButton}`}>
-                  Enviar Chamado Técnico
-                </button>
+                <div className="d-flex gap-2 justify-content-end border-top pt-3">
+                  <button type="button" className={styles.btnSecondaryStyle} onClick={() => setIsModalOpen(false)}>
+                    Voltar
+                  </button>
+                  <button type="submit" className={`btn fw-bold px-4 ${styles.submitButton}`} disabled={loading}>
+                    {loading ? "Enviando..." : "Enviar Chamado"}
+                  </button>
+                </div>
               </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DE CONFIRMAÇÃO DE CANCELAMENTO */}
+      <div className="modal fade" id="modalConfirmarCancelarChamado" tabIndex="-1" aria-hidden="true">
+        <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: "380px" }}>
+          <div className="modal-content text-center p-4" style={{ borderRadius: "24px", border: "none" }}>
+            <div className="modal-body">
+              <div className="text-danger mb-3">
+                <i className="bi bi-exclamation-circle-fill" style={{ fontSize: "2.5rem" }}></i>
+              </div>
+              <h5 className="fw-bold text-dark mb-2">Cancelar Solicitação?</h5>
+              <p className="text-muted small mb-4">Esta ação não poderá ser desfeita após a confirmação.</p>
+              <div className="d-flex gap-2 justify-content-center">
+                <button type="button" className={styles.btnSecondaryStyle} data-bs-dismiss="modal">Voltar</button>
+                <button type="button" className="btn btn-danger px-4 fw-bold" style={{ borderRadius: "12px" }} onClick={handleCancelarConfirmado} disabled={loading}>
+                  Confirmar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* MODAL DETALHES DO CHAMADO E RESPOSTA */}
+      <div className="modal fade" id="modalDetalhesChamado" tabIndex="-1" aria-hidden="true">
+        <div className="modal-dialog modal-dialog-centered modal-lg">
+          <div className="modal-content" style={{ borderRadius: "24px", overflow: "hidden", border: "none" }}>
+            
+            <div className={`p-4 d-flex justify-content-between align-items-center ${styles.modalHeader}`}>
+              <h5 className="modal-title fw-bold text-white m-0">
+                Histórico do Chamado <span className={styles.highlight}>#{chamadoDetalhado?.id_chamado}</span>
+              </h5>
+              <button type="button" className={styles.closeModalButton} data-bs-dismiss="modal" aria-label="Close">
+                <i className="bi bi-x-lg"></i>
+              </button>
+            </div>
+
+            <div className="modal-body p-4 text-dark bg-light">
+              <div className="row g-3 mb-4 bg-white p-3 rounded-4 shadow-sm mx-0">
+                <div className="col-6 col-md-3">
+                  <span className="text-secondary small d-block mb-1">Categoria</span>
+                  <strong className="text-uppercase small text-dark">{MAPA_CATEGORIAS[chamadoDetalhado?.tipo_chamado] || chamadoDetalhado?.tipo_chamado}</strong>
+                </div>
+                <div className="col-6 col-md-3">
+                  <span className="text-secondary small d-block mb-1">Status</span>
+                  <span className={`${styles.badge} ${styles[obterStatusTratado(chamadoDetalhado?.status_chamado)] || styles.ABERTO}`}>
+                    {MAPA_STATUS[obterStatusTratado(chamadoDetalhado?.status_chamado)] || chamadoDetalhado?.status_chamado}
+                  </span>
+                </div>
+                <div className="col-6 col-md-3">
+                  <span className="text-secondary small d-block mb-1">Prioridade</span>
+                  <strong className="small text-dark">
+                    {MAPA_PRIORIDADES[chamadoDetalhado?.prioridade?.toUpperCase()] || chamadoDetalhado?.prioridade || "Em análise"}
+                  </strong>
+                </div>
+                <div className="col-6 col-md-3">
+                  <span className="text-secondary small d-block mb-1">Técnico</span>
+                  <strong className="small text-dark">
+                    {chamadoDetalhado?.id_tecnico 
+                      ? (chamadoDetalhado?.nome_tecnico || `ID #${chamadoDetalhado.id_tecnico}`) 
+                      : "Não designado"}
+                  </strong>
+                </div>
+              </div>
+
+              <div className="bg-white p-4 rounded-4 shadow-sm mb-4">
+                <h6 className="fw-bold text-secondary mb-2 small text-uppercase tracking-wider">Descrição Enviada</h6>
+                <p className="fw-semibold text-dark mb-2">{chamadoDetalhado?.titulo}</p>
+                <p className="text-muted small mb-0" style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>
+                  {chamadoDetalhado?.descricao}
+                </p>
+              </div>
+
+              {/* RETORNO DO ADMIN */}
+              <div className={styles.responseContainer}>
+                <h6 className={`${styles.responseTitle} mb-3 small text-uppercase`}>
+                  <i className="bi bi-shield-check me-2 fs-5"></i> Retorno do Suporte Técnico
+                </h6>
+                {chamadoDetalhado?.resposta_admin ? (
+                  <p className="text-dark small mb-0 fw-medium" style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>
+                    {chamadoDetalhado.resposta_admin}
+                  </p>
+                ) : (
+                  <p className="text-secondary small italic mb-0">
+                    Sua solicitação está na fila de atendimento. A resposta do administrador aparecerá aqui.
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="modal-footer bg-white border-0 p-3 justify-content-end">
+              <button type="button" className={styles.btnSecondaryStyle} data-bs-dismiss="modal">
+                Fechar Janela
+              </button>
             </div>
 
           </div>
         </div>
-      )}
+      </div>
     </>
   );
 }

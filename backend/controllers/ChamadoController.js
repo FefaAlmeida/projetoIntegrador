@@ -1,4 +1,6 @@
 import ChamadoModel from '../models/ChamadoModel.js';
+import UsuarioModel from '../models/UsuarioModel.js';
+import TecnicoModel from '../models/TecnicoModel.js'; 
 
 class ChamadoController {
 
@@ -6,11 +8,18 @@ class ChamadoController {
     static async abrirChamado(req, res) {
         try {
             const { tipo_chamado, titulo, descricao } = req.body;
-            // Captura o id_empresa injetado pelo seu middleware de autenticação (ou fallback do body)
-            const id_empresa = req.usuario?.id_empresa || req.body.id_empresa;
+            
+            // 1. Descobre o id_empresa buscando diretamente do usuário logado
+            let id_empresa = null;
+            if (req.usuario?.id) {
+                const usuarioCompleto = await UsuarioModel.buscarPorId(req.usuario.id);
+                id_empresa = usuarioCompleto?.id_empresa;
+            }
+
+            // Fallback caso venha do body (mecanismo que você já tinha)
+            if (!id_empresa) id_empresa = req.body.id_empresa;
 
             const erros = [];
-
             if (!id_empresa) {
                 erros.push({ campo: 'id_empresa', mensagem: 'Empresa solicitante não identificada.' });
             }
@@ -48,7 +57,16 @@ class ChamadoController {
     // GET /chamados/meus-chamados (Visão: CLIENTE)
     static async listarMeusChamados(req, res) {
         try {
-            const id_empresa = req.usuario?.id_empresa || req.query.id_empresa;
+            // 2. Descobre o id_empresa buscando direto do usuário logado para a listagem
+            let id_empresa = null;
+            if (req.usuario?.id) {
+                const usuarioCompleto = await UsuarioModel.buscarPorId(req.usuario.id);
+                id_empresa = usuarioCompleto?.id_empresa;
+            }
+
+            // Fallback caso venha da query string
+            if (!id_empresa) id_empresa = req.query.id_empresa;
+
             let pagina = parseInt(req.query.pagina) || 1;
             let limite = parseInt(req.query.limite) || 10;
 
@@ -108,6 +126,7 @@ class ChamadoController {
     }
 
     // GET /chamados/:id (Visão: AMBOS - Permite ao cliente ler a resposta do Admin)
+// GET /chamados/:id (Visão: AMBOS - Buscando o nome através do TecnicoModel)
     static async buscarPorId(req, res) {
         try {
             const { id } = req.params;
@@ -122,15 +141,42 @@ class ChamadoController {
                 return res.status(404).json({ sucesso: false, erro: 'Chamado não localizado.' });
             }
 
-            // Validação de segurança opcional: Evita que um cliente xerete chamados de outra empresa
+            // Validação de segurança: Evita que um cliente xerete chamados de outra empresa
             const id_empresa_token = req.usuario?.id_empresa;
-            const ehAdmin = req.usuario?.regra === 'ADMIN'; // Altere conforme sua lógica de Roles
+            const ehAdmin = req.usuario?.regra === 'ADMIN'; 
             
             if (id_empresa_token && chamado.id_empresa !== id_empresa_token && !ehAdmin) {
                 return res.status(403).json({ sucesso: false, erro: 'Acesso negado a este chamado.' });
             }
 
-            return res.status(200).json({ sucesso: true, dados: chamado });
+            // ==========================================
+            // NOVA LOGICA ATUALIZADA: Busca no TecnicoModel
+            // ==========================================
+            let nome_tecnico = null;
+            if (chamado.id_tecnico) {
+                try {
+                    // Busca o técnico diretamente na tabela de técnicos pelo Model correto
+                    const tecnicoCompleto = await TecnicoModel.buscarPorId(chamado.id_tecnico);
+                    if (tecnicoCompleto && tecnicoCompleto.nome) {
+                        nome_tecnico = tecnicoCompleto.nome;
+                    }
+                } catch (techError) {
+                    // Fail-silent: Evita derrubar a rota se houver qualquer problema na consulta do técnico
+                    console.error(`Aviso: Erro ao anexar o nome do técnico id ${chamado.id_tecnico}:`, techError);
+                }
+            }
+
+            // Injeta a propriedade nome_tecnico na raiz dos dados enviados para o front
+            const dadosResposta = {
+                ...chamado,
+                nome_tecnico: nome_tecnico 
+            };
+
+            return res.status(200).json({ 
+                sucesso: true, 
+                dados: dadosResposta 
+            });
+
         } catch (error) {
             console.error('Erro ao detalhar chamado:', error);
             return res.status(500).json({ sucesso: false, erro: 'Erro interno do servidor' });
@@ -154,15 +200,15 @@ class ChamadoController {
 
             const erros = [];
             if (!status_chamado) {
-                erros.push({ campo: 'status_chamado', mensagem: 'O novo status do chamado é obrigatório.' });
+                erros.push({ campo: 'status_chamado', message: 'O novo status do chamado é obrigatório.' });
             }
             if (!prioridade) {
-                erros.push({ campo: 'prioridade', mensagem: 'Definir a prioridade (BAIXA, MEDIA, ALTA) é obrigatório para o Admin.' });
+                erros.push({ campo: 'prioridade', message: 'Definir a prioridade (BAIXA, MEDIA, ALTA) é obrigatório para o Admin.' });
             }
 
             const prioridadesValidas = ['BAIXA', 'MEDIA', 'ALTA'];
             if (prioridade && !prioridadesValidas.includes(prioridade.toUpperCase())) {
-                erros.push({ campo: 'prioridade', mensagem: 'Prioridade inválida. Use BAIXA, MEDIA ou ALTA.' });
+                erros.push({ campo: 'prioridade', message: 'Prioridade inválida. Use BAIXA, MEDIA ou ALTA.' });
             }
 
             if (erros.length > 0) {
@@ -190,7 +236,16 @@ class ChamadoController {
     static async cancelarChamadoCliente(req, res) {
         try {
             const { id } = req.params;
-            const id_empresa = req.usuario?.id_empresa || req.body.id_empresa;
+            
+            // CORREÇÃO: Busca o id_empresa usando o mesmo padrão inteligente dos outros métodos
+            let id_empresa = null;
+            if (req.usuario?.id) {
+                const usuarioCompleto = await UsuarioModel.buscarPorId(req.usuario.id);
+                id_empresa = usuarioCompleto?.id_empresa;
+            }
+
+            // Fallback caso venha do token direto ou do body
+            if (!id_empresa) id_empresa = req.usuario?.id_empresa || req.body.id_empresa;
 
             if (!id_empresa) {
                 return res.status(400).json({ sucesso: false, erro: 'Identificação da empresa ausente.' });

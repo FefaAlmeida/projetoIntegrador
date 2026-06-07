@@ -181,32 +181,30 @@
 }
 
 /* Modais Estrutura */
-.modalOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(34, 31, 32, 0.4);
-  backdrop-filter: blur(8px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1050;
-}
-
-.modalContent {
+.modalContenedorBase {
   width: 100%;
-  max-width: 620px;
+  max-width: 780px;
+  max-height: 90vh !important; /* Limita estritamente a altura máxima para não estourar telas de notebooks */
   border-radius: 24px !important;
   border: none !important;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
-.modalHeader {
-  background-color: #221f20;
-  border-bottom: none;
+/* Força o scrollbar nativo correto do Bootstrap e limpa paddings conflitantes */
+:global(.modal-body) {
+  overflow-y: auto !important;
+  flex: 1 1 auto;
+  z-index: 9999 !important;
+}
+
+/* Evita conflito com o botão de fechar nativo do Bootstrap */
+:global(.btn-close-white) {
+  background-color: transparent !important;
+  border: none;
+  font-size: 1rem;
 }
 
 .closeModalButton {
@@ -304,4 +302,10 @@
   .page { padding: 20px 10px; }
   .userName { font-size: 1.8rem; }
   .filterBar { justify-content: center; }
+}
+
+.admBadge {
+  font-family: "Poppins", sans-serif;
+  letter-spacing: 0.05em;
+  border-radius: 10px;
 }

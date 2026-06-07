@@ -197,6 +197,16 @@ export default function Header() {
             className={`nav-link text-white d-flex align-items-center gap-3 ${styles.sidebarLink}`}
             >
             <i className="bi bi-people-fill"></i>
+            Mensagens
+            </a>
+        </li>
+
+        <li>
+            <a
+            href="/chamados-adm"
+            className={`nav-link text-white d-flex align-items-center gap-3 ${styles.sidebarLink}`}
+            >
+            <i className="bi bi-tools"></i>
             Chamados
             </a>
         </li>

@@ -31,13 +31,17 @@ class ChamadoModel {
                 ORDER BY id_chamado DESC
                 LIMIT ? OFFSET ?
             `;
-            const [chamados] = await connection.query(sql, [id_empresa, limite, offset]);
 
+            // Alterado para .execute para evitar problemas de tipagem com LIMIT/OFFSET
+            const [chamados] = await connection.execute(sql, [Number(id_empresa), Number(limite), Number(offset)]);
+            
             const [totalResult] = await connection.execute(
                 'SELECT COUNT(*) as total FROM chamados WHERE id_empresa = ?',
                 [id_empresa]
             );
-            const total = totalResult[0].total;
+            
+            // Força a conversão para número comum prevenindo erros de BigInt
+            const total = Number(totalResult[0].total);
 
             return {
                 chamados,
@@ -73,12 +77,16 @@ class ChamadoModel {
                     c.id_chamado DESC
                 LIMIT ? OFFSET ?
             `;
-            const [chamados] = await connection.query(sql, [limite, offset]);
+            
+            // Alterado para .execute para blindar a paginação contra quebras de sintaxe SQL
+            const [chamados] = await connection.execute(sql, [Number(limite), Number(offset)]);
 
             const [totalResult] = await connection.execute(
                 'SELECT COUNT(*) as total FROM chamados'
             );
-            const total = totalResult[0].total;
+            
+            // Força a conversão para número comum prevenindo erros de BigInt
+            const total = Number(totalResult[0].total);
 
             return {
                 chamados,
