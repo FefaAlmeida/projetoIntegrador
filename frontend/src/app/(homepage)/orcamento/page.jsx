@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { criarOrcamento, aceitarOrcamento, recusarOrcamento } from "../../../api";
 import { toast } from "sonner";
 import './orcamento.css';
@@ -54,6 +54,38 @@ export default function OrcamentoPage() {
   const [animandoModal, setAnimandoModal] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
   const [showPlacaModal, setShowPlacaModal] = useState(false);
+  const [placasCarregando, setPlacasCarregando] = useState(true);
+
+  // Pré-carrega TODAS as imagens das placas e mantém o loading por no mínimo 1s.
+  // Só libera as opções quando as 4 imagens terminarem de carregar.
+  useEffect(() => {
+    if (!showPlacaModal) return;
+
+    let ativo = true;
+    setPlacasCarregando(true);
+
+    const tempoMinimo = new Promise((resolve) => setTimeout(resolve, 1000));
+
+    const carregarImagens = Promise.all(
+      placas.map(
+        (placa) =>
+          new Promise((resolve) => {
+            const img = new window.Image();
+            img.onload = resolve;
+            img.onerror = resolve;
+            img.src = placa.imagem;
+          })
+      )
+    );
+
+    Promise.all([tempoMinimo, carregarImagens]).then(() => {
+      if (ativo) setPlacasCarregando(false);
+    });
+
+    return () => {
+      ativo = false;
+    };
+  }, [showPlacaModal]);
 
   async function handleSubmit() {
 
@@ -555,7 +587,21 @@ export default function OrcamentoPage() {
 
         {/* GRID DE PLACAS */}
         <div className="row g-3">
-          {placas.map((placa) => {
+          {placasCarregando
+            ? [0, 1, 2, 3].map((i) => (
+                <div key={`skeleton-${i}`} className="col-md-6">
+                  <div className="card h-100 p-3 placa-card placa-skeleton-card">
+                    <div className="w-100 mb-3 placa-image-box placa-skeleton" />
+                    <div className="d-flex align-items-center justify-content-between gap-2 mb-2">
+                      <div className="placa-skeleton placa-skeleton-line placa-skeleton-title" />
+                      <div className="placa-skeleton placa-skeleton-line placa-skeleton-price" />
+                    </div>
+                    <div className="placa-skeleton placa-skeleton-line" />
+                    <div className="placa-skeleton placa-skeleton-line placa-skeleton-line-short mt-2" />
+                  </div>
+                </div>
+              ))
+            : placas.map((placa) => {
             const isSelected = formData.modelo_placa === placa.id;
             return (
               <div key={placa.id} className="col-md-6">

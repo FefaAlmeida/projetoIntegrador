@@ -481,7 +481,9 @@ class OrcamentoController {
             return res.status(200).json({
                 sucesso: true,
                 dados: {
-                    id_solicitacao: orcamento.id_solicitacao
+                    id_solicitacao: orcamento.id_solicitacao,
+                    nome_responsavel: orcamento.nome_responsavel,
+                    email_contato: orcamento.email_contato
                 }
             });
 

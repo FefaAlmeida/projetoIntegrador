@@ -302,7 +302,14 @@ export async function criarOrcamento(data) {
   return res.json();
 }
 
-// ACEITAR ORÇAMENTO 
+// VALIDAR / BUSCAR DADOS DO ORÇAMENTO PELO TOKEN
+export async function validarTokenOrcamento(token) {
+  const res = await fetch(`${BASE_URL}/orcamentos/cadastro/${token}`);
+
+  return res.json();
+}
+
+// ACEITAR ORÇAMENTO
 export async function aceitarOrcamento(id_solicitacao) {
   const res = await fetch(`${BASE_URL}/orcamentos/${id_solicitacao}/aceitar`, {
     method: "PATCH",

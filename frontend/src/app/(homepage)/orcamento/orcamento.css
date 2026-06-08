@@ -160,6 +160,58 @@
   object-fit: contain;
 }
 
+/* LOADING / SKELETON DAS PLACAS */
+.placa-skeleton-card {
+  cursor: default;
+}
+
+.placa-skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: #eceff3;
+  border-radius: 8px;
+}
+
+.placa-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.7) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: placa-shimmer 1.2s infinite;
+}
+
+.placa-skeleton-line {
+  height: 14px;
+  width: 100%;
+}
+
+.placa-skeleton-line-short {
+  width: 60%;
+}
+
+.placa-skeleton-title {
+  height: 18px;
+  width: 55%;
+}
+
+.placa-skeleton-price {
+  height: 24px;
+  width: 80px;
+  flex-shrink: 0;
+}
+
+@keyframes placa-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 .placa-title {
   line-height: 1.2;
 }

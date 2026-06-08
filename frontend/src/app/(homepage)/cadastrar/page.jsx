@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { criarUsuario, loginUsuario } from "../../../api";
+import { useState, useEffect } from "react";
+import { criarUsuario, loginUsuario, validarTokenOrcamento } from "../../../api";
 import { toast } from "sonner";
 import { useSearchParams } from "next/navigation";
 import styles from "./page.module.css";
@@ -17,30 +17,49 @@ export default function RegisterPage() {
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
   const [loading, setLoading] = useState(false);
+  const [tokenValido, setTokenValido] = useState(false);
+
+  // Busca nome/e-mail do orçamento vinculado ao token e pré-preenche (somente leitura).
+  useEffect(() => {
+    if (!token) {
+      toast.error("Orçamento inválido. Solicite um orçamento antes de cadastrar-se.");
+      return;
+    }
+
+    let ativo = true;
+
+    (async () => {
+      try {
+        const response = await validarTokenOrcamento(token);
+
+        if (!ativo) return;
+
+        if (response?.sucesso) {
+          setNome(response.dados?.nome_responsavel || "");
+          setEmail(response.dados?.email_contato || "");
+          setTokenValido(true);
+        } else {
+          toast.error(response?.erro || "Orçamento inválido ou já utilizado.");
+        }
+      } catch (error) {
+        if (ativo) toast.error("Erro ao validar o orçamento.");
+      }
+    })();
+
+    return () => {
+      ativo = false;
+    };
+  }, [token]);
 
   async function handleSubimit() {
 
-    if (!nome || !email || !senha || !confirmarSenha) {
-      toast.error("Preencha todos os campos.");
+    if (!token || !tokenValido) {
+      toast.error("Orçamento inválido. Solicite um orçamento antes de cadastrar-se.");
       return;
     }
 
-    const nomeTrim = nome.trim();
-
-    if (nomeTrim.length < 2) {
-      toast.error("O nome deve ter pelo menos 2 caracteres.");
-      return;
-    }
-
-    if (nomeTrim.length > 255) {
-      toast.error("O nome deve ter no máximo 255 caracteres.");
-      return;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!emailRegex.test(email)) {
-      toast.error("Formato de email inválido.");
+    if (!senha || !confirmarSenha) {
+      toast.error("Preencha a senha e a confirmação.");
       return;
     }
 
@@ -54,18 +73,11 @@ export default function RegisterPage() {
       return;
     }
 
-    if (!token) {
-      toast.error("Orçamento inválido. Solicite um orçamento antes de cadastrar-se.");
-      return;
-    }
-
     setLoading(true);
 
     try {
 
       const data = {
-        nome: nomeTrim,
-        email: email.trim().toLowerCase(),
         senha,
         token: token
       };
@@ -155,7 +167,7 @@ export default function RegisterPage() {
                 <p
                   className={`m-0 ${styles.subtitle}`}
                 >
-                  Preencha seus dados de usuário para tornar-se um cliente.
+                  Seu nome e e-mail já vieram do orçamento. Defina apenas uma senha para concluir seu cadastro.
                 </p>
 
               </div>
@@ -184,9 +196,10 @@ export default function RegisterPage() {
 
                     <input
                       type="text"
-                      className={`form-control border-0 border-bottom rounded-0 px-0 shadow-none ${styles.input}`}
+                      className={`form-control border-0 border-bottom rounded-0 px-0 shadow-none ${styles.input} ${styles.readonlyInput}`}
                       value={nome}
-                      onChange={(e) => setNome(e.target.value)}
+                      readOnly
+                      tabIndex={-1}
                     />
 
                   </div>
@@ -199,9 +212,10 @@ export default function RegisterPage() {
 
                     <input
                       type="email"
-                      className={`form-control border-0 border-bottom rounded-0 px-0 shadow-none ${styles.input}`}
+                      className={`form-control border-0 border-bottom rounded-0 px-0 shadow-none ${styles.input} ${styles.readonlyInput}`}
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      readOnly
+                      tabIndex={-1}
                     />
 
                   </div>
@@ -240,7 +254,7 @@ export default function RegisterPage() {
                     type="button"
                     className={`btn btn-warning w-100 py-3 rounded-pill fw-bold shadow-sm mb-4 ${styles.primaryButton}`}
                     onClick={handleSubimit}
-                    disabled={loading}
+                    disabled={loading || !tokenValido}
                   >
                     {loading ? "Cadastrando..." : "Cadastrar"}
                   </button>

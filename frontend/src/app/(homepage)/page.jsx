@@ -1,46 +1,40 @@
 import Image from "next/image";
 
 export const metadata = {
- title: "Luminar — Energia solar para empresas",
- description:
-  "Otimize os custos operacionais da sua empresa com sistemas fotovoltaicos de alta eficiência projetados e monitorados pela Luminar.",
+  title: "Luminar — Energia solar para empresas",
+  description:
+    "Otimize os custos operacionais da sua empresa com sistemas fotovoltaicos de alta eficiência projetados e monitorados pela Luminar.",
 };
 
 const FEATURES = [
   {
     icon: "bi-cash-coin",
     title: "Investimento Facilitado",
-    text:
-      "Na Luminar, você pode parcelar o investimento nas placas solares, eliminando a necessidade de grandes aportes financeiros de uma só vez.",
+    text: "Na Luminar, você pode parcelar o investimento nas placas solares, eliminando a necessidade de grandes aportes financeiros de uma só vez.",
   },
   {
     icon: "bi-lightning-charge",
     title: "Monitoramento Inteligente",
-    text:
-      "Acompanhe o desempenho energético da sua empresa em tempo real. Nosso sistema identifica falhas automaticamente e emite alertas instantâneos para evitar qualquer perda na sua produção.",
+    text: "Acompanhe o desempenho energético da sua empresa em tempo real. Nosso sistema identifica falhas automaticamente e emite alertas instantâneos para evitar qualquer perda na sua produção.",
   },
   {
     icon: "bi-headset",
     title: "Suporte Prático",
-    text:
-      "Tenha acesso rápido e direto à nossa equipe técnica para solicitar manutenções, tirar dúvidas e garantir que sua operação nunca fique sem energia.",
+    text: "Tenha acesso rápido e direto à nossa equipe técnica para solicitar manutenções, tirar dúvidas e garantir que sua operação nunca fique sem energia.",
   },
 ];
 
 const SERVICES = [
   {
-    img:
-      "https://descarbonizesolucoes.com.br/blog/wp-content/uploads/2024/12/engenharia-instalacao-paineis-solares-campo-aberto.webp",
+    img: "https://descarbonizesolucoes.com.br/blog/wp-content/uploads/2024/12/engenharia-instalacao-paineis-solares-campo-aberto.webp",
     title: "Instalação de painéis",
   },
   {
-    img:
-      "https://cdn.prod.website-files.com/6800d450c97b7af1e8cc4be2/681b4df93cee4c65220a1fa8_Design%20sem%20nome%20-%202025-05-07T091107.350.png",
+    img: "https://cdn.prod.website-files.com/6800d450c97b7af1e8cc4be2/681b4df93cee4c65220a1fa8_Design%20sem%20nome%20-%202025-05-07T091107.350.png",
     title: "Monitoramento energético",
   },
   {
-    img:
-      "https://institutosolar.com/wp-content/uploads/2019/05/Manuten%C3%A7%C3%A3o-do-painel-solar.jpg",
+    img: "https://institutosolar.com/wp-content/uploads/2019/05/Manuten%C3%A7%C3%A3o-do-painel-solar.jpg",
     title: "Manutenção técnica",
   },
 ];
@@ -77,7 +71,10 @@ export default function Home() {
                   <span className="text-warning">para a sua empresa</span>
                 </h1>
                 <p className="lead text-light mb-5 px-md-5 fw-light fs-4">
-                  Projetamos, instalamos e monitoramos sistemas de energia solar fotovoltaica com foco em alta eficiência, economia e segurança. Tenha o controle total da sua geração energética com a Luminar. 
+                  Projetamos, instalamos e monitoramos sistemas de energia solar
+                  fotovoltaica com foco em alta eficiência, economia e
+                  segurança. Tenha o controle total da sua geração energética
+                  com a Luminar.
                 </p>
                 <div className="d-flex flex-wrap justify-content-center gap-3">
                   <a
@@ -107,7 +104,11 @@ export default function Home() {
                   Faça a transição para o futuro da energia
                 </h2>
                 <p className="text-secondary fs-5 mb-4 aboutText">
-                  Ajudamos indústrias e empresas a migrarem para uma matriz energética limpa, eliminando a dependência de fontes poluentes. Nossa equipe cuida de absolutamente tudo: desde o projeto de instalação até o monitoramento contínuo e a manutenção.
+                  Ajudamos indústrias e empresas a migrarem para uma matriz
+                  energética limpa, eliminando a dependência de fontes
+                  poluentes. Nossa equipe cuida de absolutamente tudo: desde o
+                  projeto de instalação até o monitoramento contínuo e a
+                  manutenção.
                 </p>
                 <ul className="list-unstyled mt-4">
                   <li className="d-flex align-items-center mb-3 text-secondary">
@@ -182,11 +183,7 @@ export default function Home() {
               {SERVICES.map((svc) => (
                 <div className="col-lg-4 col-md-6" key={svc.title}>
                   <article className="card border-0 rounded-4 overflow-hidden h-100 position-relative shadow-lg serviceCard">
-                    <img
-                      className="serviceBg"
-                      src={svc.img}
-                      alt=""
-                    />
+                    <img className="serviceBg" src={svc.img} alt="" />
                     <div className="serviceOverlay"></div>
                     <div className="card-body serviceBody">
                       <h3 className="fw-bold text-white serviceTitle">
@@ -201,7 +198,7 @@ export default function Home() {
           </div>
         </section>
 
-{/* SECTION: PREVISIBILIDADE E RETORNO FINANCEIRO */}
+        {/* SECTION: PREVISIBILIDADE E RETORNO FINANCEIRO */}
         <section className="simulationSection" id="retorno">
           <div className="simulationGlow"></div>
           <div className="container">
@@ -211,24 +208,35 @@ export default function Home() {
 
               {/* Lado Esquerdo: Mensagem Institucional B2B */}
               <div className="col-lg-6 position-relative z-2 simulationContent">
-                <h2 className="simulationTitle">A escolha inteligente para o seu negócio</h2>
+                <h2 className="simulationTitle">
+                  A escolha inteligente para o seu negócio
+                </h2>
                 <p className="simulationText">
-                  Reduza drasticamente os custos operacionais da sua empresa ou indústria, blindando sua operação contra os aumentos constantes nas tarifas de energia.
+                  Reduza drasticamente os custos operacionais da sua empresa ou
+                  indústria, blindando sua operação contra os aumentos
+                  constantes nas tarifas de energia.
                 </p>
 
                 <div className="mt-4 pt-2">
                   <div className="d-flex align-items-center gap-2 text-white mb-3">
                     <i className="bi bi-patch-check-fill text-warning fs-5"></i>
-                    <span className="fw-semibold">Matriz energética 100% limpa e renovável</span>
+                    <span className="fw-semibold">
+                      Matriz energética 100% limpa e renovável
+                    </span>
                   </div>
                   <div className="d-flex align-items-center gap-2 text-white mb-4">
                     <i className="bi bi-patch-check-fill text-warning fs-5"></i>
-                    <span className="fw-semibold">Monitoramento ativo contra falhas e suporte ágil</span>
+                    <span className="fw-semibold">
+                      Monitoramento ativo contra falhas e suporte ágil
+                    </span>
                   </div>
                 </div>
 
                 <div className="d-flex flex-wrap align-items-center gap-3 mt-4">
-                  <a href="/fale-conosco" className="btn simulationPrimaryBtn text-decoration-none">
+                  <a
+                    href="/fale-conosco"
+                    className="btn simulationPrimaryBtn text-decoration-none"
+                  >
                     Fale com um Especialista →
                   </a>
                 </div>
@@ -237,16 +245,24 @@ export default function Home() {
               {/* Lado Direito: Quadro Informativo de Economia */}
               <div className="col-lg-4 position-relative z-2 d-flex justify-content-center">
                 <div className="simulationResultCard w-100">
-                  <p className="text-secondary mb-2 fw-medium text-uppercase small tracking-wider">Investimento Inteligente</p>
+                  <p className="text-secondary mb-2 fw-medium text-uppercase small tracking-wider">
+                    Investimento Inteligente
+                  </p>
                   <h3 className="simulationAmount simulationAmountCompact">
                     Até 72x
                   </h3>
                   <p className="text-secondary mb-4 fw-semibold text-dark-emphasis">
-                    Parcelamento facilitado e estruturado para que a própria economia pague o investimento.
+                    Parcelamento facilitado e estruturado para que a própria
+                    economia pague o investimento.
                   </p>
                   <hr className="my-4" />
                   <p className="text-secondary lh-base m-0">
-                        E ainda: <span className="fw-bold text-warning">comece a pagar só daqui 60 dias</span>, garantindo a preservação do capital de giro da sua empresa.
+                    E ainda:{" "}
+                    <span className="fw-bold text-warning">
+                      comece a pagar só daqui 60 dias
+                    </span>
+                    , garantindo a preservação do capital de giro da sua
+                    empresa.
                   </p>
                 </div>
               </div>

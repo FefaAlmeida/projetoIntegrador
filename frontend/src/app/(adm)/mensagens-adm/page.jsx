@@ -13,6 +13,9 @@ export default function ChamadosPage() {
     const [mensagemSelecionada, setMensagemSelecionada] = useState(null);
     const [resposta, setResposta] = useState("");
     const [enviandoResposta, setEnviandoResposta] = useState(false);
+    const [busca, setBusca] = useState("");
+    const [filtroStatus, setFiltroStatus] = useState("TODAS"); // TODAS | PENDENTE | RESPONDIDO
+    const [ordem, setOrdem] = useState("RECENTES"); // RECENTES | ANTIGAS
 
     useEffect(() => {
         carregarMensagens();

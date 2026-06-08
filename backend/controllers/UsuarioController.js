@@ -5,12 +5,12 @@ class UsuarioController {
 
     static async criarUsuario(req, res) {
         try {
-            const { nome, email, senha, token } = req.body;
+            const { senha, token } = req.body;
 
-            if (!nome || !email || !senha || !token) {
+            if (!senha || !token) {
                 return res.status(400).json({
                     sucesso: false,
-                    erro: 'Todos os campos são obrigatórios'
+                    erro: 'Senha e token são obrigatórios'
                 });
             }
 
@@ -29,6 +29,11 @@ class UsuarioController {
                     erro: 'Orçamento não aceito'
                 });
             }
+
+            // Nome e e-mail são derivados do orçamento vinculado ao token,
+            // não do que o client envia.
+            const nome = orcamento.nome_responsavel;
+            const email = orcamento.email_contato;
 
             const existe = await UsuarioModel.buscarPorEmail(email);
 
