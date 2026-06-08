@@ -454,8 +454,8 @@ export async function abrirChamado(data) {
 }
 
 // (Cliente) Listar os chamados da empresa autenticada
-export async function getMeusChamados() {
-  const res = await fetch(`${BASE_URL}/chamados/meus-chamados`, {
+export async function getMeusChamados(pagina = 1, limite = 10) {
+  const res = await fetch(`${BASE_URL}/chamados/meus-chamados?pagina=${pagina}&limite=${limite}`, {
     method: "GET",
     credentials: "include",
   });
@@ -474,8 +474,8 @@ export async function cancelarChamadoCliente(id) {
 }
 
 // (Admin) Listar de forma global todos os chamados do sistema
-export async function getTodosChamadosSistema() {
-  const res = await fetch(`${BASE_URL}/chamados/admin`, {
+export async function getTodosChamadosSistema(pagina = 1, limite = 10) {
+  const res = await fetch(`${BASE_URL}/chamados/admin?pagina=${pagina}&limite=${limite}`, {
     method: "GET",
     credentials: "include",
   });

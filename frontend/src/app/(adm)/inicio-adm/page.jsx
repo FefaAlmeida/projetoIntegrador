@@ -50,10 +50,6 @@ export default function Page() {
             <p className={`m-0 ${styles.welcomeText}`}>Bem-vindo(a),</p>
             <p className={`m-0 ${styles.userName}`}>{usuario?.nome}</p>
           </div>
-
-          <button className={`btn ${styles.dashboardButton}`}>
-            <a href="/dashboard-adm">Ver dashboard completo</a>
-          </button>
         </div>
 
         <div className={styles.heroCard}>

@@ -87,7 +87,7 @@ export default function Header() {
                             {usuario?.nome}
                           </strong>
                           <small className={styles.userRole}>
-                            Cliente
+                            {usuario?.tipo_usuario === "ADMIN" ? "Administrador" : "Cliente"}
                           </small>
                         </div>
                       </a>

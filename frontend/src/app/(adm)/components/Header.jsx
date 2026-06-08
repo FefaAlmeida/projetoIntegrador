@@ -83,7 +83,7 @@ export default function Header() {
                             {usuario?.nome}
                           </strong>
                           <small className={styles.userRole}>
-                            Administrador
+                            {usuario?.tipo_usuario === "ADMIN" ? "Administrador" : "Cliente"}
                           </small>
                         </div>
                       </a>
@@ -148,16 +148,6 @@ export default function Header() {
             >
             <i className="bi bi-house-door-fill"></i>
             Início
-            </a>
-        </li>
-
-        <li>
-            <a
-            href="/dashboard-adm"
-            className={`nav-link text-white d-flex align-items-center gap-3 ${styles.sidebarLink}`}
-            >
-            <i className="bi bi-speedometer2"></i>
-            Dashboard
             </a>
         </li>
 

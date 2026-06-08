@@ -190,6 +190,8 @@ export default function PerfilPage() {
     }
   }
 
+  const isAdmin = usuario?.tipo_usuario === "ADMIN";
+
   const iniciais = (usuario?.nome || "Usuário")
     .split(" ")
     .filter(Boolean)
@@ -237,7 +239,7 @@ export default function PerfilPage() {
           <div className="card border-0 shadow-lg rounded-4 overflow-hidden sticky-lg-top">
             <div className={`card-body p-4 text-white ${styles.sidebarCard}`}>
               <span className={`badge rounded-pill text-dark fw-bold mb-4 ${styles.badgeHighlight}`}>
-                Área do cliente
+                {usuario?.tipo_usuario === "ADMIN" ? "Área do administrador" : "Área do cliente"}
               </span>
 
               <div className="d-flex align-items-center gap-3 mb-4">
@@ -254,10 +256,12 @@ export default function PerfilPage() {
               </div>
 
               <div className="list-group list-group-flush rounded-4 overflow-hidden mb-4">
-                <div className="list-group-item bg-transparent text-white border-secondary-subtle px-0">
-                  <small className="text-white-50 d-block">Empresa vinculada</small>
-                  <span>{empresa ? empresa.nome_empresa : "Nenhuma empresa vinculada"}</span>
-                </div>
+                {!isAdmin && (
+                  <div className="list-group-item bg-transparent text-white border-secondary-subtle px-0">
+                    <small className="text-white-50 d-block">Empresa vinculada</small>
+                    <span>{empresa ? empresa.nome_empresa : "Nenhuma empresa vinculada"}</span>
+                  </div>
+                )}
                 <div className="list-group-item bg-transparent text-white border-secondary-subtle px-0">
                   <small className="text-white-50 d-block">E-mail de acesso</small>
                   <span>{valorTexto(usuario?.email)}</span>
@@ -345,6 +349,8 @@ export default function PerfilPage() {
               </div>
             </div>
 
+            {!isAdmin && (
+            <>
             <div className="card border-0 shadow-sm rounded-4 mb-4">
               <div className="card-body p-4 p-lg-5">
                 <div className="d-flex flex-column flex-md-row justify-content-between gap-3 mb-4">
@@ -514,6 +520,8 @@ export default function PerfilPage() {
                 )}
               </div>
             </div>
+            </>
+            )}
 
           </form>
         </section>

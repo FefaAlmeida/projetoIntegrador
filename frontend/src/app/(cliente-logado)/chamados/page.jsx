@@ -28,6 +28,8 @@ export default function ChamadosPage() {
   };
 
   const [chamados, setChamados] = useState([]);
+  const [paginaAtual, setPaginaAtual] = useState(1);
+  const [paginacao, setPaginacao] = useState({});
   const [filtroStatus, setFiltroStatus] = useState("TODOS");
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -46,14 +48,15 @@ export default function ChamadosPage() {
       require("bootstrap/dist/js/bootstrap.bundle.min.js");
     }
     carregarChamados();
-  }, []);
+  }, [paginaAtual]);
 
   const carregarChamados = async () => {
     setLoading(true);
     try {
-      const res = await getMeusChamados();
+      const res = await getMeusChamados(paginaAtual);
       if (res && res.sucesso) {
         setChamados(res.dados || []);
+        setPaginacao(res.paginacao || {});
       } else if (Array.isArray(res)) {
         setChamados(res);
       } else {
@@ -330,6 +333,21 @@ export default function ChamadosPage() {
                   </tbody>
                 </table>
               </div>
+            )}
+
+            {paginacao.totalPaginas > 1 && (
+              <nav className="d-flex justify-content-center py-4 border-top">
+                <ul className="pagination gap-2 m-0 border-0">
+                  {Array.from({ length: paginacao.totalPaginas }, (_, i) => i + 1).map((n) => (
+                    <li key={n} className="page-item">
+                      <button
+                        onClick={() => setPaginaAtual(n)}
+                        className={`page-link border-0 shadow-sm fw-bold rounded-3 ${paginaAtual === n ? "bg-warning text-dark" : "text-dark"}`}
+                      >{n}</button>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
             )}
           </div>
 

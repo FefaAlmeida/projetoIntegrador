@@ -75,6 +75,38 @@ export default function ChamadosPage() {
         return data.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
     };
 
+    // Filtragem + ordenação no client (sobre as mensagens da página atual)
+    const termo = busca.trim().toLowerCase();
+    const mensagensFiltradas = mensagens
+        .filter((item) => filtroStatus === "TODAS" || item.status_contato === filtroStatus)
+        .filter((item) => {
+            if (!termo) return true;
+            // Rótulo de status pesquisável em pt-BR ("pendente", "respondido/respondida", "não respondida")
+            const statusTexto =
+                item.status_contato === "RESPONDIDO"
+                    ? "respondido respondida"
+                    : "pendente nao respondida não respondida";
+            const campos = [
+                item.nome_completo,
+                item.email,
+                item.telefone,
+                item.mensagem,
+                item.resposta_adm,
+                item.id_contato != null ? String(item.id_contato) : "",
+                formatarData(item.data_contato),
+                statusTexto,
+            ];
+            return campos.some((campo) => (campo || "").toLowerCase().includes(termo));
+        })
+        .sort((a, b) => {
+            const da = new Date(a.data_contato).getTime();
+            const db = new Date(b.data_contato).getTime();
+            return ordem === "RECENTES" ? db - da : da - db;
+        });
+
+    const totalPendentes = mensagens.filter((m) => m.status_contato === "PENDENTE").length;
+    const totalRespondidas = mensagens.filter((m) => m.status_contato === "RESPONDIDO").length;
+
     return (
         <div className="mensagens-container">
             {/* MODAL DE RESPOSTA */}
@@ -129,14 +161,94 @@ export default function ChamadosPage() {
                     <p className="m-0">Centralize e gerencie todas as mensagens recebidas pelo Fale Conosco.</p>
                 </div>
 
-                {/* CARD DE RESUMO */}
-                <div className="stats-card d-inline-flex align-items-center shadow-sm mb-4">
-                    <div className="stats-icon me-3">
-                        <i className="bi bi-chat-left-dots-fill fs-4"></i>
+                {/* CARDS DE RESUMO */}
+                <div className="stats-grid mb-4">
+                    <div className="stats-card d-flex align-items-center shadow-sm">
+                        <div className="stats-icon me-3">
+                            <i className="bi bi-chat-left-dots-fill fs-4"></i>
+                        </div>
+                        <div>
+                            <h2 className="m-0 fw-bold">{paginacao.total || 0}</h2>
+                            <span className="text-muted">Total de Mensagens</span>
+                        </div>
                     </div>
-                    <div>
-                        <h2 className="m-0 fw-bold">{paginacao.total || 0}</h2>
-                        <span className="text-muted">Total de Mensagens</span>
+
+                    <div className="stats-card d-flex align-items-center shadow-sm">
+                        <div className="stats-icon stats-icon-respondidas me-3">
+                            <i className="bi bi-check2-circle fs-4"></i>
+                        </div>
+                        <div>
+                            <h2 className="m-0 fw-bold">{totalRespondidas}</h2>
+                            <span className="text-muted">Total Respondidas</span>
+                        </div>
+                    </div>
+
+                    <div className="stats-card d-flex align-items-center shadow-sm">
+                        <div className="stats-icon stats-icon-pendentes me-3">
+                            <i className="bi bi-exclamation-circle fs-4"></i>
+                        </div>
+                        <div>
+                            <h2 className="m-0 fw-bold">{totalPendentes}</h2>
+                            <span className="text-muted">Total Não Respondidas</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* BARRA DE BUSCA + FILTROS */}
+                <div className="toolbar-mensagens shadow-sm mb-4">
+                    <div className="search-mensagens">
+                        <i className="bi bi-search search-icon"></i>
+                        <input
+                            type="text"
+                            value={busca}
+                            onChange={(e) => setBusca(e.target.value)}
+                            placeholder="Buscar por nome, e-mail, telefone, mensagem, resposta ou status..."
+                            className="search-input"
+                        />
+                        {busca && (
+                            <button
+                                type="button"
+                                onClick={() => setBusca("")}
+                                className="search-clear"
+                                aria-label="Limpar busca"
+                            >
+                                <i className="bi bi-x-lg"></i>
+                            </button>
+                        )}
+                    </div>
+
+                    <div className="filtros-mensagens">
+                        <button
+                            type="button"
+                            onClick={() => setFiltroStatus("TODAS")}
+                            className={`filtro-pill ${filtroStatus === "TODAS" ? "ativo" : ""}`}
+                        >
+                            Todas
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setFiltroStatus("PENDENTE")}
+                            className={`filtro-pill ${filtroStatus === "PENDENTE" ? "ativo" : ""}`}
+                        >
+                            Não respondidas
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setFiltroStatus("RESPONDIDO")}
+                            className={`filtro-pill ${filtroStatus === "RESPONDIDO" ? "ativo" : ""}`}
+                        >
+                            Respondidas
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={() => setOrdem(ordem === "RECENTES" ? "ANTIGAS" : "RECENTES")}
+                            className="filtro-ordem"
+                            title="Alternar ordenação por data"
+                        >
+                            <i className={`bi ${ordem === "RECENTES" ? "bi-sort-down" : "bi-sort-up"}`}></i>
+                            {ordem === "RECENTES" ? "Mais recentes" : "Mais antigas"}
+                        </button>
                     </div>
                 </div>
 
@@ -151,8 +263,13 @@ export default function ChamadosPage() {
                         <div className="col-12 text-center py-5">
                             <p className="text-muted fs-5">Nenhuma mensagem recebida ainda.</p>
                         </div>
+                    ) : mensagensFiltradas.length === 0 ? (
+                        <div className="col-12 text-center py-5">
+                            <i className="bi bi-inbox fs-1 text-muted d-block mb-2"></i>
+                            <p className="text-muted fs-5">Nenhuma mensagem corresponde à busca ou ao filtro.</p>
+                        </div>
                     ) : (
-                        mensagens.map((item) => (
+                        mensagensFiltradas.map((item) => (
                             <div key={item.id_contato} className="col-12">
                                 <div className={`mensagem-item shadow-sm d-flex align-items-center ${item.status_contato === 'RESPONDIDO' ? 'respondido' : ''}`}>
                                     {item.status_contato === 'PENDENTE' && <div className="mensagem-item-pendente-bar"></div>}
