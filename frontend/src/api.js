@@ -145,6 +145,19 @@ export async function criarEndereco(data) {
   return res.json();
 }
 
+export async function atualizarEndereco(id, data) {
+  const res = await fetch(`${BASE_URL}/empresas/minha/enderecos/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+
+  return res.json();
+}
+
 
 // INSTALAÇÃO
 export async function solicitarInstalacao(data) {
@@ -512,6 +525,39 @@ export async function excluirRegistroChamado(id) {
   const res = await fetch(`${BASE_URL}/chamados/${id}`, {
     method: "DELETE",
     credentials: "include",
+  });
+
+  return res.json();
+}
+
+
+// ==========================================================================
+// FINANCEIRO (ADM)
+// ==========================================================================
+
+// (Admin) Listar de forma global todas as parcelas/pagamentos com indicadores
+export async function getFinanceiroAdmin(pagina = 1, limite = 10, status = "", tipo = "") {
+  const params = new URLSearchParams({ pagina, limite });
+  if (status) params.append("status", status);
+  if (tipo) params.append("tipo", tipo);
+
+  const res = await fetch(`${BASE_URL}/financeiro?${params.toString()}`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  return res.json();
+}
+
+// (Admin) Dar baixa ou reabrir uma parcela (PENDENTE | PAGO | ATRASADO)
+export async function atualizarStatusPagamento(id, status_pagamento) {
+  const res = await fetch(`${BASE_URL}/financeiro/${id}/status`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({ status_pagamento }),
   });
 
   return res.json();

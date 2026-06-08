@@ -187,16 +187,6 @@ export default function Header() {
 
         <li>
             <a
-            href="/cadastrar-endereco"
-            className={`nav-link text-white d-flex align-items-center gap-3 ${styles.sidebarLink}`}
-            >
-            <i className="bi bi-geo-alt-fill"></i>
-            Cadastrar endereço
-            </a>
-        </li>
-
-        <li>
-            <a
             href="/chamados"
             className={`nav-link text-white d-flex align-items-center gap-3 ${styles.sidebarLink}`}
             >

@@ -317,6 +317,109 @@ class EmpresaController {
         }
     }
 
+    // ATUALIZAR ENDEREÇO DA EMPRESA DO USUÁRIO LOGADO
+    static async atualizarEndereco(req, res) {
+        try {
+            const { id } = req.params;
+            const {
+                logradouro,
+                numero,
+                bairro,
+                cidade,
+                estado,
+                cep,
+                complemento
+            } = req.body;
+
+            const usuario = await UsuarioModel.buscarPorId(req.usuario.id);
+
+            if (!usuario) {
+                return res.status(404).json({
+                    sucesso: false,
+                    erro: 'Usuário não encontrado'
+                });
+            }
+
+            if (!usuario.id_empresa) {
+                return res.status(400).json({
+                    sucesso: false,
+                    erro: 'Nenhuma empresa vinculada'
+                });
+            }
+
+            const endereco = await EnderecoModel.buscarPorId(id);
+
+            if (!endereco) {
+                return res.status(404).json({
+                    sucesso: false,
+                    erro: 'Endereço não encontrado'
+                });
+            }
+
+            // Garante que o endereço pertence à empresa do usuário logado
+            if (endereco.id_empresa !== usuario.id_empresa) {
+                return res.status(403).json({
+                    sucesso: false,
+                    erro: 'Você não tem permissão para editar este endereço'
+                });
+            }
+
+            if (
+                !logradouro ||
+                !numero ||
+                !bairro ||
+                !cidade ||
+                !estado ||
+                !cep
+            ) {
+                return res.status(400).json({
+                    sucesso: false,
+                    erro: 'Preencha todos os campos obrigatórios'
+                });
+            }
+
+            const cepNormalizado = cep.replace(/\D/g, '');
+            const estadoNormalizado = estado.trim().toUpperCase();
+
+            if (cepNormalizado.length !== 8) {
+                return res.status(400).json({
+                    sucesso: false,
+                    erro: 'CEP deve conter 8 números'
+                });
+            }
+
+            if (estadoNormalizado.length !== 2) {
+                return res.status(400).json({
+                    sucesso: false,
+                    erro: 'Estado deve conter 2 letras'
+                });
+            }
+
+            await EnderecoModel.atualizar(id, {
+                logradouro: logradouro.trim(),
+                numero: numero.trim(),
+                bairro: bairro.trim(),
+                cidade: cidade.trim(),
+                estado: estadoNormalizado,
+                cep: cepNormalizado,
+                complemento: complemento ? complemento.trim() : null
+            });
+
+            return res.status(200).json({
+                sucesso: true,
+                mensagem: 'Endereço atualizado com sucesso'
+            });
+
+        } catch (error) {
+            console.error(error);
+
+            return res.status(500).json({
+                sucesso: false,
+                erro: 'Erro interno'
+            });
+        }
+    }
+
     // ATUALIZAR EMPRESA
     static async atualizarEmpresa(req, res) {
         try {

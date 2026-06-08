@@ -1,19 +1,51 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { criarEmpresa } from "../../../api";
+import { criarEmpresa, getPerfil, getMinhaEmpresa } from "../../../api";
 import { toast } from "sonner";
 import styles from "./page.module.css";
 
 export default function CadastroEmpresaPage() {
 
-
+  const [verificando, setVerificando] = useState(true);
 
   const [nomeEmpresa, setNomeEmpresa] = useState("");
   const [cnpj, setCnpj] = useState("");
   const [telefone, setTelefone] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Precisa estar logado para cadastrar empresa; quem já tem empresa vai pro painel.
+  useEffect(() => {
+
+    async function verificarAcesso() {
+
+      try {
+
+        const perfil = await getPerfil();
+
+        if (!perfil?.sucesso) {
+          window.location.href = "/login";
+          return;
+        }
+
+        const empresa = await getMinhaEmpresa();
+
+        if (empresa?.sucesso) {
+          window.location.href = "/inicio-dashboard";
+          return;
+        }
+
+        setVerificando(false);
+
+      } catch (error) {
+        window.location.href = "/login";
+      }
+    }
+
+    verificarAcesso();
+
+  }, []);
 
   async function handleSubimit() {
 
@@ -92,6 +124,10 @@ export default function CadastroEmpresaPage() {
 
     }
 
+  }
+
+  if (verificando) {
+    return <p>Carregando...</p>;
   }
 
   return (

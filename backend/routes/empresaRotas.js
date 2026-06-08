@@ -25,6 +25,13 @@ router.post(
     EmpresaController.cadastrarEndereco
 );
 
+// ATUALIZAR ENDEREÇO DA EMPRESA DO USUÁRIO LOGADO
+router.put(
+    '/minha/enderecos/:id',
+    authMiddleware,
+    EmpresaController.atualizarEndereco
+);
+
 // CRIAR EMPRESA
 router.post(
     '/',
@@ -99,6 +106,21 @@ router.options('/minha/enderecos', (req, res) => {
     res.header(
         'Access-Control-Allow-Methods',
         'GET, POST, OPTIONS'
+    );
+    res.header(
+        'Access-Control-Allow-Headers',
+        'Content-Type, Authorization'
+    );
+    res.sendStatus(200);
+});
+
+// OPTIONS /minha/enderecos/:id
+
+router.options('/minha/enderecos/:id', (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header(
+        'Access-Control-Allow-Methods',
+        'PUT, OPTIONS'
     );
     res.header(
         'Access-Control-Allow-Headers',

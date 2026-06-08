@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
   atualizarEmpresa,
+  atualizarEndereco,
   atualizarPerfil,
   getMinhaEmpresa,
   getMeusEnderecos,
@@ -53,6 +54,11 @@ export default function PerfilPage() {
   const [formEmpresa, setFormEmpresa] = useState(empresaInicial);
   const [carregando, setCarregando] = useState(true);
   const [salvando, setSalvando] = useState(false);
+
+  // Edição inline de endereços
+  const [editandoEnderecoId, setEditandoEnderecoId] = useState(null);
+  const [formEndereco, setFormEndereco] = useState(null);
+  const [salvandoEndereco, setSalvandoEndereco] = useState(false);
 
   async function carregarDados() {
     setCarregando(true);
@@ -135,6 +141,83 @@ export default function PerfilPage() {
 
     if (response?.sucesso) {
       window.location.href = "/login";
+    }
+  }
+
+  function iniciarEdicaoEndereco(endereco) {
+    setEditandoEnderecoId(endereco.id_endereco);
+    setFormEndereco({ ...endereco });
+  }
+
+  function cancelarEdicaoEndereco() {
+    setEditandoEnderecoId(null);
+    setFormEndereco(null);
+  }
+
+  function handleEnderecoChange(event) {
+    const { name, value } = event.target;
+
+    let novoValor = value;
+    if (name === "cep") {
+      novoValor = somenteNumeros(value).slice(0, 8);
+    } else if (name === "estado") {
+      novoValor = value.replace(/[^a-zA-Z]/g, "").toUpperCase().slice(0, 2);
+    }
+
+    setFormEndereco((atual) => ({
+      ...atual,
+      [name]: novoValor,
+    }));
+  }
+
+  async function salvarEndereco(event) {
+    event.preventDefault();
+    if (!formEndereco) return;
+
+    const obrigatorios = ["logradouro", "numero", "bairro", "cidade", "estado", "cep"];
+    const faltando = obrigatorios.some((campo) => !String(formEndereco[campo] || "").trim());
+
+    if (faltando) {
+      toast.error("Preencha todos os campos obrigatórios.");
+      return;
+    }
+
+    if (somenteNumeros(formEndereco.cep).length !== 8) {
+      toast.error("CEP deve conter 8 números.");
+      return;
+    }
+
+    if (formEndereco.estado.trim().length !== 2) {
+      toast.error("Estado deve conter 2 letras.");
+      return;
+    }
+
+    setSalvandoEndereco(true);
+
+    try {
+      const response = await atualizarEndereco(editandoEnderecoId, {
+        logradouro: formEndereco.logradouro.trim(),
+        numero: String(formEndereco.numero).trim(),
+        bairro: formEndereco.bairro.trim(),
+        cidade: formEndereco.cidade.trim(),
+        estado: formEndereco.estado.trim().toUpperCase(),
+        cep: somenteNumeros(formEndereco.cep),
+        complemento: formEndereco.complemento ? formEndereco.complemento.trim() : "",
+      });
+
+      if (!response?.sucesso) {
+        toast.error(response?.erro || response?.mensagem || "Erro ao atualizar endereço.");
+        return;
+      }
+
+      toast.success("Endereço atualizado com sucesso.");
+      cancelarEdicaoEndereco();
+      await carregarDados();
+    } catch (error) {
+      console.error(error);
+      toast.error("Erro de conexão ao salvar o endereço.");
+    } finally {
+      setSalvandoEndereco(false);
     }
   }
 
@@ -350,7 +433,6 @@ export default function PerfilPage() {
             </div>
 
             {!isAdmin && (
-            <>
             <div className="card border-0 shadow-sm rounded-4 mb-4">
               <div className="card-body p-4 p-lg-5">
                 <div className="d-flex flex-column flex-md-row justify-content-between gap-3 mb-4">
@@ -428,7 +510,11 @@ export default function PerfilPage() {
                 {empresa && botoesAlteracao}
               </div>
             </div>
+            )}
 
+          </form>
+
+          {!isAdmin && (
             <div className="card border-0 shadow-sm rounded-4 mb-4">
               <div className="card-body p-4 p-lg-5">
                 <div className="d-flex flex-column flex-md-row justify-content-between gap-3 mb-4">
@@ -438,13 +524,13 @@ export default function PerfilPage() {
                       Endereços vinculados
                     </h2>
                     <p className="text-muted mb-0">
-                      Cadastre e consulte os endereços ligados à sua empresa.
+                      Edite os endereços ligados à sua empresa ou cadastre um novo.
                     </p>
                   </div>
 
                   {empresa && (
                     <a
-                      href="/cadastrar-endereco"
+                      href="/solicitar-instalacao"
                       className={`btn btn-warning px-4 py-3 fw-bold rounded-pill shadow-sm align-self-start ${styles.primaryButton}`}
                     >
                       <i className="bi bi-plus-circle me-2" />
@@ -459,71 +545,209 @@ export default function PerfilPage() {
                   </div>
                 ) : (
                   <div className="vstack gap-4">
-                    {enderecos.map((endereco, index) => (
-                      <div className="border rounded-4 p-4" key={endereco.id_endereco || index}>
-                        <div className="d-flex flex-column flex-md-row justify-content-between gap-2 mb-3">
-                          <div className="d-flex align-items-center gap-2">
-                            <i className="bi bi-geo-alt-fill text-warning fs-5" />
-                            <h3 className="h5 fw-bold mb-0">
-                              Endereço {index + 1}
-                            </h3>
+                    {enderecos.map((endereco, index) => {
+                      const emEdicao = editandoEnderecoId === endereco.id_endereco;
+
+                      return (
+                        <div
+                          className={`border rounded-4 p-4 ${emEdicao ? "border-warning border-2 shadow-sm" : ""}`}
+                          key={endereco.id_endereco || index}
+                        >
+                          <div className="d-flex flex-column flex-md-row justify-content-between gap-2 mb-3">
+                            <div className="d-flex align-items-center gap-2">
+                              <i className="bi bi-geo-alt-fill text-warning fs-5" />
+                              <h3 className="h5 fw-bold mb-0">
+                                Endereço {index + 1}
+                              </h3>
+                            </div>
+
+                            {!emEdicao && (
+                              <button
+                                type="button"
+                                className="btn btn-sm btn-outline-dark rounded-pill px-3 align-self-start"
+                                onClick={() => iniciarEdicaoEndereco(endereco)}
+                                disabled={editandoEnderecoId !== null}
+                              >
+                                <i className="bi bi-pencil-square me-1" />
+                                Editar
+                              </button>
+                            )}
                           </div>
 
-                          <span className="badge rounded-pill bg-light text-muted border align-self-start">
-                            Histórico
-                          </span>
+                          {emEdicao ? (
+                            <form onSubmit={salvarEndereco}>
+                              <div className="row g-3">
+                                <div className="col-md-8">
+                                  <label className="form-label fw-semibold">
+                                    Logradouro <span className="text-danger">*</span>
+                                  </label>
+                                  <input
+                                    type="text"
+                                    name="logradouro"
+                                    className="form-control form-control-lg rounded-3"
+                                    maxLength={150}
+                                    value={formEndereco.logradouro}
+                                    onChange={handleEnderecoChange}
+                                    required
+                                  />
+                                </div>
+
+                                <div className="col-md-4">
+                                  <label className="form-label fw-semibold">
+                                    Número <span className="text-danger">*</span>
+                                  </label>
+                                  <input
+                                    type="text"
+                                    name="numero"
+                                    className="form-control form-control-lg rounded-3"
+                                    maxLength={20}
+                                    value={formEndereco.numero}
+                                    onChange={handleEnderecoChange}
+                                    required
+                                  />
+                                </div>
+
+                                <div className="col-md-6">
+                                  <label className="form-label fw-semibold">
+                                    Bairro <span className="text-danger">*</span>
+                                  </label>
+                                  <input
+                                    type="text"
+                                    name="bairro"
+                                    className="form-control form-control-lg rounded-3"
+                                    maxLength={100}
+                                    value={formEndereco.bairro}
+                                    onChange={handleEnderecoChange}
+                                    required
+                                  />
+                                </div>
+
+                                <div className="col-md-4">
+                                  <label className="form-label fw-semibold">
+                                    Cidade <span className="text-danger">*</span>
+                                  </label>
+                                  <input
+                                    type="text"
+                                    name="cidade"
+                                    className="form-control form-control-lg rounded-3"
+                                    maxLength={100}
+                                    value={formEndereco.cidade}
+                                    onChange={handleEnderecoChange}
+                                    required
+                                  />
+                                </div>
+
+                                <div className="col-md-2">
+                                  <label className="form-label fw-semibold">
+                                    Estado <span className="text-danger">*</span>
+                                  </label>
+                                  <input
+                                    type="text"
+                                    name="estado"
+                                    className="form-control form-control-lg rounded-3 text-uppercase"
+                                    maxLength={2}
+                                    placeholder="UF"
+                                    value={formEndereco.estado}
+                                    onChange={handleEnderecoChange}
+                                    required
+                                  />
+                                </div>
+
+                                <div className="col-md-3">
+                                  <label className="form-label fw-semibold">
+                                    CEP <span className="text-danger">*</span>
+                                  </label>
+                                  <input
+                                    type="text"
+                                    name="cep"
+                                    inputMode="numeric"
+                                    className="form-control form-control-lg rounded-3"
+                                    maxLength={8}
+                                    placeholder="00000000"
+                                    value={formEndereco.cep}
+                                    onChange={handleEnderecoChange}
+                                    required
+                                  />
+                                </div>
+
+                                <div className="col-md-9">
+                                  <label className="form-label fw-semibold">Complemento</label>
+                                  <input
+                                    type="text"
+                                    name="complemento"
+                                    className="form-control form-control-lg rounded-3"
+                                    maxLength={100}
+                                    placeholder="Opcional"
+                                    value={formEndereco.complemento}
+                                    onChange={handleEnderecoChange}
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="d-flex flex-column flex-sm-row justify-content-end gap-2 mt-4">
+                                <button
+                                  type="button"
+                                  className="btn btn-light border px-4 py-2 fw-semibold rounded-pill"
+                                  onClick={cancelarEdicaoEndereco}
+                                  disabled={salvandoEndereco}
+                                >
+                                  Cancelar
+                                </button>
+                                <button
+                                  type="submit"
+                                  className={`btn btn-warning px-4 py-2 fw-bold rounded-pill shadow-sm ${styles.primaryButton}`}
+                                  disabled={salvandoEndereco}
+                                >
+                                  {salvandoEndereco ? "Salvando..." : "Salvar endereço"}
+                                </button>
+                              </div>
+                            </form>
+                          ) : (
+                            <div className="row g-3">
+                              <div className="col-md-8">
+                                <small className="text-muted d-block">Logradouro</small>
+                                <strong>{valorTexto(endereco.logradouro)}</strong>
+                              </div>
+
+                              <div className="col-md-4">
+                                <small className="text-muted d-block">Número</small>
+                                <strong>{valorTexto(endereco.numero)}</strong>
+                              </div>
+
+                              <div className="col-md-4">
+                                <small className="text-muted d-block">Bairro</small>
+                                <strong>{valorTexto(endereco.bairro)}</strong>
+                              </div>
+
+                              <div className="col-md-4">
+                                <small className="text-muted d-block">Cidade</small>
+                                <strong>{valorTexto(endereco.cidade)}</strong>
+                              </div>
+
+                              <div className="col-md-2">
+                                <small className="text-muted d-block">Estado</small>
+                                <strong>{valorTexto(endereco.estado)}</strong>
+                              </div>
+
+                              <div className="col-md-2">
+                                <small className="text-muted d-block">CEP</small>
+                                <strong>{valorTexto(endereco.cep)}</strong>
+                              </div>
+
+                              <div className="col-12">
+                                <small className="text-muted d-block">Complemento</small>
+                                <strong>{valorTexto(endereco.complemento)}</strong>
+                              </div>
+                            </div>
+                          )}
                         </div>
-
-                        <div className="row g-3">
-                          <div className="col-md-8">
-                            <small className="text-muted d-block">Logradouro</small>
-                            <strong>{valorTexto(endereco.logradouro)}</strong>
-                          </div>
-
-                          <div className="col-md-4">
-                            <small className="text-muted d-block">Número</small>
-                            <strong>{valorTexto(endereco.numero)}</strong>
-                          </div>
-
-                          <div className="col-md-4">
-                            <small className="text-muted d-block">Bairro</small>
-                            <strong>{valorTexto(endereco.bairro)}</strong>
-                          </div>
-
-                          <div className="col-md-4">
-                            <small className="text-muted d-block">Cidade</small>
-                            <strong>{valorTexto(endereco.cidade)}</strong>
-                          </div>
-
-                          <div className="col-md-2">
-                            <small className="text-muted d-block">Estado</small>
-                            <strong>{valorTexto(endereco.estado)}</strong>
-                          </div>
-
-                          <div className="col-md-2">
-                            <small className="text-muted d-block">CEP</small>
-                            <strong>{valorTexto(endereco.cep)}</strong>
-                          </div>
-
-                          <div className="col-12">
-                            <small className="text-muted d-block">Complemento</small>
-                            <strong>{valorTexto(endereco.complemento)}</strong>
-                          </div>
-                        </div>
-
-                        <div className="alert alert-light border rounded-4 mt-4 mb-0">
-                          Este endereço fica disponível para consulta no perfil da empresa.
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>
             </div>
-            </>
-            )}
-
-          </form>
+          )}
         </section>
       </div>
     </div>
