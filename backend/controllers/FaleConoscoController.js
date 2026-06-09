@@ -1,5 +1,8 @@
 import FaleConoscoModel from '../models/FaleConoscoModel.js';
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend'; 
+
+// Inicializa o Resend com a chave cadastrada no seu arquivo .env
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 class FaleConoscoController {
 
@@ -15,7 +18,7 @@ class FaleConoscoController {
                 });
             }
 
-            // 1. Buscar a mensagem original para pegar o e-mail do cliente
+            // Buscar a mensagem original para pegar o e-mail do cliente
             const mensagemOriginal = await FaleConoscoModel.buscarPorId(id);
 
             if (!mensagemOriginal) {
@@ -25,28 +28,17 @@ class FaleConoscoController {
                 });
             }
 
-            // 2. Configurar o transportador do e-mail (Nodemailer)
-            const transporter = nodemailer.createTransport({
-                host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-                port: process.env.EMAIL_PORT || 587,
-                secure: false, 
-                auth: {
-                    user: process.env.EMAIL_USER,
-                    pass: process.env.EMAIL_PASS,
-                },
-            });
-
-            // 3. Enviar o e-mail
-            await transporter.sendMail({
-                from: `"Luminar Energia Solar" <${process.env.EMAIL_USER}>`,
-                to: mensagemOriginal.email,
-                subject: `Resposta ao seu contato - Luminar`,
+            // Enviar o e-mail utilizando a API HTTP do Resend
+            const { data, error } = await resend.emails.send({
+                from: 'Luminar <onboarding@gustavo-paiva.dev.br>', // Remetente padrão do plano gratuito
+                to: mensagemOriginal.email,             // E-mail do cliente vindo do banco
+                subject: 'Resposta ao seu contato - Luminar',
                 text: `Olá ${mensagemOriginal.nome_completo},\n\nRecebemos sua mensagem: "${mensagemOriginal.mensagem}"\n\nResposta da nossa equipe:\n${resposta}\n\nAtenciosamente,\nEquipe Luminar`,
                 html: `
-                    <div style="font-family: Arial, sans-serif; color: #221f20;">
+                    <div style="font-family: Arial, sans-serif; color: #221f20; max-width: 600px; margin: 0 auto;">
                         <h2 style="color: #febd17;">Olá ${mensagemOriginal.nome_completo},</h2>
                         <p>Recebemos sua mensagem:</p>
-                        <blockquote style="background: #f9f9f9; padding: 10px; border-left: 5px solid #febd17;">
+                        <blockquote style="background: #f9f9f9; padding: 10px; border-left: 5px solid #febd17; margin: 15px 0;">
                             ${mensagemOriginal.mensagem}
                         </blockquote>
                         <p><strong>Resposta da nossa equipe:</strong></p>
@@ -57,7 +49,19 @@ class FaleConoscoController {
                 `,
             });
 
-            // 4. Salvar a resposta no banco de dados
+            // Verifica se a API do Resend retornou algum erro de envio
+            if (error) {
+                console.error('Erro retornado pela API do Resend:', error);
+                return res.status(500).json({
+                    sucesso: false,
+                    erro: 'Erro ao enviar o e-mail de resposta através da API.',
+                    mensagem: error.message
+                });
+            }
+
+            console.log('E-mail enviado com sucesso via Resend:', data);
+
+            // Salvar a resposta no banco de dados após a confirmação de envio
             await FaleConoscoModel.responder(id, resposta);
 
             res.status(200).json({
@@ -70,7 +74,7 @@ class FaleConoscoController {
             res.status(500).json({
                 sucesso: false,
                 erro: 'Erro ao processar a resposta.',
-                mensagem: 'O e-mail pode não ter sido enviado. Verifique as configurações de SMTP.'
+                mensagem: 'Ocorreu uma falha interna ao tentar se comunicar com o servidor.'
             });
         }
     }
@@ -97,7 +101,6 @@ class FaleConoscoController {
             }
 
             const offset = (pagina - 1) * limite;
-
             const resultado = await FaleConoscoModel.listarTodos(limite, offset);
 
             res.status(200).json({
@@ -112,7 +115,6 @@ class FaleConoscoController {
             });
         } catch (error) {
             console.error('Erro crítico em FaleConoscoController.listarTodos:', error);
-
             res.status(500).json({
                 sucesso: false,
                 erro: 'Erro interno do servidor',
@@ -125,11 +127,12 @@ class FaleConoscoController {
         try {
             const { id } = req.params;
 
-            if (!id || isNaN(id)) {
+            // CORREÇÃO: Removido o 'isNaN(id)' para permitir chaves do tipo UUID/String do Banco de Dados
+            if (!id) {
                 return res.status(400).json({
                     sucesso: false,
                     erro: 'ID inválido',
-                    mensagem: 'O parâmetro ID deve ser um número válido.'
+                    mensagem: 'O parâmetro ID deve ser fornecido.'
                 });
             }
 
@@ -150,7 +153,6 @@ class FaleConoscoController {
 
         } catch (error) {
             console.error(`Erro crítico em FaleConoscoController.buscarPorId (ID: ${req.params.id}):`, error);
-
             res.status(500).json({
                 sucesso: false,
                 erro: 'Erro interno do servidor',
@@ -181,7 +183,6 @@ class FaleConoscoController {
             }
 
             const offset = (pagina - 1) * limite;
-
             const resultado = await FaleConoscoModel.listarPendentes(limite, offset);
 
             res.status(200).json({
@@ -196,7 +197,6 @@ class FaleConoscoController {
             });
         } catch (error) {
             console.error('Erro crítico em FaleConoscoController.listarPendentes:', error);
-
             res.status(500).json({
                 sucesso: false,
                 erro: 'Erro interno do servidor',
@@ -227,7 +227,6 @@ class FaleConoscoController {
             }
 
             const offset = (pagina - 1) * limite;
-
             const resultado = await FaleConoscoModel.listarRespondidos(limite, offset);
 
             res.status(200).json({
@@ -242,7 +241,6 @@ class FaleConoscoController {
             });
         } catch (error) {
             console.error('Erro crítico em FaleConoscoController.listarRespondidos:', error);
-
             res.status(500).json({
                 sucesso: false,
                 erro: 'Erro interno do servidor',
@@ -273,7 +271,6 @@ class FaleConoscoController {
             }
 
             const offset = (pagina - 1) * limite;
-
             const resultado = await FaleConoscoModel.listarPorData(limite, offset);
 
             res.status(200).json({
@@ -288,7 +285,6 @@ class FaleConoscoController {
             });
         } catch (error) {
             console.error('Erro crítico em FaleConoscoController.listarPorData:', error);
-
             res.status(500).json({
                 sucesso: false,
                 erro: 'Erro interno do servidor',
@@ -358,7 +354,7 @@ class FaleConoscoController {
                 sucesso: true,
                 mensagem: 'Mensagem enviada com sucesso',
                 dados: {
-                    id, 
+                    id_contato: id, // ALINHAMENTO: Retorna id_contato de forma explícita
                     ...dadosFaleConosco,
                     status_contato: 'PENDENTE'
                 }
@@ -366,7 +362,6 @@ class FaleConoscoController {
 
         } catch (error) {
             console.error('Erro crítico em FaleConoscoController.criar:', error);
-
             res.status(500).json({
                 sucesso: false,
                 erro: 'Erro interno no servidor',

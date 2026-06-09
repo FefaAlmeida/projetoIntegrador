@@ -136,37 +136,30 @@ export default function CadastroEmpresaPage() {
       <main
         className={`container-fluid d-flex align-items-center position-relative overflow-hidden bg-white px-0 ${styles.shell}`}
       >
-        <div
-          className={`position-absolute top-0 start-0 w-50 ${styles.shapeTop}`}
-        >
-          <svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M0 0H620C520 60 460 112 376 90C250 56 204 162 92 170C44 173 12 194 0 218V0Z"
-              fill="#ffc107"
-            />
-            <path
-              d="M0 80C106 154 194 88 278 116C356 142 396 218 508 156C552 132 590 128 620 142V0H0V80Z"
-              fill="#ffe58a"
-              opacity="0.75"
-            />
-          </svg>
-        </div>
+        
+      {/* ONDA SUPERIOR ESQUERDA (VETOR INLINE DE TRÊS CAMADAS) */}
+      <div className={`${styles.waveWrapper} ${styles.topWave}`} aria-hidden="true">
+        <svg viewBox="0 0 800 600" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          {/* Camada de trás - Amarelo Claro */}
+          <path d="M0,0 L550,0 C450,220 320,280 180,260 C80,250 30,350 0,420 Z" fill="#f5bd31" opacity="0.45" />
+          {/* Camada do meio - Amarelo Médio */}
+          <path d="M0,0 L480,0 C400,180 280,220 160,210 C70,205 25,290 0,350 Z" fill="#f5bd31" opacity="0.7" />
+          {/* Camada da frente - Amarelo Principal */}
+          <path d="M0,0 L420,0 C350,150 240,180 130,170 C50,165 20,240 0,290 Z" fill="#f5bd31" />
+        </svg>
+      </div>
 
-        <div
-          className={`position-absolute bottom-0 end-0 w-50 ${styles.shapeBottom}`}
-        >
-          <svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M0 0H620C520 60 460 112 376 90C250 56 204 162 92 170C44 173 12 194 0 218V0Z"
-              fill="#221f20"
-            />
-            <path
-              d="M0 80C106 154 194 88 278 116C356 142 396 218 508 156C552 132 590 128 620 142V0H0V80Z"
-              fill="#d9d9d9"
-              opacity="0.8"
-            />
-          </svg>
-        </div>
+      {/* ONDA INFERIOR DIREITA (VETOR INLINE DE TRÊS CAMADAS) */}
+      <div className={`${styles.waveWrapper} ${styles.bottomWave}`} aria-hidden="true">
+        <svg viewBox="0 0 800 600" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          {/* Camada de trás - Cinza Claro */}
+          <path d="M800,600 L250,600 C350,420 480,360 620,380 C720,390 770,290 800,220 Z" fill="#d8d8d8" />
+          {/* Camada do meio - Cinza Grafite */}
+          <path d="M800,600 L320,600 C400,450 520,410 640,420 C730,425 775,340 800,280 Z" fill="#444042" />
+          {/* Camada da frente - Preto Principal */}
+          <path d="M800,600 L400,600 C470,480 580,450 690,460 C770,465 790,390 800,340 Z" fill="#221f20" />
+        </svg>
+      </div>
 
         <div className={`container position-relative ${styles.content}`}>
           <div className="row align-items-center gy-5">

@@ -1,9 +1,11 @@
 import jwt from 'jsonwebtoken';
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import UsuarioModel from '../models/UsuarioModel.js';
 import { JWT_CONFIG } from '../config/jwt.js';
 import { comparePassword } from '../config/database.js';
 import { setAuthCookie, clearAuthCookie } from '../utils/authCookie.js';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 class AuthController {
 
@@ -119,18 +121,9 @@ class AuthController {
             const frontendUrl = process.env.FRONTEND_ORIGIN || 'http://localhost:3000';
             const linkRedefinicao = `${frontendUrl}/redefinir-senha?token=${token}`;
 
-            const transporter = nodemailer.createTransport({
-                host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-                port: process.env.EMAIL_PORT || 587,
-                secure: false,
-                auth: {
-                    user: process.env.EMAIL_USER,
-                    pass: process.env.EMAIL_PASS,
-                },
-            });
-
-            await transporter.sendMail({
-                from: `"Luminar Energia Solar" <${process.env.EMAIL_USER}>`,
+            // CORREÇÃO: Bloco do Nodemailer removido. Disparo feito 100% via Resend com o e-mail solicitado
+            const { data, error } = await resend.emails.send({
+                from: 'Luminar <onboarding@gustavo-paiva.dev.br>',
                 to: usuario.email,
                 subject: 'Redefinição de senha - Luminar',
                 text: `Olá ${usuario.nome},\n\nRecebemos uma solicitação para redefinir sua senha.\n\nAcesse o link abaixo para criar uma nova senha:\n${linkRedefinicao}\n\nEste link expira em 15 minutos.\n\nSe você não solicitou isso, ignore este e-mail.\n\nAtenciosamente,\nEquipe Luminar`,
@@ -152,6 +145,15 @@ class AuthController {
                 `,
             });
 
+            if (error) {
+                console.error('Erro retornado pela API do Resend:', error);
+                return res.status(400).json({
+                    sucesso: false,
+                    erro: 'Erro ao enviar e-mail de redefinição',
+                    mensagem: error.message
+                });
+            }
+
             return res.status(200).json({
                 sucesso: true,
                 mensagem: 'Enviamos um link de redefinição para o seu e-mail.'
@@ -161,8 +163,8 @@ class AuthController {
             console.error('Erro ao solicitar redefinição de senha:', error);
             return res.status(500).json({
                 sucesso: false,
-                erro: 'Erro ao enviar e-mail de redefinição',
-                mensagem: 'Verifique as configurações de SMTP.'
+                erro: 'Erro interno no servidor',
+                mensagem: 'Não foi possível processar o envio.'
             });
         }
     }
