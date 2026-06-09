@@ -33,3 +33,6 @@ CREATE TABLE IF NOT EXISTS solicitacoes_orcamentos (
 
     data_solicitacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+
+
