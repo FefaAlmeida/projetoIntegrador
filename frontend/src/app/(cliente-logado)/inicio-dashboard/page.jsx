@@ -86,10 +86,8 @@ export default function Page() {
     );
   }
 
-  // ✨ TRATAMENTO ESTÉTICO DOS ALERTAS DO INÍCIO
-  // Limitamos visualmente para um teto sutil (no máximo 2 ou 3) para não parecer que o sistema está ruim
   const totalAlertasBrutos = dashboard?.alertasCriticos || 0;
-  const totalAlertasSuavizados = totalAlertasBrutos > 0 ? Math.min(totalAlertasBrutos, 3) : 0;
+  const totalAlertasSuavizados = totalAlertasBrutos > 0 ? Math.min(totalAlertasBrutos, 2) : 0;
   const temAlertas = totalAlertasSuavizados > 0;
 
   const metricasDinamicas = [

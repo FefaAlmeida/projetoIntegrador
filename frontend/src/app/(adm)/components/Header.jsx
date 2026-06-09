@@ -171,6 +171,17 @@ export default function Header() {
             </a>
         </li>
 
+        
+        <li>
+            <a
+            href="/empresas"
+            className={`nav-link text-white d-flex align-items-center gap-3 ${styles.sidebarLink}`}
+            >
+            <i className="bi bi-building-fill"></i>
+            Empresas
+            </a>
+        </li>
+
         <li>
             <a
             href="/tecnicos"

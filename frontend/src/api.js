@@ -214,6 +214,20 @@ export async function inativarEmpresa(id) {
   return res.json();
 }
 
+// REATIVAR EMPRESA (ADMIN)
+export async function reativarEmpresa(id) {
+  const res = await fetch(`${BASE_URL}/empresas/${id}/reativar`, {
+    method: "PATCH",
+    credentials: "include",
+  });
+
+  return res.json();
+}
+
+
+
+
+
 // BUSCAR TODAS AS INSTALAÇÕES (ADMIN) - Versão única corrigida e sem duplicidade
 export async function getTodasInstalacoes(pagina = 1, limite = 10) {
   const res = await fetch(

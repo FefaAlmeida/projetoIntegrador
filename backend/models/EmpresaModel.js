@@ -348,6 +348,28 @@ class EmpresaModel {
         }
     }
 
+    // REATIVAR EMPRESA
+    static async reativar(id) {
+
+        const connection = await getConnection();
+
+        try {
+
+            const sql = `
+                UPDATE empresa_clientes
+                SET status_empresa = 'ATIVA'
+                WHERE id_empresa = ?
+            `;
+
+            const [result] = await connection.execute(sql, [id]);
+
+            return result.affectedRows;
+
+        } finally {
+            connection.release();
+        }
+    }
+
 }
 
 export default EmpresaModel;

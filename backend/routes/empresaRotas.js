@@ -69,6 +69,14 @@ router.patch(
     EmpresaController.inativarEmpresa
 );
 
+// REATIVAR EMPRESA
+router.patch(
+    '/:id/reativar',
+    authMiddleware,
+    adminMiddleware,
+    EmpresaController.reativarEmpresa
+);
+
 // OPTIONS /
 
 router.options('/', (req, res) => {
@@ -147,6 +155,20 @@ router.options('/:id', (req, res) => {
 // OPTIONS /:id/inativar
 
 router.options('/:id/inativar', (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header(
+        'Access-Control-Allow-Methods',
+        'PATCH, OPTIONS'
+    );
+    res.header(
+        'Access-Control-Allow-Headers',
+        'Content-Type, Authorization'
+    );
+    res.sendStatus(200);
+});
+
+// OPTIONS /:id/reativar (Adicionar no final do arquivo junto com as outras configurações de OPTIONS)
+router.options('/:id/reativar', (req, res) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header(
         'Access-Control-Allow-Methods',

@@ -203,20 +203,19 @@ export default function AdminFinanceiroPage() {
   const inadimplencia = carteiraTotal > 0 ? (resumo.totalAtrasado / carteiraTotal) * 100 : 0;
   const ticketMedio = resumo.totalRegistros > 0 ? carteiraTotal / resumo.totalRegistros : 0;
 
-  // ============ CICLO DE VIDA DOS GRÁFICOS ============
-
-  // Gráfico de barras agrupadas (Recebido x A Receber por mês)
+  // ============ 📊 NOVO CICLO DE VIDA DO GRÁFICO (UNIFICADO) ============
   useEffect(() => {
     if (!lineCanvasRef.current) return;
+    
     const ctx = lineCanvasRef.current.getContext("2d");
 
+    // Cria a instância diretamente com os dados reativos da serieMensal
     lineChartRef.current = new Chart(ctx, {
       type: "bar",
       data: {
         labels: serieMensal.labels,
         datasets: [
           {
-            // Verde = dinheiro já no caixa (positivo)
             label: "Recebido",
             data: serieMensal.recebido,
             backgroundColor: "#16a34a",
@@ -226,7 +225,6 @@ export default function AdminFinanceiroPage() {
             maxBarThickness: 38,
           },
           {
-            // Azul = previsto/aguardando (neutro)
             label: "A Receber",
             data: serieMensal.aReceber,
             backgroundColor: "#3b82f6",
@@ -280,20 +278,14 @@ export default function AdminFinanceiroPage() {
       },
     });
 
+    // Sempre limpa o gráfico antigo antes de criar um novo na próxima atualização
     return () => {
-      lineChartRef.current?.destroy();
-      lineChartRef.current = null;
+      if (lineChartRef.current) {
+        lineChartRef.current.destroy();
+        lineChartRef.current = null;
+      }
     };
-  }, []);
-
-  useEffect(() => {
-    if (lineChartRef.current) {
-      lineChartRef.current.data.labels = serieMensal.labels;
-      lineChartRef.current.data.datasets[0].data = serieMensal.recebido;
-      lineChartRef.current.data.datasets[1].data = serieMensal.aReceber;
-      lineChartRef.current.update("none");
-    }
-  }, [serieMensal]);
+  }, [serieMensal]); // 🌟 Renderiza na hora de forma automática sempre que a API trouxer novos dados
 
   // Totais do período exibido no gráfico (para a legenda em chips)
   const totalRecebidoPeriodo = serieMensal.recebido.reduce((s, v) => s + (Number(v) || 0), 0);
@@ -385,7 +377,7 @@ export default function AdminFinanceiroPage() {
                   <span className={styles.heroEyebrow}>FLUXO DE CAIXA</span>
                   <h4 className={styles.blockTitle}>Recebido x A Receber por mês</h4>
                 </div>
-                <span className={styles.timeBadge}>Últimos 6 meses</span>
+                <span className={styles.timeBadge}>Próximos meses</span>
               </div>
 
               {/* Legenda em chips com o total do período */}
@@ -658,9 +650,6 @@ export default function AdminFinanceiroPage() {
 }
 
 // ============ HELPERS ============
-
-// Agrega a lista de pagamentos por mês de vencimento, somando o que já foi
-// recebido (PAGO) e o que ainda está a receber (PENDENTE + ATRASADO).
 function construirSerieMensal(lista) {
   const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
   const mapa = new Map();
@@ -697,3 +686,4 @@ function construirSerieMensal(lista) {
     aReceber: chaves.map((ym) => mapa.get(ym).aReceber),
   };
 }
+

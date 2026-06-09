@@ -549,6 +549,46 @@ class EmpresaController {
         }
     }
 
+    // REATIVAR EMPRESA
+    static async reativarEmpresa(req, res) {
+        try {
+
+            const { id } = req.params;
+
+            const empresa = await EmpresaModel.buscarPorId(id);
+
+            if (!empresa) {
+                return res.status(404).json({
+                    sucesso: false,
+                    erro: 'Empresa não encontrada'
+                });
+            }
+
+            if (empresa.status_empresa === 'ATIVA') {
+                return res.status(400).json({
+                    sucesso: false,
+                    erro: 'Esta empresa já está ativa'
+                });
+            }
+
+            await EmpresaModel.reativar(id);
+
+            return res.status(200).json({
+                sucesso: true,
+                mensagem: 'Empresa reativada com sucesso'
+            });
+
+        } catch (error) {
+
+            console.error(error);
+
+            return res.status(500).json({
+                sucesso: false,
+                erro: 'Erro interno'
+            });
+        }
+    }
+
 }
 
 export default EmpresaController;

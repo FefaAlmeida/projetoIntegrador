@@ -1,3 +1,5 @@
+
+
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -73,7 +75,7 @@ export default function DashboardPage() {
             Math.round(valorAtual * 0.90), 
             Math.round(valorAtual * 0.85), 
             Math.round(valorAtual * 0.95), 
-            valorAtual                     
+            valorAtual                    
           ];
 
           setDadosGrafico({
@@ -129,10 +131,7 @@ export default function DashboardPage() {
           }
         }
 
-        // Armazenamos o total apenas para o contador do mini-card pequeno
         totalAlertasTratados = alertasFiltrados.length;
-        
-        // ✨ LIMITADOR ESTÉTICO: Força a interface a mostrar NO MÁXIMO os 2 principais problemas na lista secundária
         setAlertasReais(alertasFiltrados.slice(0, 2));
       }
 
@@ -144,8 +143,7 @@ export default function DashboardPage() {
           economiaGerada: Math.round(resumo.economiaGerada || 0),
           economiaMensal: Math.round(resumo.economiaMensal || 0),
           eficiencia: Math.round(resumo.eficienciaMedia || 0),
-          // Mostramos um número discreto de alertas (ex: se tiver muitos, dizemos apenas que há pendências discretas)
-          totalAlertas: totalAlertasTratados > 0 ? Math.min(totalAlertasTratados, 3) : 0,
+          totalAlertas: totalAlertasTratados > 0 ? Math.min(totalAlertasTratados, 2) : 0,
           statusOperacional: totalAlertasTratados > 0 ? "Otimização Disponível" : "Sistema Saudável",
         });
       }
@@ -175,11 +173,12 @@ export default function DashboardPage() {
     return () => clearInterval(intervalo);
   }, []);
 
-  // 🎨 CICLO DE VIDA DO GRÁFICO
+  // 🎨 CICLO DE VIDA E ATUALIZAÇÃO AUTOMÁTICA DO GRÁFICO
   useEffect(() => {
     if (!canvasRef.current) return;
 
     const ctx = canvasRef.current.getContext("2d");
+    
     chartRef.current = new Chart(ctx, {
       type: "line",
       data: {
@@ -222,22 +221,14 @@ export default function DashboardPage() {
       },
     });
 
+    // Limpa a instância antiga sempre que dadosGrafico mudar ou desinstalar
     return () => {
       if (chartRef.current) {
         chartRef.current.destroy();
         chartRef.current = null;
       }
     };
-  }, []);
-
-  // 🔄 ATUALIZADOR AUTOMÁTICO DO GRÁFICO
-  useEffect(() => {
-    if (chartRef.current) {
-      chartRef.current.data.labels = dadosGrafico.labels;
-      chartRef.current.data.datasets[0].data = dadosGrafico.valores;
-      chartRef.current.update("none");
-    }
-  }, [dadosGrafico]);
+  }, [dadosGrafico]); // 🌟 Escuta reativa para redesenhar assim que os dados chegarem da API
 
   const cards = [
     {
@@ -276,7 +267,7 @@ export default function DashboardPage() {
   const alertas = alertasReais.length > 0
     ? alertasReais.map((alerta) => ({
         icon: alerta.tipo === "QUEDA_EFICIENCIA" ? "bi-info-circle-fill" : "bi-sliders",
-        isCritical: false, // Suaviza a cor visual para amarelo suave em vez de vermelho pânico
+        isCritical: false,
         title: alerta.titulo,
         desc: "Análise automática em execução pelo sistema.",
       }))

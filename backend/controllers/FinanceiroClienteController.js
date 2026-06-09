@@ -2,10 +2,10 @@ import FinanceiroClienteModel from '../models/FinanceiroClienteModel.js';
 
 class FinanceiroClienteController {
 
-    // AGORA SIM: Método assíncrono buscando direto na tabela do banco
-static async obterIdEmpresa(req) {
+    // Método definitivo: Busca os vínculos do usuário direto na tabela 'usuarios'
+    static async obterDadosUsuarioLogado(req) {
         const alvo = req.usuario || req.user || {};
-        const email_usuario_logado = alvo.email; // Captura 'teste2@gmail.com' do Token
+        const email_usuario_logado = alvo.email; 
 
         if (!email_usuario_logado) return null;
 
@@ -13,18 +13,21 @@ static async obterIdEmpresa(req) {
             const { getConnection } = await import('../config/database.js');
             const db = await getConnection();
             
-            // Buscamos o id_empresa na tabela empresa_clientes onde o e-mail seja igual ao do usuário logado
-            const query = `SELECT id_empresa FROM empresa_clientes WHERE email_principal = ? LIMIT 1`;
+            // Puxamos ambos os IDs que estão na tabela de usuários
+            const query = `SELECT id_solicitacao, id_empresa FROM usuarios WHERE email = ? LIMIT 1`;
             const [rows] = await db.execute(query, [email_usuario_logado]);
             db.release();
 
             if (rows.length > 0) {
-                return rows[0].id_empresa; // Retorna o ID da empresa criado para o teste2@gmail.com
+                return {
+                    id_solicitacao: rows[0].id_solicitacao,
+                    id_empresa: rows[0].id_empresa
+                };
             } else {
-                console.warn(`AVISO: Nenhuma empresa cadastrada com o e-mail ${email_usuario_logado} na tabela empresa_clientes.`);
+                console.warn(`AVISO: Usuário ${email_usuario_logado} não encontrado na tabela usuarios.`);
             }
         } catch (e) {
-            console.error("Erro ao buscar id_empresa por e-mail:", e);
+            console.error("Erro ao buscar dados do usuário por e-mail:", e);
         }
 
         return null; 
@@ -33,12 +36,13 @@ static async obterIdEmpresa(req) {
     // GET /cliente/financeiro
     static async obterPainel(req, res) {
         try {
-            // Ajustado com await
-            const id_empresa = await FinanceiroClienteController.obterIdEmpresa(req);
+            const dadosUser = await FinanceiroClienteController.obterDadosUsuarioLogado(req);
             
-            if (!id_empresa) {
-                return res.status(401).json({ sucesso: false, erro: 'Empresa não identificada no token.' });
+            if (!dadosUser || !dadosUser.id_empresa) {
+                return res.status(401).json({ sucesso: false, erro: 'Dados do usuário ou empresa não identificados.' });
             }
+
+            const { id_solicitacao, id_empresa } = dadosUser;
             
             let pagina = Math.max(1, parseInt(req.query.pagina) || 1);
             let limite = Math.max(1, parseInt(req.query.limite) || 12);
@@ -58,24 +62,34 @@ static async obterIdEmpresa(req) {
             const jaConfigurou = await FinanceiroClienteModel.verificarSeJaTemParcelas(id_empresa);
 
             if (!jaConfigurou) {
-                const orcamento = await FinanceiroClienteModel.obterOrcamentoAprovado(id_empresa);
+                if (!id_solicitacao) {
+                    return res.status(200).json({
+                        sucesso: false,
+                        requerSetup: true,
+                        erro: 'Nenhum orçamento aceito foi vinculado ao seu usuário ainda.'
+                    });
+                }
+
+                // Busca o valor do orçamento aceito usando o id_solicitacao vindo de 'usuarios'
+                const orcamento = await FinanceiroClienteModel.obterOrcamentoAprovado(id_solicitacao);
                 
                 if (!orcamento) {
                     return res.status(200).json({
                         sucesso: false,
                         requerSetup: true,
-                        erro: 'Nenhum orçamento aceito localizado para sua conta.'
+                        erro: 'Orçamento aceito correspondente não foi localizado.'
                     });
                 }
 
                 return res.status(200).json({
                     sucesso: true,
                     requerSetup: true,
-                    mensagem: 'Defina o seu parcelamento inicial baseado no seu orçamento.',
+                    mensagem: 'Defina o seu parcelamento inicial baseado no seu orçamento aceito.',
                     orcamento: { valor_total: parseFloat(orcamento.valor_total) }
                 });
             }
 
+            // Se já configurou, lista os pagamentos usando o id_empresa
             const resultado = await FinanceiroClienteModel.listarPorEmpresa({ id_empresa, limite, offset, status });
             const resumoBruto = await FinanceiroClienteModel.obterResumoCliente(id_empresa) || {};
 
@@ -111,17 +125,16 @@ static async obterIdEmpresa(req) {
     // POST /cliente/financeiro/setup
     static async inicializarParcelamento(req, res) {
         try {
-            // Ajustado com await
-            const id_empresa = await FinanceiroClienteController.obterIdEmpresa(req);
-            if (!id_empresa) {
-                return res.status(401).json({ sucesso: false, erro: 'Empresa não identificada.' });
+            const dadosUser = await FinanceiroClienteController.obterDadosUsuarioLogado(req);
+            if (!dadosUser || !dadosUser.id_empresa || !dadosUser.id_solicitacao) {
+                return res.status(401).json({ sucesso: false, erro: 'Vínculos de empresa ou orçamento não localizados no seu perfil.' });
             }
 
+            const { id_solicitacao, id_empresa } = dadosUser;
             const { quantidade_parcelas, forma_pagamento } = req.body;
             const formasValidas = ['BOLETO', 'PIX', 'CARTAO'];
             const qtdParcelasNum = parseInt(quantidade_parcelas);
 
-            // Ajustado para aceitar até 240 parcelas (72x passa liso)
             if (!qtdParcelasNum || qtdParcelasNum <= 0 || qtdParcelasNum > 240 || !forma_pagamento || !formasValidas.includes(forma_pagamento.toUpperCase())) {
                 return res.status(400).json({ 
                     sucesso: false, 
@@ -134,9 +147,10 @@ static async obterIdEmpresa(req) {
                 return res.status(403).json({ sucesso: false, erro: 'O parcelamento já foi inicializado.' });
             }
 
-            const orcamento = await FinanceiroClienteModel.obterOrcamentoAprovado(id_empresa);
+            // Puxa o orçamento usando o id_solicitacao que veio de 'usuarios'
+            const orcamento = await FinanceiroClienteModel.obterOrcamentoAprovado(id_solicitacao);
             if (!orcamento) {
-                return res.status(404).json({ sucesso: false, erro: 'Orçamento aprovado não localizado.' });
+                return res.status(404).json({ sucesso: false, erro: 'Dados do orçamento aprovado não encontrados.' });
             }
 
             const valorTotal = parseFloat(orcamento.valor_total);
@@ -165,6 +179,7 @@ static async obterIdEmpresa(req) {
                 });
             }
 
+            // Salva na tabela pagamentos usando o id_empresa do cliente
             await FinanceiroClienteModel.gerarParcelas(id_empresa, parcelasParaInserir);
             return res.status(201).json({ sucesso: true, mensagem: 'Parcelamento gerado com sucesso!' });
 
@@ -177,15 +192,14 @@ static async obterIdEmpresa(req) {
     // PATCH /cliente/financeiro/forma-pagamento
     static async alterarMetodoPagamento(req, res) {
         try {
-            // Ajustado com await
-            const id_empresa = await FinanceiroClienteController.obterIdEmpresa(req);
-            if (!id_empresa) return res.status(401).json({ sucesso: false, erro: 'Não autenticado.' });
+            const dadosUser = await FinanceiroClienteController.obterDadosUsuarioLogado(req);
+            if (!dadosUser || !dadosUser.id_empresa) return res.status(401).json({ sucesso: false, erro: 'Não autenticado.' });
             
             const formatoRecebido = req.body.forma_pagamento || req.body.metodoGlobal;
             if (!formatoRecebido) return res.status(400).json({ sucesso: false, erro: 'Forma de pagamento não fornecida.' });
 
-            await FinanceiroClienteModel.alterarFormaPagamentoFutura(id_empresa, formatoRecebido.toUpperCase());
-            return res.status(200).json({ sucesso: true, mensagem: 'Método de pagamento updated!' });
+            await FinanceiroClienteModel.alterarFormaPagamentoFutura(dadosUser.id_empresa, formatoRecebido.toUpperCase());
+            return res.status(200).json({ sucesso: true, mensagem: 'Método de pagamento alterado!' });
         } catch (error) {
             return res.status(500).json({ sucesso: false, erro: 'Erro ao atualizar forma de pagamento.' });
         }
@@ -194,12 +208,12 @@ static async obterIdEmpresa(req) {
     // POST /cliente/financeiro/:id/pagar
     static async pagarParcela(req, res) {
         try {
-            // Ajustado com await
-            const id_empresa = await FinanceiroClienteController.obterIdEmpresa(req);
-            const { id } = req.params;
+            const dadosUser = await FinanceiroClienteController.obterDadosUsuarioLogado(req);
+            if (!dadosUser || !dadosUser.id_empresa) return res.status(401).json({ sucesso: false, erro: 'Não autenticado.' });
             
-            const sucesso = await FinanceiroClienteModel.registrarPagamento(id, id_empresa);
-            if (!sucesso) return res.status(400).json({ sucesso: false, erro: 'Não foi possível pagar esta fatura.' });
+            const { id } = req.params;
+            const sucesso = await FinanceiroClienteModel.registrarPagamento(id, dadosUser.id_empresa);
+            if (!sucesso) return res.status(400).json({ sucesso: false, erro: 'Não foi possível processar o pagamento.' });
 
             return res.status(200).json({ sucesso: true, mensagem: 'Pagamento homologado!' });
         } catch (error) {
