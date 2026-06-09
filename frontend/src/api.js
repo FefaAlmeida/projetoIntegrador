@@ -562,3 +562,62 @@ export async function atualizarStatusPagamento(id, status_pagamento) {
 
   return res.json();
 }
+
+
+// ==========================================================================
+// FINANCEIRO (CLIENTE)
+// ==========================================================================
+export async function getFinanceiroCliente(pagina = 1, limite = 12, status = "") {
+  const params = new URLSearchParams({ pagina, limite });
+  if (status) params.append("status", status);
+
+  const res = await fetch(`${BASE_URL}/cliente/financeiro?${params.toString()}`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  return res.json();
+}
+
+/**
+ * Realiza o setup inicial do parcelamento (Executado apenas UMA vez).
+ * @param {Object} data - { quantidade_parcelas: 5, forma_pagamento: 'BOLETO' }
+ */
+export async function inicializarParcelamentoCliente(data) {
+  const res = await fetch(`${BASE_URL}/cliente/financeiro/setup`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+
+  return res.json();
+}
+
+/*
+ * @param {string} forma_pagamento - 'BOLETO', 'PIX' ou 'CARTAO'
+ */
+
+export async function alterarFormaPagamentoCliente(forma_pagamento) {
+  const res = await fetch(`${BASE_URL}/cliente/financeiro/forma-pagamento`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({ forma_pagamento }),
+  });
+
+  return res.json();
+}
+
+export async function pagarParcelaCliente(idPagamento) {
+  const res = await fetch(`${BASE_URL}/cliente/financeiro/${idPagamento}/pagar`, {
+    method: "POST",
+    credentials: "include",
+  });
+
+  return res.json();
+}

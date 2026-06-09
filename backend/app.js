@@ -19,6 +19,7 @@ import instalacaoRotas from './routes/instalacaoRotas.js';
 import tecnicoRotas from './routes/tecnicoRotas.js';
 import chamadoRotas from './routes/chamadoRotas.js';
 import financeiroRotas from './routes/financeiroRotas.js';
+import financeiroClienteRotas from './routes/financeiroClienteRotas.js';
 
 // Importar middlewares
 import { errorMiddleware } from './middlewares/errorMiddleware.js';
@@ -67,6 +68,7 @@ app.use('/api/instalacoes', instalacaoRotas);
 app.use('/api/tecnicos', tecnicoRotas);
 app.use('/api/chamados', chamadoRotas);
 app.use('/api/financeiro', financeiroRotas);
+app.use('/api/cliente/financeiro', financeiroClienteRotas);
 
 // Rota raiz
 app.get('/', (req, res) => {
