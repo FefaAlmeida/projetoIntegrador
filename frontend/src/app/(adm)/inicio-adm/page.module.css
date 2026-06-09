@@ -1,65 +1,80 @@
 .page {
   min-height: 100vh;
-  padding: 40px;
+  padding: 40px 60px;
   font-family: "Poppins", sans-serif;
 }
 
 .container {
-  max-width: 1450px;
+  max-width: 1400px;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #fafafa;
 }
 
 .topbar {
-  margin-top: 30px;
-  margin-bottom: 45px;
+  margin-bottom: 35px;
 }
 
 .welcomeText {
-  color: #8f8f8f;
-  font-size: 1.5rem;
+  color: #a0a0a0;
+  font-size: 1.25rem;
+  font-weight: 400;
 }
 
 .userName {
-  color: #221f20;
-  font-size: 2rem;
+  color: #111111;
+  font-size: 1.75rem;
   font-weight: 700;
-  line-height: 1;
-  letter-spacing: -2px;
+  letter-spacing: -1px;
 }
 
 .dashboardButton {
-  height: 58px;
-  padding: 0 28px;
-  color: #221f20 !important;
-  font-size: 1rem;
-  font-weight: 600;
-  background: #febd17 !important;
+  height: 50px;
+  padding: 0 24px;
+  background: #febd17;
   border: none;
-  border-radius: 18px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(254, 189, 23, 0.2);
+  transition: all 0.2s ease-in-out;
 }
 
 .dashboardButton a {
-  color: inherit;
+  color: #111111;
+  font-size: 0.95rem;
+  font-weight: 600;
   text-decoration: none;
 }
 
+.dashboardButton:hover {
+  background: #e5a910;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(254, 189, 23, 0.3);
+}
+
+/* CARD HERO PRINCIPAL */
 .heroCard {
   position: relative;
   overflow: hidden;
-  padding: 55px;
-  margin-bottom: 35px;
-  background: linear-gradient(135deg, #050505 0%, #101010 100%);
-  border-radius: 36px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+  padding: 45px;
+  margin-bottom: 28px;
+  background: linear-gradient(145deg, #0a0a0a 0%, #161616 100%);
+  border-radius: 28px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
 }
 
 .glow {
   position: absolute;
-  top: -220px;
-  right: -100px;
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(255, 180, 0, 0.35) 0%, rgba(0, 0, 0, 0) 70%);
+  top: -200px;
+  right: -80px;
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(255, 180, 0, 0.25) 0%, rgba(0, 0, 0, 0) 70%);
+  pointer-events: none;
 }
 
 .heroContent {
@@ -69,151 +84,274 @@
 
 .heroEyebrow {
   color: #ffb400;
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: 600;
+  letter-spacing: 1.5px;
 }
 
 .heroTitle {
   color: #ffffff;
-  font-size: 4.2rem;
-  line-height: 1.05;
-  letter-spacing: -3px;
+  font-size: 3.2rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -2px;
 }
 
 .heroText {
-  max-width: 620px;
-  color: #febd17;
-  font-size: 1.15rem;
-  line-height: 34px;
+  max-width: 560px;
+  color: #b0b0b0;
+  font-size: 1rem;
+  line-height: 28px;
+  margin-top: 15px;
 }
 
-.miniCard,
-.performanceCard {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(10px);
-}
-
+/* CARDS INTERNOS DO HERO */
 .miniCard {
-  min-width: 190px;
-  padding: 20px 24px;
-  border-radius: 22px;
+  min-width: 170px;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
 }
 
-.miniLabel,
-.performanceLabel,
-.metricLabel {
-  color: #9f9f9f;
+.miniLabel {
+  color: #888888;
+  font-size: 0.85rem;
+  margin-bottom: 6px;
 }
 
 .miniValue {
   color: #ffffff;
-  font-size: 2.2rem;
+  font-size: 1.75rem;
   font-weight: 700;
+  letter-spacing: -0.5px;
 }
 
+.miniUnit {
+  font-size: 1rem;
+  color: #ffb400;
+  font-weight: 500;
+}
+
+/* CARD DE DESEMPENHO (QUADRADO INTERNO) */
 .performanceCard {
-  width: 420px;
-  padding: 35px;
-  border-radius: 32px;
-  backdrop-filter: blur(14px);
+  width: 360px;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 22px;
+  backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.performanceLabel {
+  color: #aaaaaa;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .performanceValue {
   color: #ffffff;
-  font-size: 2.8rem;
-}
-
-.performanceIconBox {
-  width: 70px;
-  height: 70px;
-  color: #ffb400;
-  background: rgba(255, 180, 0, 0.12);
-  border-radius: 22px;
-}
-
-.performanceIcon {
-  font-size: 2rem;
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: -1px;
 }
 
 .progressTrack {
-  height: 12px;
-  margin-bottom: 30px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
+  margin-bottom: 15px;
 }
 
 .progressBar {
-  width: 82%;
   height: 100%;
-  background: linear-gradient(90deg, #ffb400 0%, #ffd34d 100%);
-  border-radius: 20px;
+  background: linear-gradient(90deg, #ffb400 0%, #ffe082 100%);
+  border-radius: 10px;
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.metricRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  padding-bottom: 8px;
+}
+
+.metricRow:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.metricLabel {
+  color: #888888;
+  font-size: 0.85rem;
 }
 
 .metricValue {
   color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 600;
 }
 
+/* INFO GRID INFERIOR */
 .infoGrid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 28px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
 }
 
 .infoCard {
-  padding: 32px;
+  padding: 28px;
   background: #ffffff;
-  border: 1px solid #ececec;
-  border-radius: 28px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eaeaea;
+  border-radius: 22px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.infoCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.07);
+  border-color: rgba(254, 189, 23, 0.4);
 }
 
 .infoIconBox {
-  width: 58px;
-  height: 58px;
-  margin-bottom: 26px;
+  width: 48px;
+  height: 48px;
   color: #ffb400;
-  background: rgba(255, 180, 0, 0.12);
-  border-radius: 18px;
+  background: rgba(255, 180, 0, 0.08);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .infoIcon {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
+}
+
+.badgeIndicator {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 20px;
+}
+
+.badgeAlert {
+  background: #ffebee;
+  color: #c62828;
 }
 
 .infoTitle {
-  color: #111111;
-  font-size: 1.4rem;
+  color: #1a1a1a;
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 8px;
 }
 
 .infoText {
-  color: #7a7a7a;
-  line-height: 30px;
+  color: #757575;
+  font-size: 0.88rem;
+  line-height: 22px;
+  margin-bottom: 20px;
+  height: 44px; /* Mantém o alinhamento mesmo com textos diferentes */
+  overflow: hidden;
 }
 
 .infoValue {
   color: #111111;
-  font-size: 2.8rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -1px;
+}
+
+/* TELA DE SISTEMA NÃO INSTALADO (CUSTOM PREMIUM) */
+.blockedCard {
+  position: relative;
+  overflow: hidden;
+  max-width: 650px;
+  margin: 60px auto;
+  padding: 50px;
+  text-align: center;
+  background: linear-gradient(145deg, #0d0d0d 0%, #1a1a1a 100%);
+  border: 1px solid rgba(255, 180, 0, 0.15);
+  border-radius: 28px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+}
+
+.blockedGlow {
+  position: absolute;
+  top: -150px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(255, 180, 0, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+  pointer-events: none;
+}
+
+.blockedTitle {
+  color: #ffffff;
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-top: 10px;
+}
+
+.blockedText {
+  color: #aaaaaa;
+  font-size: 0.95rem;
+  line-height: 26px;
+  max-width: 480px;
+  margin: 15px auto 0 auto;
+}
+
+.blockedButton {
+  display: inline-block;
+  padding: 12px 28px;
+  background: transparent;
+  color: #ffb400;
+  border: 1px solid #ffb400;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.blockedButton:hover {
+  background: #ffb400;
+  color: #111111;
+  box-shadow: 0 5px 20px rgba(255, 180, 0, 0.25);
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 1199.98px) {
+  .heroContent {
+    flex-direction: column !important;
+  }
+  .performanceCard {
+    width: 100%;
+  }
 }
 
 @media (max-width: 991.98px) {
   .page {
     padding: 24px;
   }
-
   .heroCard {
-    padding: 32px;
+    padding: 30px;
   }
-
   .heroTitle {
-    font-size: 3rem;
+    font-size: 2.4rem;
   }
-
-  .performanceCard {
-    width: 100%;
-  }
-
   .infoGrid {
     grid-template-columns: 1fr;
   }

@@ -9,6 +9,7 @@ export default function GerenciarTecnicosPage() {
   // Estados de Listagem e Controle de Interface
   const [tecnicos, setTecnicos] = useState([]);
   const [buscaNome, setBuscaNome] = useState("");
+  const [filtroStatus, setFiltroStatus] = useState("TODOS"); // NOVO: Estado para controlar o filtro de status
   const [loading, setLoading] = useState(false);
 
   // Estados de Controle do Modal Híbrido (Criar / Editar)
@@ -25,7 +26,6 @@ export default function GerenciarTecnicosPage() {
   const [tecnicoParaInativar, setTecnicoParaInativar] = useState(null);
 
   useEffect(() => {
-    // Importação dinâmica do Bootstrap JS para garantir que funcione no lado do cliente
     if (typeof window !== "undefined") {
       require("bootstrap/dist/js/bootstrap.bundle.min.js");
     }
@@ -35,11 +35,22 @@ export default function GerenciarTecnicosPage() {
   async function carregarTecnicos() {
     setLoading(true);
     try {
-      const response = await getTecnicos();
-      if (response && response.sucesso) {
-        setTecnicos(response.dados || []);
+      const response = await getTecnicos(1, 1000); 
+      
+      if (response) {
+        if (response.tecnicos && Array.isArray(response.tecnicos)) {
+          setTecnicos(response.tecnicos);
+        } else if (response.dados && Array.isArray(response.dados)) {
+          setTecnicos(response.dados);
+        } else if (Array.isArray(response)) {
+          setTecnicos(response);
+        } else if (response.total && response.sucesso) {
+          setTecnicos(response.dados || response.tecnicos || []);
+        } else {
+          setTecnicos([]);
+        }
       } else {
-        toast.error(response?.erro || response?.mensagem || "Erro ao carregar técnicos.");
+        toast.error("Erro ao carregar técnicos: Resposta inválida do servidor.");
       }
     } catch (error) {
       console.error(error);
@@ -49,12 +60,14 @@ export default function GerenciarTecnicosPage() {
     }
   }
 
-  // FILTRAGEM FRONT-END AUXILIAR SOBRE OS DADOS DO BACKEND
-  const tecnicosFiltrados = tecnicos.filter((tecnico) =>
-    tecnico.nome?.toLowerCase().includes(buscaNome.toLowerCase())
-  );
+  // FILTRAGEM FRONT-END AUXILIAR (Modificada para incluir a lógica de Status)
+  const tecnicosFiltrados = tecnicos.filter((tecnico) => {
+    const correspondeNome = tecnico?.nome?.toLowerCase().includes(buscaNome.toLowerCase());
+    const correspondeStatus = filtroStatus === "TODOS" || tecnico?.status?.toUpperCase() === filtroStatus;
+    
+    return correspondeNome && correspondeStatus;
+  });
 
-  // FUNÇÕES AUXILIARES PARA MANIPULAR OS MODAIS DO BOOTSTRAP VIA JS
   function fecharModal() {
     if (typeof window !== "undefined") {
       const modalElement = document.getElementById("modalGerenciarTecnico");
@@ -77,7 +90,6 @@ export default function GerenciarTecnicosPage() {
     }
   }
 
-  // GATILHOS DE ABERTURA E PREPARAÇÃO DE ESTADO
   function abrirModalCriar() {
     setModoModal("CRIAR");
     setItemSelecionado(null);
@@ -100,11 +112,9 @@ export default function GerenciarTecnicosPage() {
     setTecnicoParaInativar(id);
   }
 
-  // 2. SUBMIT DO FORMULÁRIO (CRIAR OU ATUALIZAR BACKEND)
   async function handleSalvarTecnico(e) {
     e.preventDefault();
 
-    // Validações de Front-end com base na sua estrutura padrão
     if (!nomeEdicao || !emailEdicao || !telefoneEdicao) {
       toast.error("Preencha todos os campos obrigatórios.");
       return;
@@ -135,21 +145,20 @@ export default function GerenciarTecnicosPage() {
       if (modoModal === "CRIAR") {
         const response = await criarTecnico(dadosForm);
 
-        if (response && response.sucesso) {
+        if (response && (response.sucesso || response.id_tecnico || response.dados)) {
           toast.success("Técnico cadastrado com sucesso.");
           fecharModal();
-          carregarTecnicos(); // Recarrega a lista do servidor
+          await carregarTecnicos(); 
         } else {
           toast.error(response?.erro || response?.mensagem || "Erro ao cadastrar técnico.");
         }
       } else {
-        // Atualização de registro existente passando o ID do item selecionado
         const response = await atualizarTecnico(itemSelecionado.id_tecnico, dadosForm);
 
-        if (response && response.sucesso) {
+        if (response && (response.sucesso || response.dados)) {
           toast.success("Cadastro atualizado com sucesso.");
           fecharModal();
-          carregarTecnicos(); // Recarrega a lista do servidor
+          await carregarTecnicos(); 
         } else {
           toast.error(response?.erro || response?.mensagem || "Erro ao atualizar técnico.");
         }
@@ -162,7 +171,6 @@ export default function GerenciarTecnicosPage() {
     }
   }
 
-  // 3. CONFIRMAÇÃO DE INATIVAÇÃO NO BACKEND
   async function handleInativarConfirmado() {
     if (!tecnicoParaInativar) return;
 
@@ -173,7 +181,7 @@ export default function GerenciarTecnicosPage() {
       if (response && response.sucesso) {
         toast.success("Técnico inativado com sucesso.");
         fecharModalConfirmacao();
-        carregarTecnicos(); // Atualiza a tabela com o novo status vindo do banco
+        await carregarTecnicos(); 
         setTecnicoParaInativar(null);
       } else {
         toast.error(response?.erro || response?.mensagem || "Erro ao inativar técnico.");
@@ -186,7 +194,6 @@ export default function GerenciarTecnicosPage() {
     }
   }
 
-  // Centralização do tratamento de erro baseado na sua tratativa padrão do axios
   function tratarErroServidor(error) {
     if (error.response && error.response.data) {
       const apiError = error.response.data.erro || error.response.data.mensagem || error.response.data.mensage;
@@ -218,18 +225,34 @@ export default function GerenciarTecnicosPage() {
           </div>
           
           <div className="d-flex flex-column flex-sm-row gap-3 mt-3 mt-md-0 align-items-sm-center">
-            <div className={`input-group shadow-sm ${styles.searchGroup}`} style={{ minWidth: "280px" }}>
+            {/* Barra de Pesquisa por Nome */}
+            <div className={`input-group shadow-sm ${styles.searchGroup}`} style={{ minWidth: "260px" }}>
               <span className="input-group-text bg-white border-end-0 text-muted">
                 <i className="bi bi-search"></i>
               </span>
               <input
                 type="text"
                 className="form-control border-start-0 ps-1"
-                placeholder="Pesquisar técnico por nome..."
+                placeholder="Pesquisar por nome..."
                 value={buscaNome}
                 onChange={(e) => setBuscaNome(e.target.value)}
                 disabled={loading}
               />
+            </div>
+
+            {/* ADICIONADO: Filtro Seletor de Status (Ativo / Inativo) */}
+            <div className="shadow-sm rounded" style={{ minWidth: "150px" }}>
+              <select
+                className="form-select fw-semibold text-secondary py-2"
+                style={{ height: "100%", cursor: "pointer" }}
+                value={filtroStatus}
+                onChange={(e) => setFiltroStatus(e.target.value)}
+                disabled={loading}
+              >
+                <option value="TODOS">Todos</option>
+                <option value="ATIVO">Ativos</option>
+                <option value="INATIVO">Inativos</option>
+              </select>
             </div>
 
             <button
@@ -244,7 +267,7 @@ export default function GerenciarTecnicosPage() {
           </div>
         </div>
 
-        {/* TABELA DE LISTAGEM / RETORNO DO BACKEND */}
+        {/* TABELA DE LISTAGEM */}
         {loading && tecnicos.length === 0 ? (
           <div className="text-center py-5">
             <div className="spinner-border text-warning" role="status">
@@ -255,7 +278,7 @@ export default function GerenciarTecnicosPage() {
         ) : tecnicosFiltrados.length === 0 ? (
           <div className="text-center py-5 rounded-3 border border-dashed bg-light">
             <i className="bi bi-people fs-1 text-muted"></i>
-            <p className="text-secondary fw-semibold mt-3">Nenhum técnico encontrado.</p>
+            <p className="text-secondary fw-semibold mt-3">Nenhum técnico encontrado com os filtros aplicados.</p>
           </div>
         ) : (
           <div className="table-responsive">
@@ -272,12 +295,12 @@ export default function GerenciarTecnicosPage() {
               </thead>
               <tbody>
                 {tecnicosFiltrados.map((tecnico) => (
-                  <tr key={tecnico.id_tecnico} className={styles.tableRow}>
-                    <td className="ps-4 py-3 fw-bold text-dark">#{tecnico.id_tecnico}</td>
-                    <td className="py-3 fw-semibold text-dark">{tecnico.nome}</td>
-                    <td className="py-3 text-secondary">{tecnico.email}</td>
-                    <td className="py-3 text-dark fw-medium">{tecnico.telefone}</td>
-                    <td className="py-3">{renderBadgeStatus(tecnico.status)}</td>
+                  <tr key={tecnico?.id_tecnico || tecnico?.id} className={styles.tableRow}>
+                    <td className="ps-4 py-3 fw-bold text-dark">#{tecnico?.id_tecnico || tecnico?.id}</td>
+                    <td className="py-3 fw-semibold text-dark">{tecnico?.nome}</td>
+                    <td className="py-3 text-secondary">{tecnico?.email}</td>
+                    <td className="py-3 text-dark fw-medium">{tecnico?.telefone}</td>
+                    <td className="py-3">{renderBadgeStatus(tecnico?.status)}</td>
                     <td className="py-3 text-end pe-4">
                       <div className="d-flex gap-2 justify-content-end">
                         <button
@@ -290,12 +313,12 @@ export default function GerenciarTecnicosPage() {
                           <i className="bi bi-pencil-square me-1"></i> Editar
                         </button>
                         
-                        {tecnico.status?.toUpperCase() === "ATIVO" && (
+                        {tecnico?.status?.toUpperCase() === "ATIVO" && (
                           <button
                             data-bs-toggle="modal"
                             data-bs-target="#modalConfirmarInativar"
                             className={`btn btn-sm btn-outline-danger fw-bold px-3 py-2 ${styles.btnActionDelete}`}
-                            onClick={() => gatilhoInativar(tecnico.id_tecnico)}
+                            onClick={() => gatilhoInativar(tecnico.id_tecnico || tecnico.id)}
                             disabled={loading}
                           >
                             <i className="bi bi-person-dash-fill me-1"></i> Inativar
@@ -311,7 +334,7 @@ export default function GerenciarTecnicosPage() {
         )}
       </div>
 
-      {/* MODAL HÍBRIDO (CRIAR / EDITAR INTEGRADO AO COFRE DE LOADING) */}
+      {/* MODAL HÍBRIDO (CRIAR / EDITAR) */}
       <div className="modal fade" id="modalGerenciarTecnico" tabIndex="-1" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered modal-lg">
           <div className={`modal-content ${styles.modalContent}`}>
@@ -324,8 +347,6 @@ export default function GerenciarTecnicosPage() {
             
             <form onSubmit={handleSalvarTecnico}>
               <div className="modal-body px-4 pb-4">
-                
-                {/* LINHA 1: NOME + STATUS */}
                 <div className="row g-3 mb-3">
                   <div className={modoModal === "EDITAR" ? "col-md-8 col-12" : "col-12"}>
                     <label className="form-label fw-bold small text-secondary">Nome Completo</label>
@@ -357,7 +378,6 @@ export default function GerenciarTecnicosPage() {
                   )}
                 </div>
 
-                {/* LINHA 2: EMAIL + TELEFONE */}
                 <div className="row g-3 mb-4">
                   <div className="col-md-7 col-12">
                     <label className="form-label fw-bold small text-secondary">E-mail Corporativo</label>
@@ -401,7 +421,7 @@ export default function GerenciarTecnicosPage() {
         </div>
       </div>
 
-      {/* MODAL DE CONFIRMAÇÃO DIALÓGICA DE INATIVAÇÃO */}
+      {/* MODAL DE CONFIRMAÇÃO DE INATIVAÇÃO */}
       <div className="modal fade" id="modalConfirmarInativar" tabIndex="-1" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered" style={{maxWidth: "400px"}}>
           <div className={`modal-content text-center p-4 ${styles.modalConfirmContent}`}>
