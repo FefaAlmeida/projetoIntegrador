@@ -90,7 +90,7 @@ export default function Header() {
 
                       <ul className="dropdown-menu dropdown-menu-dark text-small shadow dropdown-menu-end">
                         <li>
-                          <a className="dropdown-item" href="/perfil">
+                          <a className="dropdown-item" href="/perfil-adm">
                             Perfil
                           </a>
                         </li>

@@ -311,9 +311,18 @@ class AuthController {
             }
 
             if (Object.keys(dadosAtualizacao).length === 0) {
-                return res.status(400).json({
-                    sucesso: false,
-                    erro: 'Nenhuma alteração realizada'
+                return res.status(200).json({
+                    sucesso: true,
+                    mensagem: 'Nenhuma alteração necessária',
+                    dados: {
+                        id: usuarioAtual.id,
+                        nome: usuarioAtual.nome,
+                        email: usuarioAtual.email,
+                        tipo_usuario: usuarioAtual.tipo_usuario,
+                        status_usuario: usuarioAtual.status_usuario,
+                        id_solicitacao: usuarioAtual.id_solicitacao,
+                        id_empresa: usuarioAtual.id_empresa
+                    }
                 });
             }
 
@@ -321,9 +330,9 @@ class AuthController {
             const resultado = await UsuarioModel.atualizarPerfil(id, dadosAtualizacao);
 
             if (resultado === 0) {
-                return res.status(400).json({
-                    sucesso: false,
-                    erro: 'Nenhuma alteração realizada'
+                return res.status(200).json({
+                    sucesso: true,
+                    mensagem: 'Nenhuma alteração necessária'
                 });
             }
 

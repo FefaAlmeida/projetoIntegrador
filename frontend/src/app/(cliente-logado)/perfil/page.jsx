@@ -230,19 +230,12 @@ export default function PerfilPage() {
     }
 
     const usuarioPayload = {
-      nome: formUsuario.nome,
+      nome: formUsuario.nome.trim(),
     };
 
     if (formUsuario.senha) {
       usuarioPayload.senha = formUsuario.senha;
     }
-
-    const empresaPayload = empresa
-      ? {
-          nome_empresa: formEmpresa.nome_empresa,
-          telefone_principal: formEmpresa.telefone_principal,
-        }
-      : null;
 
     setSalvando(true);
 
@@ -254,8 +247,11 @@ export default function PerfilPage() {
         return;
       }
 
-      if (empresaPayload) {
-        const empresaResponse = await atualizarEmpresa(empresa.id_empresa, empresaPayload);
+      if (empresa) {
+        const empresaResponse = await atualizarEmpresa(empresa.id_empresa, {
+          nome_empresa: formEmpresa.nome_empresa.trim(),
+          telefone_principal: somenteNumeros(formEmpresa.telefone_principal),
+        });
 
         if (!empresaResponse?.sucesso) {
           toast.error(empresaResponse?.erro || "Erro ao atualizar empresa.");
@@ -272,8 +268,6 @@ export default function PerfilPage() {
       setSalvando(false);
     }
   }
-
-  const isAdmin = usuario?.tipo_usuario === "ADMIN";
 
   const iniciais = (usuario?.nome || "Usuário")
     .split(" ")
@@ -322,7 +316,7 @@ export default function PerfilPage() {
           <div className="card border-0 shadow-lg rounded-4 overflow-hidden sticky-lg-top">
             <div className={`card-body p-4 text-white ${styles.sidebarCard}`}>
               <span className={`badge rounded-pill text-dark fw-bold mb-4 ${styles.badgeHighlight}`}>
-                {usuario?.tipo_usuario === "ADMIN" ? "Área do administrador" : "Área do cliente"}
+                Área do cliente
               </span>
 
               <div className="d-flex align-items-center gap-3 mb-4">
@@ -339,12 +333,10 @@ export default function PerfilPage() {
               </div>
 
               <div className="list-group list-group-flush rounded-4 overflow-hidden mb-4">
-                {!isAdmin && (
-                  <div className="list-group-item bg-transparent text-white border-secondary-subtle px-0">
-                    <small className="text-white-50 d-block">Empresa vinculada</small>
-                    <span>{empresa ? empresa.nome_empresa : "Nenhuma empresa vinculada"}</span>
-                  </div>
-                )}
+                <div className="list-group-item bg-transparent text-white border-secondary-subtle px-0">
+                  <small className="text-white-50 d-block">Empresa vinculada</small>
+                  <span>{empresa ? empresa.nome_empresa : "Nenhuma empresa vinculada"}</span>
+                </div>
                 <div className="list-group-item bg-transparent text-white border-secondary-subtle px-0">
                   <small className="text-white-50 d-block">E-mail de acesso</small>
                   <span>{valorTexto(usuario?.email)}</span>
@@ -432,7 +424,6 @@ export default function PerfilPage() {
               </div>
             </div>
 
-            {!isAdmin && (
             <div className="card border-0 shadow-sm rounded-4 mb-4">
               <div className="card-body p-4 p-lg-5">
                 <div className="d-flex flex-column flex-md-row justify-content-between gap-3 mb-4">
@@ -510,12 +501,10 @@ export default function PerfilPage() {
                 {empresa && botoesAlteracao}
               </div>
             </div>
-            )}
 
           </form>
 
-          {!isAdmin && (
-            <div className="card border-0 shadow-sm rounded-4 mb-4">
+          <div className="card border-0 shadow-sm rounded-4 mb-4">
               <div className="card-body p-4 p-lg-5">
                 <div className="d-flex flex-column flex-md-row justify-content-between gap-3 mb-4">
                   <div>
@@ -524,19 +513,9 @@ export default function PerfilPage() {
                       Endereços vinculados
                     </h2>
                     <p className="text-muted mb-0">
-                      Edite os endereços ligados à sua empresa ou cadastre um novo.
+                      Edite os endereços ligados à sua empresa.
                     </p>
                   </div>
-
-                  {empresa && (
-                    <a
-                      href="/solicitar-instalacao"
-                      className={`btn btn-warning px-4 py-3 fw-bold rounded-pill shadow-sm align-self-start ${styles.primaryButton}`}
-                    >
-                      <i className="bi bi-plus-circle me-2" />
-                      Cadastrar endereço
-                    </a>
-                  )}
                 </div>
 
                 {enderecos.length === 0 ? (
@@ -747,7 +726,6 @@ export default function PerfilPage() {
                 )}
               </div>
             </div>
-          )}
         </section>
       </div>
     </div>

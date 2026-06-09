@@ -1,0 +1,24 @@
+.sidebarCard {
+  background: #221f20;
+}
+
+.badgeHighlight {
+  background: #febd17;
+}
+
+.avatarSmall {
+  width: 76px;
+  height: 76px;
+  flex: 0 0 76px;
+  color: #221f20;
+  background: #febd17;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+}
+
+.title {
+  color: #221f20;
+}
+
+.primaryButton {
+  color: #221f20 !important;
+}

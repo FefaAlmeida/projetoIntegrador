@@ -485,15 +485,17 @@ class EmpresaController {
                     });
                 }
 
-                if (telefone !== empresa.telefone_principal) {
+                const telefoneAtual = String(empresa.telefone_principal || '').replace(/\D/g, '');
+
+                if (telefone !== telefoneAtual) {
                     dadosAtualizacao.telefone_principal = telefone;
                 }
             }
 
             if (Object.keys(dadosAtualizacao).length === 0) {
-                return res.status(400).json({
-                    sucesso: false,
-                    erro: 'Nenhuma alteração realizada'
+                return res.status(200).json({
+                    sucesso: true,
+                    mensagem: 'Nenhuma alteração necessária'
                 });
             }
 
