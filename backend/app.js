@@ -66,8 +66,8 @@ app.use('/api/tecnicos', tecnicoRotas);
 app.use('/api/chamados', chamadoRotas); 
 app.use('/api/pagamentos', pagamentoRotas); 
 app.use('/api/instalacoes', instalacaoRotas); 
-app.use('/api/dashboard', dashboardRotas); 
-app.use('/api/financeiro/cliente', financeiroClienteRotas);
+app.use('/api/dashboard', dashboardRotas);
+app.use('/api/cliente/financeiro', financeiroClienteRotas);
 app.use('/api/financeiro/admin', financeiroRotas);
 
 

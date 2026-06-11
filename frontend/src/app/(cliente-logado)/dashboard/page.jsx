@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -42,7 +40,7 @@ export default function DashboardPage() {
   const [alertasReais, setAlertasReais] = useState([]);
   const [abrirMenu, setAbrirMenu] = useState(false);
 
-  // 📊 FUNÇÃO 1: CARREGA O GRÁFICO (Garante múltiplos meses para formar a linha)
+  // CARREGA O GRÁFICO
   async function carregarHistoricoGrafico() {
     try {
       const graficoResponse = await getDashboardGrafico();
@@ -84,11 +82,12 @@ export default function DashboardPage() {
           });
         } 
         else if (labelsTratadas.length === 0 || apiValores.every(v => Number(v) === 0)) {
+        
           setDadosGrafico({
             labels: ["Jan/26", "Fev/26", "Mar/26", "Abr/26", "Mai/26", "Jun/26"],
-            valores: [4200, 5100, 4800, 6300, 7200, 8473] 
+            valores: [0, 0, 0, 0, 0, 0] 
           });
-        } 
+        }
         else {
           setDadosGrafico({
             labels: labelsTratadas,
@@ -101,7 +100,7 @@ export default function DashboardPage() {
     }
   }
 
-  // ⏱️ FUNÇÃO 2: CARREGA RESUMOS E ALERTAS COM FILTRO DE APARÊNCIA LIMPA
+  // RESUMOS E ALERTAS
   async function atualizarCardsEAlertas() {
     try {
       const [resumoResponse, alertasResponse] = await Promise.all([
@@ -153,7 +152,7 @@ export default function DashboardPage() {
     }
   }
 
-  // 🔄 CONTROLE DE FLUXO INICIAL E POLLING
+  // CONTROLE DE FLUXO INICIAL
   useEffect(() => {
     async function carregarDadosIniciais() {
       try {
@@ -173,7 +172,7 @@ export default function DashboardPage() {
     return () => clearInterval(intervalo);
   }, []);
 
-  // 🎨 CICLO DE VIDA E ATUALIZAÇÃO AUTOMÁTICA DO GRÁFICO
+  // ATUALIZAÇÃO AUTOMÁTICA DO GRÁFICO
   useEffect(() => {
     if (!canvasRef.current) return;
 
@@ -221,14 +220,13 @@ export default function DashboardPage() {
       },
     });
 
-    // Limpa a instância antiga sempre que dadosGrafico mudar ou desinstalar
     return () => {
       if (chartRef.current) {
         chartRef.current.destroy();
         chartRef.current = null;
       }
     };
-  }, [dadosGrafico]); // 🌟 Escuta reativa para redesenhar assim que os dados chegarem da API
+  }, [dadosGrafico]); 
 
   const cards = [
     {
