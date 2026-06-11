@@ -34,7 +34,7 @@ const SERVICES = [
     title: "Monitoramento energético",
   },
   {
-    img: "https://institutosolar.com/wp-content/uploads/2019/05/Manuten%C3%A7%C3%A3o-do-painel-solar.jpg",
+    img: "tecnico-marcelo.jpg",
     title: "Manutenção técnica",
   },
 ];

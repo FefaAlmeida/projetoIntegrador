@@ -5,6 +5,14 @@
   z-index: 1000;
 }
 
+.brandText {
+  letter-spacing: -0.5px;
+}
+
+.brandHighlight {
+  color: #febd17;
+}
+
 .menuButton {
   outline: none;
 }

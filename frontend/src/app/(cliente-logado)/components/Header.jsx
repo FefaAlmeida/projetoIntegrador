@@ -137,8 +137,8 @@ export default function Header() {
         />
 
         <div>
-            <span className="fs-4 fw-bold">
-            Luminar
+            <span className={`fw-bold fs-4 ${styles.brandText}`}>
+              Lumi<span className={styles.brandHighlight}>nar</span>
             </span>
         </div>
         </a>

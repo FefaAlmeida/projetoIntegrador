@@ -4,14 +4,29 @@
 }
 
 .main {
-  padding-top: 64px;
-  padding-bottom: 64px;
+  /* Trocamos padding fixo por flex centralizado no eixo vertical */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 64px); /* Desconta a altura da navbar se houver */
+  padding: 24px 16px;
 }
 
 .shell {
   max-width: 1100px;
   border-radius: 24px;
   background-color: #221f20;
+  width: 100%; /* Garante estabilidade responsiva */
+}
+
+.imagePanel {
+  /* Removemos o min-height fixo de 660px que quebrava o alinhamento */
+  padding: 44px 40px; /* Igualamos o padding superior/inferior com o painel da esquerda */
+  background-image:
+    linear-gradient(rgba(255, 253, 250, 0.66), rgba(34, 31, 32, 0)),
+    url("https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=1600&auto=format&fit=crop");
+  background-size: cover;
+  background-position: center;
 }
 
 .formPanel {
@@ -55,16 +70,6 @@
   font-size: 1rem;
   background-color: #febd17 !important;
   border-radius: 12px;
-}
-
-.imagePanel {
-  min-height: 660px;
-  padding: 40px;
-  background-image:
-    linear-gradient(rgba(255, 253, 250, 0.66), rgba(34, 31, 32, 0)),
-    url("https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=1600&auto=format&fit=crop");
-  background-size: cover;
-  background-position: center;
 }
 
 .logoWrap {
