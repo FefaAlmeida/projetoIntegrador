@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// Importar rotas
+// 1. IMPORTAR TODAS AS ROTAS DA API
 import authRotas from './routes/authRotas.js';
 import criptografiaRotas from './routes/criptografiaRotas.js';
 import usuarioRotas from './routes/usuarioRotas.js';
@@ -37,7 +37,7 @@ const PORT = process.env.PORT || 3002;
 // Middlewares globais
 app.use(helmet()); // Segurança HTTP
 
-// Configuração CORS global — origem específica e credentials habilitados (cookie httpOnly)
+// Configuração CORS global — origem específica e credentials habilitados
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || 'http://localhost:3000';
 app.use(cors({
     origin: FRONTEND_ORIGIN,
@@ -52,25 +52,26 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-//  Servir arquivos estáticos
+// Servir arquivos estáticos (Uploads de imagens/comprovantes)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Rotas da API
+// 2. ATIVAÇÃO DE TODAS AS ROTAS DA API (Mapeamento Base e Ajustado)
 app.use('/api/auth', authRotas);
 app.use('/api/criptografia', criptografiaRotas);
-app.use('/api/usuarios', usuarioRotas);
+app.use('/api/usuarios', usuarioRotas); 
 app.use('/api/empresas', empresaRotas);
 app.use('/api/orcamentos', orcamentoRotas);
 app.use('/api/faleConosco', faleConoscoRotas);
-app.use('/api/dashboard', dashboardRotas);
-app.use('/api/pagamentos', pagamentoRotas);
-app.use('/api/instalacoes', instalacaoRotas);
 app.use('/api/tecnicos', tecnicoRotas);
-app.use('/api/chamados', chamadoRotas);
-app.use('/api/financeiro', financeiroRotas);
-app.use('/api/cliente/financeiro', financeiroClienteRotas);
+app.use('/api/chamados', chamadoRotas); 
+app.use('/api/pagamentos', pagamentoRotas); 
+app.use('/api/instalacoes', instalacaoRotas); 
+app.use('/api/dashboard', dashboardRotas); 
+app.use('/api/financeiro/cliente', financeiroClienteRotas);
+app.use('/api/financeiro/admin', financeiroRotas);
 
-// Rota raiz
+
+// 3. ROTA RAIZ - MAPA DA DOCUMENTAÇÃO COMPLETA
 app.get('/', (req, res) => {
     res.json({
         sucesso: true,
@@ -79,31 +80,109 @@ app.get('/', (req, res) => {
         rotas: {
             autenticacao: '/api/auth',
             criptografia: '/api/criptografia',
-            orcamentos: '/api/orcamentos'
+            usuarios: '/api/usuarios',
+            empresas: '/api/empresas',
+            orcamentos: '/api/orcamentos',
+            faleConosco: '/api/faleConosco',
+            instalacoes: '/api/instalacoes',
+            tecnicos: '/api/tecnicos',
+            chamados: '/api/chamados',
+            pagamentos: '/api/pagamentos',
+            financeiro_adm: '/api/financeiro/admin',
+            financeiro_cliente: '/api/financeiro/cliente',
+            dashboard: '/api/dashboard'
         },
         documentacao: {
+            // Autenticação e Perfil
             login: 'POST /api/auth/login',
-            registrar: 'POST /api/criarUsuario',
-            perfil: 'GET /api/auth/perfil', 
+            registrar: 'POST /api/auth/criarUsuario',
+            logout: 'POST /api/auth/logout',
+            perfil: 'GET /api/auth/perfil',
+            atualizarPerfil: 'PUT /api/auth/perfil',
+            solicitarRedefinicao: 'POST /api/auth/solicitar-redefinicao-senha',
+            redefinirSenha: 'POST /api/auth/redefinir-senha',
 
+            // Criptografia
             infoCriptografia: 'GET /api/criptografia/info',
-            cadastrarUsuario: 'POST /api/criptografia/cadastrar-usuario',
+            cadastrarUsuarioSeguro: 'POST /api/criptografia/cadastrar-usuario',
             
+            // Orçamentos
+            listarOrcamentos: 'GET /api/orcamentos',                          
             criarOrcamento: 'POST /api/orcamentos',
-            listarOrcamentos: 'GET /api/orcamentos',
-            buscarOrcamento: 'GET /api/orcamentos/:id',
+            validarTokenOrcamento: 'GET /api/orcamentos/cadastro/:token',
+            buscarPorEmail: 'GET /api/orcamentos/email/:email',
+            buscarPorId: 'GET /api/orcamentos/:id',
+            aceitarOrcamento: 'PATCH /api/orcamentos/:id/aceitar',      
+            recusarOrcamento: 'PATCH /api/orcamentos/:id/recusar',      
             atualizarOrcamento: 'PUT /api/orcamentos/:id',
-            aceitarOrcamento: 'PATCH /api/orcamentos/:id/aceitar',
-            recusarOrcamento: 'PATCH /api/orcamentos/:id/recusar',
-            excluirOrcamento: 'DELETE /api/orcamentos/:id',
+            deletarOrcamento: 'DELETE /api/orcamentos/:id',
+          
+
+            // Fale Conosco
             criarFaleConosco: 'POST /api/faleConosco',
             listarFaleConosco: 'GET /api/faleConosco', 
-            excluirFaleConosco: 'DELETE /api/faleConosco/:id' 
+            listarPendentes: 'GET /api/faleConosco/pendentes', 
+            listarRespondidos: 'GET /api/faleConosco/respondidos', 
+            listarPorData: 'GET /api/faleConosco/por-data',        
+            buscarPorId: 'GET /api/faleConosco/:id', 
+            responderFaleConosco: 'POST /api/faleConosco/:id/responder',
+
+           // Empresas & Endereços
+            criarEmpresa: 'POST /api/empresas',
+            obterMinhaEmpresa: 'GET /api/empresas/minha',
+            obterMeusEnderecos: 'GET /api/empresas/minha/enderecos',
+            criarEndereco: 'POST /api/empresas/minha/enderecos',
+            atualizarEndereco: 'PUT /api/empresas/minha/enderecos/:id',
+            listarEmpresasAdmin: 'GET /api/empresas',
+            buscarEmpresaPorId: 'GET /api/empresas/:id', 
+            atualizarEmpresa: 'PUT /api/empresas/:id',
+            inativarEmpresa: 'PATCH /api/empresas/:id/inativar',
+            reativarEmpresa: 'PATCH /api/empresas/:id/reativar',
+
+            // Instalações
+            solicitarInstalacao: 'POST /api/instalacoes/solicitar',
+            obterMinhasInstalacoes: 'GET /api/instalacoes/minhas',
+            listarTodasInstalacoesAdmin: 'GET /api/instalacoes',
+            buscarInstalacaoPorId: 'GET /api/instalacoes/:id',
+            atualizarInstalacao: 'PUT /api/instalacoes/:id', 
+            cancelarSolicitacao: 'PATCH /api/instalacoes/:id/cancelar',
+
+            // Dashboards
+            dashboardGeral: 'GET /api/dashboard/geral',
+            dashboardResumo: 'GET /api/dashboard/resumo',
+            dashboardGrafico: 'GET /api/dashboard/grafico-monitoramento',
+            dashboardAlertas: 'GET /api/dashboard/alertas',
+            dashboardFinanceiro: 'GET /api/dashboard/financeiro',
+
+            // Técnicos
+            listarTecnicos: 'GET /api/tecnicos',
+            buscarTecnico: 'GET /api/tecnicos/:id',
+            criarTecnico: 'POST /api/tecnicos',
+            atualizarTecnico: 'PUT /api/tecnicos/:id',
+            inativarTecnico: 'PATCH /api/tecnicos/:id/inativar',
+
+    
+            // Chamados
+            abrirChamado: 'POST /api/chamados',
+            getMeusChamados: 'GET /api/chamados/meus-chamados',
+            cancelarChamadoCliente: 'PUT /api/chamados/:id/cancelar',
+            getTodosChamadosAdmin: 'GET /api/chamados/admin',
+            responderChamadoAdmin: 'PUT /api/chamados/:id/responder',
+            getChamadoPorId: 'GET /api/chamados/:id',
+            excluirRegistroChamado: 'DELETE /api/chamados/:id',
+
+            // Financeiro ADM, Cliente & Pagamentos Gerais
+            getFinanceiroAdmin: 'GET /api/financeiro/admin',
+            atualizarStatusPagamentoAdmin: 'PATCH /api/financeiro/admin/:id/status',
+            getFinanceiroCliente: 'GET /api/financeiro/cliente',
+            inicializarParcelamentoCliente: 'POST /api/financeiro/cliente/setup',
+            alterarFormaPagamentoCliente: 'PATCH /api/financeiro/cliente/forma-pagamento',
+            pagarParcelaCliente: 'POST /api/financeiro/cliente/:id/pagar', 
         }
     });
 });
 
-// Middleware para tratar rotas não encontradas
+// Middleware para tratar rotas não encontradas (404)
 app.use('*', (req, res) => {
     res.status(404).json({
         sucesso: false,
@@ -112,7 +191,7 @@ app.use('*', (req, res) => {
     });
 });
 
-// Middleware global de tratamento de erros (deve ser o último)
+// Middleware global de tratamento de erros (Deve ser sempre o último)
 app.use(errorMiddleware);
 
 // Iniciar servidor
@@ -123,4 +202,3 @@ app.listen(PORT, () => {
 });
 
 export default app;
-
